@@ -1435,6 +1435,40 @@ var SR2EN = {
   "Уреди":"Edit"
 ,
   ", и у електронској и у штампаној форми. Наручилац је потврдио да се и интерфејс и унос раде на оба језика: интерфејс се пребацује прекидачем СР/EN у заглављу, а свако поље за унос има српску и енглеску верзију. Уређује се језик у ком је интерфејс — друга страна је закључана да се не би случајно мењала, а дугме „Уреди\" пребацује интерфејс на тај језик и уводи курсор у то поље. Излаз за штампу биће усаглашен са корисником у РП2.":", in electronic and in printed form. The client has confirmed that both the interface and data entry are in both languages: the interface is switched with the SR/EN toggle in the header, and every input field has a Serbian and an English version. You edit the language the interface is in — the other side is locked so it cannot be changed by accident, and the “Edit” button switches the interface to that language and puts the cursor in that field. The print output will be agreed with the client in WP2."
+,
+  /* динамичке ставке: датуми демо података, историја, имена */
+  "3. нов. 2026.":"3 Nov 2026",
+  "12. нов. 2026.":"12 Nov 2026",
+  "13. нов. 2026.":"13 Nov 2026",
+  "14. нов. 2026.":"14 Nov 2026",
+  "15. нов. 2026.":"15 Nov 2026",
+  "18. нов. 2026.":"18 Nov 2026",
+  "20. нов. 2026.":"20 Nov 2026",
+  "25. нов. 2026.":"25 Nov 2026",
+  "28. нов. 2026.":"28 Nov 2026",
+  "15. дец. 2026.":"15 Dec 2026",
+  "Разумем":"Understood",
+  "Нацрт креиран":"Draft created",
+  "Враћено у нацрт":"Returned to draft",
+  "Допринос потврђен":"Contribution confirmed",
+  "Образац консолидован":"Form consolidated",
+  "Образац консолидован.":"Form consolidated.",
+  "Одобрено":"Approved",
+  "Поново предато":"Resubmitted",
+  "Захтевана исправка":"Correction requested",
+  "Примедба обрисана":"Finding deleted",
+  "Административна измена унетих података":"Administrative change of the entered data",
+  "Откривена истовремена измена (демо)":"Concurrent change detected (demo)",
+  "Нацрт сачуван.":"Draft saved.",
+  "— Јелена Ковачевић":"— Jelena Kovačević",
+  "— Петар Петровић":"— Petar Petrović",
+  "— Јован Симић":"— Jovan Simić",
+  "— Ана Репац":"— Ana Repac",
+  "— Марко Илић":"— Marko Ilić",
+  "Јелена Ковачевић":"Jelena Kovačević",
+  "Петар Петровић":"Petar Petrović",
+  "Јован Симић":"Jovan Simić",
+  "Ана Репац":"Ana Repac"
 };
 /* уз енглески се приказује и српски оригинал — само за термине из Правилника */
 var OBA_JEZIKA = ['Нацрт','Валидација достављача','Предато','Потврђено','Консолидовано','Финална потврда',
@@ -1855,6 +1889,11 @@ function showScreen(id){
 /* ===================== lang ===================== */
 function setLang(l){
   S.lang = l;
+  /* Промена језика мора да освежи и екране који тренутно нису видљиви — иначе им HTML
+     остане на старом језику (нпр. дугме добијено кроз t() док је био EN). */
+  ['renderDashboard','renderReporting','renderFormV','renderNotifFull','renderInstitutions'].forEach(function(fn){
+    try{ if(typeof window[fn]==='function') window[fn](); }catch(e){}
+  });
   renderAll();
 }
 
@@ -1940,7 +1979,7 @@ function renderNotifFull(){
     return '<div class="bell-item" style="cursor:pointer;" onclick="clickNotification('+i+')">'+x.text+'</div>';
   }).join('');
   if(NOTIFICATIONS.length > n){
-    html += '<div style="padding:10px;"><button class="btn sm" onclick="showMoreNotif()">Прикажи још ('+(NOTIFICATIONS.length-n)+')</button></div>';
+    html += '<div style="padding:10px;"><button class="btn sm" onclick="showMoreNotif()">'+L('Прикажи још (','Show more (')+(NOTIFICATIONS.length-n)+')</button></div>';
   }
   el.innerHTML = html;
 }
@@ -2326,7 +2365,6 @@ function renderAudit(){
       '<td class="small">'+esc(x.kada)+'</td><td class="small">'+(x.obrazlozenje?esc(x.obrazlozenje):'—')+'</td></tr>';
   }).join('') : '<tr><td colspan="5" class="muted small">Још нема измена поља у овом циклусу.</td></tr>';
   var br=document.getElementById('auditCount'); if(br) br.textContent=a.length;
-  prevediUI();
 }
 function pushActivity(action, actor){
   S.formV.activity.push({action:action, actor:actor, date: nextDemoDate()});
@@ -2599,7 +2637,6 @@ function renderObjectives(){
       '</div>';
   }).join('');
   document.getElementById('objectivesList').innerHTML = html;
-  prevediUI(); /* делимичан приказ мимо renderAll — и он кроз слој превода */
 }
 function updObj(i, field, val){
   var staro = S.formV.objectives[i][field];
@@ -2645,7 +2682,6 @@ function renderIndicators(){
   }).join('');
   document.getElementById('btnAddIndicator').classList.toggle('hidden', !ed);
   renderBlokade();
-  prevediUI();
 }
 function updInd(i, field, val){
   var staro = S.formV.indicators[i][field];
@@ -2747,7 +2783,7 @@ function renderActivity(){
     return '<div class="activity-row"><div class="a-date">'+a.date+'</div><div><strong>'+a.action+'</strong> — '+a.actor+'</div></div>';
   }).join('');
   if(svi.length > n){
-    html += '<div style="padding-top:8px;"><button class="btn sm" onclick="showMoreActivity()">Прикажи још ('+(svi.length-n)+')</button></div>';
+    html += '<div style="padding-top:8px;"><button class="btn sm" onclick="showMoreActivity()">'+L('Прикажи још (','Show more (')+(svi.length-n)+')</button></div>';
   } else if(svi.length > ACT_KORAK){
     html += '<div class="xs muted" style="padding-top:8px;">Приказано свих '+svi.length+' записа.</div>';
   }
@@ -2832,7 +2868,10 @@ function renderFormvSidePanel(){
     var faza = FAZA_ULOGE[S.role];
     var skok = (faza && faza!==st)
       ? '<button class="btn pri" onclick="setDemoFazu(\''+faza+'\')">Пређи на фазу у којој ова улога одлучује</button>' : '';
-    var mozeIspravku = (S.role==='lead' && st!=='draft' && st!=='correction_requested');
+    /* Водећи известилац може да врати само оно што је до њега стигло: од предаје до
+       консолидације. У нацрту и валидацији допринос још није предат, а после финалне
+       потврде Супервизора образац поново отвара Супервизор. */
+    var mozeIspravku = (S.role==='lead' && (st==='submitted' || st==='confirmed' || st==='consolidated'));
     el.innerHTML = '<div class="side-panel"><h3>Није потребна радња</h3>'+
       '<p class="small muted">'+waitingText(S.role, st)+'</p>'+
       (skok ? '<div style="margin-top:12px;">'+skok+
@@ -2915,13 +2954,13 @@ function renderFormvTopActions(){
    Kad radnja pomeri fazu, platforma sama prebacuje na lice koje je sledece na redu, ali to
    OBJAVLJUJE — jer je poenta celog prikaza da sledeci korak radi druga osoba, ne ista. */
 function predajUlozi(nova, poruka){
-  var staraOsoba = ACTOR[S.role], staraUloga = t(ROLE_KEY[S.role]);
+  var staraOsoba = actorName(S.role), staraUloga = t(ROLE_KEY[S.role]);
   S.role = nova;
   if(nova==='dp' && S.reportingTab==='all') S.reportingTab='my';
   S.predaja = {
     poruka: poruka,
     od: staraOsoba+' ('+staraUloga+')',
-    na: ACTOR[nova]+' ('+t(ROLE_KEY[nova])+')'
+    na: actorName(nova)+' ('+t(ROLE_KEY[nova])+')'
   };
   renderAll();
 }
@@ -2933,7 +2972,8 @@ function renderPredaja(){
   el.classList.remove('hidden');
   el.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap;">'+
     '<div><div style="font-weight:600;">'+esc(S.predaja.poruka)+'</div>'+
-    '<div class="small" style="margin-top:3px; opacity:.85;">Посао прелази са '+esc(S.predaja.od)+' на '+esc(S.predaja.na)+'. Сада сте пријављени као то лице.</div></div>'+
+    '<div class="small" style="margin-top:3px; opacity:.85;">'+L('Посао прелази са ','The work passes from ')+esc(S.predaja.od)+L(' на ',' to ')+esc(S.predaja.na)+
+      L('. Сада сте пријављени као то лице.','. You are now signed in as that person.')+'</div></div>'+
     '<button class="btn sm" onclick="zatvoriPredaju()" style="background:transparent; border-color:var(--bg); color:var(--bg); flex:0 0 auto;">Разумем</button>'+
     '</div>';
 }
@@ -3444,6 +3484,17 @@ function promeniLice(r){
   if(r!=='super' && SAMO_SUPER_EKRANI.indexOf(S.screen)>=0){ showScreen('dashboard'); return; }
   renderAll();
 }
+/* ===== Сваки приказ мора кроз слој превода =====
+   Делимични прикази (нпр. само бочни панел после промене фазе) не иду кроз renderAll,
+   па би у EN режиму вратили српски текст. Умотавамо све render* функције на једном
+   месту, да ниједан приказ не може да „испадне" из превода. */
+(function(){
+  Object.keys(window).filter(function(k){ return /^render/.test(k) && typeof window[k]==='function' && k!=='renderAll'; })
+    .forEach(function(k){
+      var f = window[k];
+      window[k] = function(){ var r = f.apply(this, arguments); prevediUI(); return r; };
+    });
+})();
 renderAll();
 </script>
 </body>
