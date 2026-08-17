@@ -269,7 +269,7 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
             </div>
             <div id="formvActionsTop" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
           </div>
-          <p class="note hidden" id="srFormNote">Interface labels are switched with the SR/EN toggle in the header. Terms taken from the Rulebook (workflow stages, roles) keep the Serbian original in brackets, so this screen can be checked against the Rulebook, which is written in Serbian. Data are not switched by this toggle: each field holds a Serbian and an English value and both are reported (Rulebook, Art. 23). The Serbian is the source version, the English is the confirmed translation. You edit the language the interface is in: in EN mode the Serbian field is locked, in SR mode the English one is — one click on “Edit” switches the interface to that language and puts the cursor in the field, so nothing becomes unreachable. Whether you may edit at all is decided by the role, the stage and the assignment.</p>
+          <p class="note hidden" id="srFormNote">Interface labels are switched with the SR/EN toggle in the header. Data are not switched by this toggle: each field holds a Serbian and an English value and both are reported (Rulebook, Art. 23). The Serbian is the source version, the English is the confirmed translation. You edit the language the interface is in: in EN mode the Serbian field is locked, in SR mode the English one is — one click on “Edit” switches the interface to that language and puts the cursor in the field, so nothing becomes unreachable. Whether you may edit at all is decided by the role, the stage and the assignment.</p>
           <p class="note">Правилник (чл. 23) прописује да се обрасци попуњавају и достављају <strong>на српском и енглеском језику</strong>, и у електронској и у штампаној форми. Наручилац је потврдио да се и интерфејс и унос раде на оба језика: интерфејс се пребацује прекидачем СР/EN у заглављу, а свако поље за унос има српску и енглеску верзију. Уређује се језик у ком је интерфејс — друга страна је закључана да се не би случајно мењала, а дугме „Уреди" пребацује интерфејс на тај језик и уводи курсор у то поље. Излаз за штампу биће усаглашен са корисником у РП2.</p>
 
           <div id="formvBanner"></div>
@@ -431,6 +431,7 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
         <!-- INSTITUTION DETAIL / ADD-EDIT -->
         <section id="screen-institution-detail" class="screen">
           <h2 id="instDetailTitle">Институција</h2>
+          <p class="small muted hidden" id="instRanijiNazivi" style="margin-top:-6px;"></p>
           <div class="card">
             <div class="card-h" style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
               <span>Основни подаци</span>
@@ -1469,10 +1470,16 @@ var SR2EN = {
   "Петар Петровић":"Petar Petrović",
   "Јован Симић":"Jovan Simić",
   "Ана Репац":"Ana Repac"
+,
+  "ранији називи":"former names",
+  "раније: ":"formerly: ",
+  "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name"
 };
 /* уз енглески се приказује и српски оригинал — само за термине из Правилника */
-var OBA_JEZIKA = ['Нацрт','Валидација достављача','Предато','Потврђено','Консолидовано','Финална потврда',
-  'Достављач података','Водећи известилац','Супервизор'];
+/* Пре је уз енглески термин стајао и српски оригинал у загради. По одлуци наручиоца
+   енглески режим је чист енглески — ниједан термин не носи српски текст поред себе.
+   Ако икада затреба упоредивост са Правилником, довољно је вратити термине у овај низ. */
+var OBA_JEZIKA = [];
 var ULOGA_EN_SR = [['Data Provider','Достављач података'],['Lead Reporter','Водећи известилац'],['Supervisor','Супервизор']];
 function trUI(s, dubina){
   dubina = dubina||0;
@@ -1765,7 +1772,7 @@ var PROPISAN_DEO = { 'II|6': 'Опис усклађености за шумск�
    never on the institution itself. The Supervisor is not tied to an institution at all — they are
    from the Ministry of Mining and Energy. */
 var INSTITUTIONS = [
-  {name:'Министарство рударства и енергетике', short:'МРЕ', type:'Министарство', active:true, od:'1. јан. 2025.', do:null, nastalaIz:[], preslaU:null,
+  {name:'Министарство рударства и енергетике', short:'МРЕ', type:'Министарство', active:true, od:'1. јан. 2025.', do:null, nastalaIz:[], preslaU:null, nazivi:[{naziv:'Министарство рударства и енергетике', od:'1. јан. 2025.', do:null}],
     resp:[
       {form:'Образац I – Декарбонизација: емисије GHG', area:'Декарбонизација', participation:'Институција-давалац података'},
       {form:'Образац II – Декарбонизација: обновљива енергија', area:'Декарбонизација', participation:'Координирајућа / водећа институција'},
@@ -1778,13 +1785,13 @@ var INSTITUTIONS = [
       {name:'Ана Репац', role:'Водећи известилац', tables:['Образац V, табела 2','Образац V, табела 3']},
             {name:'Ана Репац', role:'Водећи известилац', tables:['Образац V, табела 2','Образац V, табела 3']}
     ]},
-  {name:'Републички завод за статистику', short:'РЗС', type:'Агенција', active:true, od:'1. јан. 2025.', do:null, nastalaIz:[], preslaU:null,
+  {name:'Републички завод за статистику', short:'РЗС', type:'Агенција', active:true, od:'1. јан. 2025.', do:null, nastalaIz:[], preslaU:null, nazivi:[{naziv:'Републички завод за статистику', od:'1. јан. 2025.', do:null}],
     resp:[
       {form:'Образац V – Енергетска безбедност', area:'Енергетска безбедност', participation:'Институција-давалац података'},
       {form:'Образац VII – Истраживање, иновације и конкурентност', area:'Истраживање, иновације и конкурентност', participation:'Координирајућа / водећа институција'}
     ],
     users:[{name:'Јелена Ковачевић', role:'Достављач података', tables:['Образац V, табела 1'], part:'Подаци о енергетској безбедности'}]},
-  {name:'Агенција за енергетику', short:'АЕ', type:'Агенција', active:true, od:'1. јан. 2025.', do:null, nastalaIz:[], preslaU:null,
+  {name:'Агенција за енергетику', short:'АЕ', type:'Агенција', active:true, od:'1. јан. 2025.', do:null, nastalaIz:[], preslaU:null, nazivi:[{naziv:'Агенција за енергетику', od:'1. јан. 2025.', do:null}],
     resp:[
       {form:'Образац V – Енергетска безбедност', area:'Енергетска безбедност', participation:'Институција-давалац података'},
       {form:'Образац VI – Унутрашње енергетско тржиште', area:'Унутрашње енергетско тржиште', participation:'Координирајућа / водећа институција'},
@@ -1794,7 +1801,7 @@ var INSTITUTIONS = [
       {name:'Никола Ђорђић', role:'Достављач података', tables:['Образац V, табела 2']},
       {name:'Соња Марковић', role:'Водећи известилац', tables:['Образац VI, табела 1','Образац VI, табела 4']}
     ]},
-  {name:'Србијагас', short:'СГ', type:'Државно предузеће', active:true, od:'1. јан. 2025.', do:null, nastalaIz:[], preslaU:null,
+  {name:'Србијагас', short:'СГ', type:'Државно предузеће', active:true, od:'1. јан. 2025.', do:null, nastalaIz:[], preslaU:null, nazivi:[{naziv:'Србијагас', od:'1. јан. 2025.', do:null}],
     resp:[{form:'Образац V – Енергетска безбедност', area:'Енергетска безбедност', participation:'Институција-давалац података'}],
     users:[{name:'Душан Павловић', role:'Достављач података', tables:['Образац V, табела 3']}]}
 ];
@@ -3142,6 +3149,8 @@ function renderInstitutions(){
   document.getElementById('institutionsBody').innerHTML = INSTITUTIONS.map(function(inst,i){
     var nasl = (inst.nastalaIz && inst.nastalaIz.length)
       ? '<div class="xs muted">настала од: '+inst.nastalaIz.map(esc).join(', ')+'</div>' : '';
+    var rn = ranijiNazivi(inst);
+    if(rn) nasl += '<div class="xs muted">раније: '+rn+'</div>';
     var trajanje = '<div class="xs muted">'+esc(inst.od||'—')+' → '+(inst.do ? esc(inst.do) : 'у примени')+'</div>';
     return '<tr class="clk" onclick="openInstitutionDetail('+i+')"><td>'+esc(inst.name)+nasl+trajanje+'</td><td>'+esc(inst.type)+'</td>'+
       '<td>'+inst.resp.length+'</td><td>'+inst.users.filter(function(u){return u.aktivan!==false;}).length+
@@ -3154,6 +3163,13 @@ function openInstitutionDetail(i){
   S.editingInstitution = i;
   var inst = (i>=0) ? INSTITUTIONS[i] : {name:'', short:'', type:'Ministry', active:true, resp:[], users:[]};
   document.getElementById('instDetailTitle').textContent = (i>=0) ? inst.name : 'Додај институцију';
+  var rnEl = document.getElementById('instRanijiNazivi');
+  if(rnEl){
+    var rn = (i>=0) ? ranijiNazivi(inst) : '';
+    rnEl.innerHTML = rn ? '<span class="badge">ранији називи</span> '+rn+
+      ' <span class="xs muted">— предаје и ревизиони траг из тих периода остају приписани том називу</span>' : '';
+    rnEl.classList.toggle('hidden', !rn);
+  }
   document.getElementById('instName').value = inst.name;
   document.getElementById('instShort').value = inst.short;
   document.getElementById('instType').value = inst.type;
@@ -3194,12 +3210,32 @@ function saveInstitution(){
   var active = window._instActive !== false;
   if(S.editingInstitution>=0){
     var inst = INSTITUTIONS[S.editingInstitution];
+    /* Преименовање не прекрива стари назив: он остаје у историји са периодом важења.
+       Предаје и ревизиони траг из ранијих циклуса остају потписани називом који је
+       институција тада носила — зато их преименовање не дира. */
+    if(name !== inst.name){
+      var kada = nextDemoDate(), stari = inst.name;
+      inst.nazivi = inst.nazivi || [{naziv:stari, od:inst.od||'—', do:null}];
+      inst.nazivi.forEach(function(z){ if(!z.do) z.do = kada; });
+      inst.nazivi.push({naziv:name, od:kada, do:null});
+      pushActivity('Институција преименована: '+stari+' → '+name, ACTOR.super);
+    }
     inst.name=name; inst.short=short; inst.type=type; inst.active=active;
   } else {
-    INSTITUTIONS.push({name:name, short:short, type:type, active:active, resp:[], users:[]});
+    var kada2 = nextDemoDate();
+    INSTITUTIONS.push({name:name, short:short, type:type, active:active, od:kada2, do:null,
+      nastalaIz:[], preslaU:null, nazivi:[{naziv:name, od:kada2, do:null}], resp:[], users:[]});
     S.editingInstitution = INSTITUTIONS.length-1;
   }
   showScreen('institutions');
+}
+/* Ранији називи институције — приказују се и у листи и у детаљу, да предаја из
+   прошлог циклуса остане препознатљива под називом који је тада важио. */
+function ranijiNazivi(inst){
+  if(!inst.nazivi || inst.nazivi.length<2) return '';
+  return inst.nazivi.slice(0,-1).map(function(z){
+    return esc(z.naziv)+' ('+esc(z.od)+' – '+esc(z.do||'—')+')';
+  }).join('; ');
 }
 function openAssignForm(){
   var sel = document.getElementById('assignFormSel');
