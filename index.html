@@ -175,7 +175,7 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
 <section id="screen-login" class="login-wrap">
   <div class="login-box">
     <div class="lang-switch" style="float:right;">
-      <span id="loginLangEn" onclick="setLang('en')">EN</span><span id="loginLangSr" onclick="setLang('sr')">SR</span>
+      <span id="loginLangSr" onclick="setLang('sr')">SR</span><span id="loginLangEn" onclick="setLang('en')">EN</span>
     </div>
     <div style="clear:both;"></div>
     <div class="badge" style="margin-bottom:14px;" id="loginBadge" data-i18n="login_badge">Концептуални wireframe · ниска верност · РП2</div>
@@ -205,7 +205,7 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
       </div>
       <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
         <div class="lang-switch">
-          <span id="appLangEn" onclick="setLang('en')">EN</span><span id="appLangSr" onclick="setLang('sr')">SR</span>
+          <span id="appLangSr" onclick="setLang('sr')" title="Српски — извор; термини Правилника">SR</span><span id="appLangEn" onclick="setLang('en')" title="English — key terms keep the Serbian original in brackets">EN</span>
         </div>
         <div class="bell-wrap" id="bellWrapEl">
           <div class="bell-btn" onclick="toggleBell()">
@@ -269,19 +269,19 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
             </div>
             <div id="formvActionsTop" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
           </div>
-          <p class="note hidden" id="srFormNote">Full translation of form content to English will be completed in a later phase.</p>
-          <p class="note">Правилник (чл. 23) прописује да се обрасци попуњавају и достављају <strong>на српском и енглеском језику</strong>, и у електронској и у штампаној форми. У овом wireframe-у унос је приказан једнојезично; двојезични унос по полну и излаз за штампу биће усаглашени са корисником у РП2.</p>
+          <p class="note hidden" id="srFormNote">Interface labels are switched with the SR/EN toggle in the header. Terms taken from the Rulebook (workflow stages, roles) keep the Serbian original in brackets, so this screen can be checked against the Rulebook, which is written in Serbian. Data are not switched by this toggle: each field holds a Serbian and an English value and both are reported (Rulebook, Art. 23). The Serbian is the source version, the English is the confirmed translation — both stay editable in either interface language. What controls editing is the role, the stage and the assignment, not the interface language.</p>
+          <p class="note">Правилник (чл. 23) прописује да се обрасци попуњавају и достављају <strong>на српском и енглеском језику</strong>, и у електронској и у штампаној форми. Наручилац је потврдио да се и интерфејс и унос раде на оба језика: интерфејс се пребацује прекидачем СР/EN у заглављу, а свако поље за унос има српску и енглеску верзију. Излаз за штампу биће усаглашен са корисником у РП2.</p>
 
           <div id="formvBanner"></div>
 
           <div class="chain" id="formvChain"></div>
-          <p class="xs muted" style="margin:-2px 0 8px;">Редослед провере прописан је чланом 22. Правилника: контрола квалитета/осигурање квалитета → потврђивање → консолидација → одобравање.</p>
+          <p class="xs muted" style="margin:-2px 0 8px;">Редослед провере: валидација код достављача → потврђивање → консолидација → финална потврда Супервизора. Нема засебне контроле квалитета као корака у току: по одговору наручиоца, за тачност уноса одговара сам достављач података — унос валидира овлашћено лице његове институције — а Супервизор даје финалну потврду.</p>
           <div class="stage-info" id="formvStageInfo"></div>
 
           <div class="card">
             <div class="card-h">Институционални доприноси</div>
             <div class="card-b">
-              <p class="note" style="margin-top:0;">Један образац за извештавање прима доприносе од више институција, свака одговорна за одређени обим. Доприносе прегледа и на крају консолидује Водећи известилац — овај образац није у власништву нити га самостално попуњава једна институција.</p>
+              <p class="note" style="margin-top:0;">Свака институција попуњава <strong>своју верзију обрасца и својих табела</strong> — испод су верзије и њихови статуси. Водећи известилац те верзије потврђује и консолидује у један образац, а Супервизор даје финалну потврду. Ниједна верзија се не брише: остаје у систему са својим ревизионим трагом.</p>
               <div class="scroll"><table class="freeze-1">
                 <thead><tr><th>Институција</th><th>Додељени обим</th><th>Статус</th><th>Попуњеност</th></tr></thead>
                 <tbody id="contributionsBody"></tbody>
@@ -294,9 +294,8 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
             <div class="card-b">
               <table style="width:auto;"><tbody>
                 <tr><td class="muted" style="padding-left:0;">Водећи известилац(и)</td><td>Петар Петровић — Министарство рударства и енергетике</td></tr>
-                <tr><td class="muted" style="padding-left:0;">Известилац(и) подршке</td><td>Марко Илић — Министарство рударства и енергетике</td></tr>
-                <tr><td class="muted" style="padding-left:0;">Учеснице / институције-даваоци података</td><td>Републички завод за статистику; Агенција за енергетику; Србијагас; Министарство рударства и енергетике, ако је релевантно</td></tr>
-                <tr><td class="muted" style="padding-left:0;">Национални координатор извештавања</td><td>Министарство рударства и енергетике</td></tr>
+                                <tr><td class="muted" style="padding-left:0;">Учеснице / институције-даваоци података</td><td>Републички завод за статистику; Агенција за енергетику; Србијагас; Министарство рударства и енергетике, ако је релевантно</td></tr>
+                <tr><td class="muted" style="padding-left:0;">Супервизор (финална потврда)</td><td>Јован Симић — Министарство рударства и енергетике</td></tr>
                 <tr><td class="muted" style="padding-left:0;">Рокови</td><td id="formvDeadlines"></td></tr>
                 <tr><td class="muted" style="padding-left:0;">Попуњеност</td><td id="formvCompletion">—</td></tr>
               </tbody></table>
@@ -322,6 +321,7 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
 
               <div class="sect">
                 <div class="sect-h"><span>Национални циљеви</span><span class="badge">обавезна поља означена *</span></div>
+                <p class="muted small" style="margin-top:0;">Правилник (чл. 23) тражи унос на српском и енглеском. Енглеску верзију предлаже машински превод, али је корисник дужан да је провери и потврди — <strong>предаја је блокирана док превод није потврђен</strong>. Одговорност за тачност превода остаје на институцији која уноси.</p>
                 <div id="concurrencyBar" class="small muted" style="margin-bottom:10px;"></div>
                 <div id="concurrencyConflict"></div>
                 <div id="objectivesList"></div>
@@ -337,6 +337,15 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
                 <div class="scroll"><table class="freeze-1">
                   <thead><tr><th>Показатељ</th><th>Јединица</th><th id="thX3">X-3</th><th id="thX2">X-2</th><th>Циљна вредност</th></tr></thead>
                   <tbody id="indicatorsBody"></tbody>
+                </table></div>
+              </div>
+
+              <div class="sect">
+                <div class="sect-h"><span>Ревизиони траг по пољу <span class="badge" id="auditCount">0</span></span></div>
+                <p class="muted small" style="margin-top:0;">Свака измена сваког поља: из које вредности у коју, ко је изменио и када. Измене Супервизора носе и образложење.</p>
+                <div class="scroll"><table>
+                  <thead><tr><th>Поље</th><th>Измена</th><th>Ко</th><th>Када</th><th>Образложење</th></tr></thead>
+                  <tbody id="auditBody"></tbody>
                 </table></div>
               </div>
 
@@ -423,7 +432,11 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
         <section id="screen-institution-detail" class="screen">
           <h2 id="instDetailTitle">Институција</h2>
           <div class="card">
-            <div class="card-h">Основни подаци</div>
+            <div class="card-h" style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+              <span>Основни подаци</span>
+              <span><button class="btn sm" onclick="openSplit()">Подели институцију</button>
+                    <button class="btn sm" onclick="openMerge()">Споји у другу</button></span>
+            </div>
             <div class="card-b">
               <div class="grid2">
                 <div class="fld"><label>Назив институције</label><input id="instName"></div>
@@ -446,7 +459,7 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
               <button class="btn sm" onclick="openAssignForm()">+ Додели образац</button>
             </div>
             <div class="card-b">
-              <p class="note">Овде се бележи само учешће институције у обрасцу за извештавање. Водећи известилац / Помоћни известилац / Достављач података / Национални координатор извештавања су улоге на нивоу лица, додељене појединачним корисницима у секцији Корисници испод — не самој институцији. Биће усаглашено са корисником у РП2: додела испод нивоа обрасца (нпр. по секцији) илустрована је концептуално на екрану Обрасца V и још није формално моделована овде.</p>
+              <p class="note">Овде се бележи само учешће институције у обрасцу за извештавање. Водећи известилац и Достављач података су улоге на нивоу лица, додељене појединачним корисницима у секцији Корисници испод — не самој институцији. Биће усаглашено са корисником у РП2: додела испод нивоа обрасца (нпр. по секцији) илустрована је концептуално на екрану Обрасца V и још није формално моделована овде.</p>
               <div class="scroll"><table>
                 <thead><tr><th>Образац за извештавање</th><th>Област извештавања</th><th>Тип учешћа</th><th></th></tr></thead>
                 <tbody id="instRespBody"></tbody>
@@ -457,12 +470,12 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
           <div class="card">
             <div class="card-h">
               <span>Корисници</span>
-              <button class="btn sm" onclick="openAssignUser()">+ Додели корисника</button>
+              <button class="btn sm" onclick="openAssignUserNovi()">+ Додели корисника</button>
             </div>
             <div class="card-b">
-              <p class="note">Образац за извештавање може имати више додељених корисника, из више институција, и више од једног Водећег известиоца — број овде није ограничен. У званичној додели за Србију од 20.03.2025. по сваком анексу наведена су два лица (известилац и су-известилац), а платформа ЕЕА дозвољава највише два по обрасцу. Биће усаглашено са корисником у РП2: да ли се уводи горња граница и како се дели право потврђивања када их је више.</p>
+              <p class="note">Унутар једне институције различита лица могу радити различите табеле, па и делове исте табеле — свако одговара за свој унос и дужно је да га провери, а Супервизор на крају потврђује проверу целог обрасца и свих уноса. Образац за извештавање може имати више додељених корисника, из више институција, и више од једног Водећег известиоца — број овде није ограничен. У званичној додели за Србију од 20.03.2025. по сваком анексу наведена су два лица (известилац и су-известилац), а платформа ЕЕА дозвољава највише два по обрасцу. Биће усаглашено са корисником у РП2: да ли се уводи горња граница и како се дели право потврђивања када их је више.</p>
               <div class="scroll"><table>
-                <thead><tr><th>Корисник</th><th>Улога</th><th>Додељене табеле</th></tr></thead>
+                <thead><tr><th>Корисник</th><th>Улога</th><th>Додељене табеле</th><th>Радње</th></tr></thead>
                 <tbody id="instUsersBody"></tbody>
               </table></div>
             </div>
@@ -499,7 +512,7 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
 <div class="modal-bg" id="modal-submit">
   <div class="modal">
     <h3>Предаја вашег доприноса Обрасцу V?</h3>
-    <p>Након предаје, допринос ваше институције биће послат на контролу квалитета. Доприноси других институција за Образац V могу и даље бити у изради.</p>
+    <p>Након предаје, допринос ваше институције иде Водећем известиоцу на потврду. Доприноси других институција за Образац V могу и даље бити у изради.</p>
     <label class="checkline"><input type="checkbox" id="submitCheck" onchange="toggleSubmitBtn()"> Потврђујем да су достављени подаци прегледани и валидирани од овлашћеног представника институције.</label>
     <p class="note">Биће усаглашено са корисником у РП2. (Тачна процедура овлашћене валидације.)</p>
     <div class="modal-actions">
@@ -513,7 +526,7 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
 <div class="modal-bg" id="modal-correction">
   <div class="modal">
     <h3>Захтевај исправку</h3>
-    <div id="corrNalaziBox"></div>
+    <div id="corrPrimedbeBox"></div>
     <div class="fld"><label>Коментар / објашњење *</label><textarea id="corrComment" rows="3"></textarea></div>
     <div class="fld"><label>На шта се односи (опционо)</label>
       <select id="corrField"></select>
@@ -546,6 +559,84 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
 </div>
 
 <!-- MODAL: Export -->
+<!-- MODAL: Justification for a supervisor's direct edit -->
+<div class="modal-bg" id="modal-obrazlozenje">
+  <div class="modal">
+    <h3>Образложење измене</h3>
+    <p>Супервизор може сам да измени податак, али свака таква измена мора имати образложење. Оно остаје у ревизионом трагу заједно са старом и новом вредношћу.</p>
+    <table><tbody>
+      <tr><td class="muted" style="padding-left:0; white-space:nowrap;">Поље</td><td id="obrPolje">—</td></tr>
+      <tr><td class="muted" style="padding-left:0;">Из</td><td id="obrStaro">—</td></tr>
+      <tr><td class="muted" style="padding-left:0;">У</td><td id="obrNovo">—</td></tr>
+    </tbody></table>
+    <div class="fld" style="margin-top:10px;"><label>Образложење <span class="req">*</span></label>
+      <textarea id="obrTekst" rows="3" placeholder="нпр. Вредност усклађена са коначним енергетским билансом Евростата."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('modal-obrazlozenje')">Откажи</button>
+      <button class="btn pri" onclick="potvrdiObrazlozenje()">Сачувај измену</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Split institution -->
+<div class="modal-bg" id="modal-split">
+  <div class="modal">
+    <h3>Подела институције</h3>
+    <p>Затвара се постојећа институција и настају две нове. <strong>Ништа се не брише</strong> — постојећа остаје у систему са датумом затварања, а све предаје и ревизиони траг остају приписани институцији каква је тада била.</p>
+    <div class="fld"><label>Институција која се дели</label><input id="splitFrom" disabled></div>
+    <div class="grid2">
+      <div class="fld"><label>Прва нова — назив</label><input id="splitNameA"></div>
+      <div class="fld"><label>Скраћени назив</label><input id="splitShortA"></div>
+      <div class="fld"><label>Друга нова — назив</label><input id="splitNameB"></div>
+      <div class="fld"><label>Скраћени назив</label><input id="splitShortB"></div>
+    </div>
+    <div class="fld"><label>Датум поделе</label><input id="splitDate" value="1. јан. 2027."></div>
+    <div class="fld"><label>Обрасци и корисници</label>
+      <select id="splitWhere">
+        <option value="A">Све преузима прва нова институција</option>
+        <option value="B">Све преузима друга нова институција</option>
+        <option value="split">Обрасци првој, корисници другој</option>
+      </select>
+      <div class="fld-h xs muted" style="margin-top:4px;">Прецизна подела по табелама биће усаглашена са корисником у РП2.</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('modal-split')">Откажи</button>
+      <button class="btn pri" onclick="doSplit()">Подели</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Merge institution -->
+<div class="modal-bg" id="modal-merge">
+  <div class="modal">
+    <h3>Спајање институције</h3>
+    <p>Институција се затвара и све њене обавезе прелазе на другу. <strong>Ништа се не брише</strong> — затворена институција остаје у систему, а њене предаје и ревизиони траг остају приписани њој.</p>
+    <div class="fld"><label>Институција која се затвара</label><input id="mergeFrom" disabled></div>
+    <div class="fld"><label>Прелази у</label><select id="mergeTo"></select></div>
+    <div class="fld"><label>Датум спајања</label><input id="mergeDate" value="1. јан. 2027."></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('modal-merge')">Откажи</button>
+      <button class="btn pri" onclick="doMerge()">Споји</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Validation by authorised person of the data provider -->
+<div class="modal-bg" id="modal-validate">
+  <div class="modal">
+    <h3>Електронска валидација уноса</h3>
+    <p>Пројектни задатак тражи да сваки скуп података електронски валидира овлашћено лице достављача, чиме се потврђује правна тачност унетих информација.</p>
+    <div class="fld"><label>Овлашћено лице институције</label>
+      <input id="valPerson" value="Јелена Ковачевић" placeholder="име и презиме"></div>
+    <label class="checkline"><input type="checkbox" id="valCheck"> Потврђујем тачност и потпуност унетих података.</label>
+    <p class="note">Тачан поступак овлашћене валидације биће усаглашен са корисником у РП2.</p>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('modal-validate')">Откажи</button>
+      <button class="btn pri" onclick="confirmValidate()">Валидирај</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: Approve for reporting -->
 <div class="modal-bg" id="modal-approve">
   <div class="modal">
@@ -594,6 +685,7 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
       </div>
     </div>
     <p class="note">Формати CSV и JSON нису потврђени за ове платформе: Репортнет прихвата XLSX, XLSX са валидацијама, ZIP са прилозима и ZIP са по једним CSV-ом за сваку табелу, док JSON постоји само преко API-ја; за платформу Комисије формат није познат. Биће усаглашено са корисником у РП2.</p>
+    <p class="note">Наручилац је потврдио да <strong>неће користити машински увоз у Reportnet</strong> — Супервизор податке уноси ручно у Reportnet. Извоз је зато припрема за човека: уредан преглед по табелама, у формату који се лако прати уз екран Reportnet-а.</p>
     <p class="note">Ово припрема структурисан излаз за каснију обраду / предају на Репортнет (Европска агенција за животну средину) и ReportENER (Европска комисија) — није директна/уживо предаја ни на једну од платформи. Правилник (чл. 18) исту платформу Комисије назива „Policy Reporting Platform“; биће усаглашено са корисником у РП2 који се назив користи.</p>
     <div class="modal-actions">
       <button class="btn" onclick="closeModal('modal-export')">Откажи</button>
@@ -622,7 +714,7 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
       <strong>Институција-давалац података</strong> — доставља податке и информације из своје надлежности (Правилник, чл. 20).<br>
       <strong>Координирајућа / водећа институција</strong> — институција из које долази Водећи известилац за овај образац и која координира доприносе осталих.
     </p>
-    <p class="note">Ово је учешће на нивоу институције. Водећи известилац, Помоћни известилац, Достављач података и Национални координатор извештавања су улоге на нивоу лица (Правилник, чл. 19) и додељују се појединачним корисницима, не институцији. Биће усаглашено са корисником у РП2: да ли је трећи тип уопште потребан као засебан институционални концепт, будући да Правилник водећег известиоца дефинише као именовано лице, а не као институцију.</p>
+    <p class="note">Ово је учешће на нивоу институције. Водећи известилац и Достављач података су улоге на нивоу лица (Правилник, чл. 19) и додељују се појединачним корисницима, не институцији. Супервизор није везан за институцију — он је из Министарства рударства и енергетике. Биће усаглашено са корисником у РП2: да ли је трећи тип уопште потребан као засебан институционални концепт, будући да Правилник водећег известиоца дефинише као именовано лице, а не као институцију.</p>
     <div class="modal-actions">
       <button class="btn" onclick="closeModal('modal-assignform')">Откажи</button>
       <button class="btn pri" onclick="saveAssignForm()">Сачувај</button>
@@ -636,7 +728,8 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
     <h3>Додели корисника</h3>
     <div class="fld"><label>Име корисника</label><input id="assignUserName" placeholder="нпр. Јелена Ковачевић"></div>
     <div class="fld"><label>Улога</label>
-      <select id="assignUserRole"><option>Водећи известилац</option><option>Помоћни известилац</option><option>Достављач података</option><option>Национални координатор извештавања</option></select>
+      <select id="assignUserRole"><option>Достављач података</option><option>Водећи известилац</option></select>
+      <div class="fld-h xs muted" style="margin-top:4px;">Супервизор се не додељује институцији — он је из Министарства рударства и енергетике и надгледа све обрасце.</div>
     </div>
     <div class="fld"><label>Табеле <span class="badge">одговорност се додељује по табели</span></label>
       <input id="assignTableSearch" placeholder="Претрага табела…" oninput="filterAssignTables()" style="margin-bottom:6px;">
@@ -699,8 +792,6 @@ var I18N = {
   btn_cancel:{en:'Cancel', sr:'Откажи'},
   btn_close:{en:'Close', sr:'Затвори'},
   btn_confirm:{en:'Confirm', sr:'Потврди'},
-  btn_start_qaqc:{en:'Start QA/QC', sr:'Започни QA/QC контролу'},
-  btn_qaqc_complete:{en:'Complete QA/QC', sr:'Заврши QA/QC контролу'},
   btn_add_comment:{en:'Add comment', sr:'Додај коментар'},
   btn_request_correction:{en:'Request correction', sr:'Захтевај исправку'},
   btn_confirm_consolidate:{en:'Confirm / Consolidate', sr:'Потврди / Консолидуј'},
@@ -708,10 +799,9 @@ var I18N = {
   btn_resubmit:{en:'Resubmit', sr:'Поново предај'},
   btn_edit:{en:'Edit', sr:'Уреди'},
   role_dp:{en:'Data Provider', sr:'Достављач података'},
-  role_support:{en:'Support Reporter', sr:'Помоћни известилац'},
+
   role_lead:{en:'Lead Reporter', sr:'Водећи известилац'},
-  role_coord:{en:'National Reporting Coordinator', sr:'Национални координатор извештавања'},
-  role_admin:{en:'Administrator', sr:'Администратор'}
+  role_super:{en:'Supervisor', sr:'Супервизор'}
 };
 function t(k){ var e=I18N[k]; if(!e) return k; return e[S.lang]||e.en; }
 function applyI18n(){
@@ -725,10 +815,677 @@ function applyI18n(){
   document.getElementById('loginLangSr') && document.getElementById('loginLangSr').classList.toggle('on', S.lang==='sr');
 }
 
+/* ===== Превод интерфејса (лабели) =====
+   Наручилац је потврдио да платформа буде двојезична — и лабели и унос.
+   Лабели: један прекидач СР/EN у заглављу мења цео интерфејс. Српски је извор
+   у документу, енглески се примењује преко овог слоја после сваког приказа.
+   Кључни процесни термини (кораци тока, улоге, статуси) у енглеском режиму
+   носе и српски оригинал у загради, да се екран може упоредити са Правилником,
+   који је писан на српском. Подаци се НЕ преводе овим слојем — они имају
+   своје српско и енглеско поље (види dvoPolje). */
+var SR2EN = {
+  "(X-2). Не пријављује се 2026, јер енергетска статистика за ту годину још није коначна у моменту предаје.":"(X-2). 2026 is not reported, because the energy statistics for that year are not yet final at the moment of submission.",
+  "(X-3) и":"(X-3) and",
+  "(није доступно) или":"(not available) or",
+  "(није применљиво),":"(not applicable),",
+  "(поверљиво). Празна ћелија блокира предају.":"(confidential). An empty cell blocks submission.",
+  "(прикажи)":"(show)",
+  "+ Додај институцију":"+ Add institution",
+  "+ Додај показатељ":"+ Add indicator",
+  "+ Додели корисника":"+ Assign user",
+  "+ Додели образац":"+ Assign form",
+  ", и у електронској и у штампаној форми. Наручилац је потврдио да се и интерфејс и унос раде на оба језика: интерфејс се пребацује прекидачем СР/EN у заглављу, а свако поље за унос има српску и енглеску верзију. Излаз за штампу биће усаглашен са корисником у РП2.":", in electronic and in printed form. The client has confirmed that both the interface and data entry are in both languages: the interface is switched with the SR/EN toggle in the header, and every input field has a Serbian and an English version. The print output will be agreed with the client in WP2.",
+  ". Одговорност за тачност превода остаје на институцији која уноси.":". Responsibility for the accuracy of the translation remains with the institution entering the data.",
+  "1. Циљна вредност недостаје.":"1. The target value is missing.",
+  "1. март 2027. — потврђен пакет образаца Националном координатору (чл. 19)":"1 March 2027 — confirmed package of forms to the National Reporting Coordinator (Art. 19)",
+  "1. јан. 2025. → у примени":"1 Jan 2025 → in force",
+  "12. нов. 2026.":"12 Nov 2026",
+  "15. март 2027. — унос у Репортнет и Policy Reporting Platform (чл. 18)":"15 March 2027 — entry into Reportnet and the Policy Reporting Platform (Art. 18)",
+  "2. Проверити усклађеност са Енергетским билансом.":"2. Check alignment with the Energy Balance.",
+  "3. нов. 2026.":"3 Nov 2026",
+  "30. нов. 2026.":"30 Nov 2026",
+  "30. новембар 2026. — достављање података Достављача података (чл. 21)":"30 November 2026 — data delivery by Data Providers (Art. 21)",
+  "74 табела, груписано по обрасцу":"74 tables, grouped by form",
+  "PDF за штампу (чл. 23)":"PDF for printing (Art. 23)",
+  "X је година извештавања — за циклус":"X is the reporting year — for the cycle",
+  "Јединица":"Unit",
+  "Јединица мере":"Unit of measure",
+  "Језик":"Language",
+  "Јелена Ковачевић":"Jelena Kovačević",
+  "Јелена Ковачевић — Достављач података":"Jelena Kovačević — Data Provider",
+  "Јован Симић":"Jovan Simić",
+  "Јован Симић — Министарство рударства и енергетике":"Jovan Simić — Ministry of Mining and Energy",
+  "Јован Симић — Супервизор":"Jovan Simić — Supervisor",
+  "Још нема измена поља у овом циклусу.":"There are no field changes in this cycle yet.",
+  "Агенција":"Agency",
+  "Агенција за енергетику":"Energy Agency",
+  "Административни преглед — управљање институцијама и корисницима платформе.":"Administrative overview — managing the institutions and the users of the platform.",
+  "Администрација":"Administration",
+  "Ажурирање осталих националних циљева у вези са енергетском ефикасношћу, како је пријављено у ИНЕКП":"Update of other national energy efficiency objectives as reported in the INECP",
+  "Активна":"Active",
+  "Активне институције":"Active institutions",
+  "Активност / историја статуса":"Activity / status history",
+  "Алтернативне мере политике наведене у члану 7б и члану 20(6) Директиве 2012/27/ЕУ":"Alternative policy measures referred to in Article 7b and Article 20(6) of Directive 2012/27/EU",
+  "Ана Репац додата као Водећи известилац":"Ana Repac added as Lead Reporter",
+  "Биће усаглашено са корисником у РП2. (Тачна процедура овлашћене валидације.)":"To be agreed with the client in WP2. (The exact procedure for authorised validation.)",
+  "Блокира валидацију: 4 поља":"Blocks validation: 4 fields",
+  "Блокира предају: 4 поља":"Blocks submission: 4 fields",
+  "Број енергетских прегледа и обухват члана 8(4) Директиве 2012/27/ЕУ":"Number of energy audits and the coverage of Article 8(4) of Directive 2012/27/EU",
+  "Број и површина нових и реновираних зграда са приближно нултом потрошњом енергије (NZEB)":"Number and floor area of new and renovated nearly zero-energy buildings (NZEB)",
+  "Број, или ознака NA / NAv / C":"A number, or notation key NA / NAv / C",
+  "Валидација достављача":"Provider validation",
+  "Валидирај":"Validate",
+  "Валидирај унос":"Validate entry",
+  "Ваш рок: 1. март 2027.":"Your deadline: 1 March 2027",
+  "Ваш рок: 30. новембар 2026.":"Your deadline: 30 November 2026",
+  "Водећи известилац":"Lead Reporter",
+  "Водећи известилац(и)":"Lead Reporter(s)",
+  "Датум":"Date",
+  "Датум поделе":"Date of split",
+  "Датум спајања":"Date of merger",
+  "Даје финалну потврду и уноси податке у Reportnet. Може да затражи измену, али и да је сам унесе уз обавезно образложење. Није везан за институцију — из Министарства рударства и енергетике.":"Gives the final confirmation and enters the data into Reportnet. May request a change, and may also make it themselves with a mandatory justification. Not tied to an institution — from the Ministry of Mining and Energy.",
+  "Даљинско грејање":"District heating",
+  "Демо пречица — у стварној платформи фазу помера радња претходне улоге.":"Demo shortcut — in the real platform the stage is moved by the action of the previous role.",
+  "Демо — погледај као":"Demo — view as",
+  "Део табеле (опционо)":"Part of the table (optional)",
+  "Диверсификација извора снабдевања гасом":"Diversification of gas supply sources",
+  "Довуците фајл овде, или кликните да изаберете фајл (PDF, XLSX, DOCX — само илустративно)":"Drag a file here, or click to choose a file (PDF, XLSX, DOCX — illustrative only)",
+  "Додај показатељ напретка":"Add progress indicator",
+  "Додели корисника":"Assign user",
+  "Додели образац за извештавање":"Assign reporting form",
+  "Додељен образац Форма VII Републичком заводу за статистику":"Form VII assigned to the Statistical Office of the Republic of Serbia",
+  "Додељена институција: Агенција за енергетику":"Assigned institution: Energy Agency",
+  "Додељена институција: Републички завод за статистику":"Assigned institution: Statistical Office of the Republic of Serbia",
+  "Додељена институција: Србијагас":"Assigned institution: Srbijagas",
+  "Додељене табеле":"Assigned tables",
+  "Додељени корисници":"Assigned users",
+  "Додељени обим":"Assigned scope",
+  "Додељени обрасци":"Assigned forms",
+  "Допринос дугорочне стратегије реновирања стамбених и нестамбених зграда циљевима енергетске ефикасности":"Contribution of the long-term renovation strategy for residential and non-residential buildings to the energy efficiency objectives",
+  "Достављач података":"Data Provider",
+  "Достављач података још уноси и валидира свој допринос.":"The Data Provider is still entering and validating their contribution.",
+  "Достављач података – Секција 1":"Data Provider – Section 1",
+  "Доступни пројектовани и остварени трошкови и користи појединачних или група ПиМ за производњу обновљиве енергије":"Available projected and realised costs and benefits of individual or groups of PaMs for renewable energy generation",
+  "Доступни резултати ex-ante и ex-post процена ефеката појединачних или група ПиМ на енергетску ефикасност":"Available results of ex-ante and ex-post assessments of the effects of individual or groups of PaMs on energy efficiency",
+  "Доступни резултати ex-ante и ex-post процена ефеката појединачних или група ПиМ на производњу обновљиве енергије":"Available results of ex-ante and ex-post assessments of the effects of individual or groups of PaMs on renewable energy generation",
+  "Доступно када образац буде одобрен за извештавање/извоз":"Available once the form has been approved for reporting/export",
+  "Државно предузеће":"State-owned enterprise",
+  "Друга нова — назив":"Second new one — name",
+  "Електрична енергија":"Electricity",
+  "Електронска валидација уноса":"Electronic validation of the entry",
+  "Енглески":"English",
+  "Енергетска безбедност":"Energy security",
+  "Завршено":"Completed",
+  "Задаци додељени вама као појединачном кориснику — не списак свега што ваша институција извештава.":"Tasks assigned to you as an individual user — not a list of everything your institution reports.",
+  "Запажени случајеви преваре у ланцу чувања биогорива, биотечности и горива из биомасе":"Observed cases of fraud in the chain of custody of biofuels, bioliquids and biomass fuels",
+  "Затвара се постојећа институција и настају две нове.":"The existing institution is closed and two new ones are created.",
+  "Затвори":"Close",
+  "Захтева исправку":"Correction required",
+  "Захтевај исправку":"Request correction",
+  "Захтеви на чекању":"Pending requests",
+  "ИНЕКП платформа":"INECP platform",
+  "Из":"From",
+  "Извештавање":"Reporting",
+  "Извештавање о индикаторима у вези са енергетским сиромаштвом":"Reporting on indicators relating to energy poverty",
+  "Извештавање о информацијама о спровођењу регионалне сарадње":"Reporting of information on the implementation of regional cooperation",
+  "Извештавање о националним индикаторима у вези са енергетским сиромаштвом":"Reporting on national indicators relating to energy poverty",
+  "Извештавање о спровођењу препорука":"Reporting on the implementation of recommendations",
+  "Извоз":"Export",
+  "Извоз извештаја":"Report export",
+  "Измена":"Change",
+  "Износ уштеде енергије у подобним зградама у власништву и под употребом централне власти":"Amount of energy savings in eligible buildings owned and used by central government",
+  "Или почни од другог лица":"Or start from another person",
+  "Име":"Name",
+  "Име корисника":"User name",
+  "Институционални доприноси":"Institutional contributions",
+  "Институција":"Institution",
+  "Институција Србијагас ажурирана":"Institution Srbijagas updated",
+  "Институција која се дели":"Institution being split",
+  "Институција која се затвара":"Institution being closed",
+  "Институција се затвара и све њене обавезе прелазе на другу.":"The institution is closed and all its obligations pass to another one.",
+  "Институција-давалац података":"Data-providing institution",
+  "Институције":"Institutions",
+  "Интернет веза до веб странице где је доступан списак или интерфејс пружоца енергетских услуга":"Internet link to the website where the list or interface of energy service providers is available",
+  "Информације о адаптацији које могу утицати на остваривање циљева Енергетске уније, уговорних страна ЕЗ и Републике Србије у вези са смањењем емисије GHG":"Information on adaptation that may affect the achievement of the objectives of the Energy Union, of the EnC Contracting Parties and of the Republic of Serbia with regard to GHG emission reduction",
+  "Информације о другим главним инфраструктурним пројектима":"Information on other major infrastructure projects",
+  "Информације о мерама опорезивања":"Information on taxation measures",
+  "Информације о напретку ка националним индикативним циљевима за смањење броја домаћинстава која живе у енергетском сиромаштву":"Information on progress towards national indicative objectives for reducing the number of households living in energy poverty",
+  "Информације о националној дефиницији енергетског сиромаштва":"Information on the national definition of energy poverty",
+  "Информације о пројектима преноса од интереса ЕЗ (PECI) или заједничког интереса (PMI)":"Information on transmission projects of EnC interest (PECI) or of mutual interest (PMI)",
+  "Информације о трајању појединачних акција које испуњавају услове за ПиМ пријављене за члан 7 Директиве 2012/27/ЕУ":"Information on the duration of individual actions qualifying as PaMs reported for Article 7 of Directive 2012/27/EU",
+  "Када":"When",
+  "Када завршите унос, овлашћено лице ваше институције електронски валидира податке — то Правилник и пројектни задатак изричито траже — а затим се образац предаје.":"When you have finished the entry, the authorised person of your institution validates the data electronically — this is explicitly required by the Rulebook and the terms of reference — and the form is then submitted.",
+  "Као Супервизор можете уређивати све секције, независно од тога којој су институцији додељене. Свака измена се бележи у историји.":"As Supervisor you can edit every section, regardless of which institution it is assigned to. Every change is recorded in the history.",
+  "Квантитативне информације о броју домаћинстава која живе у енергетском сиромаштву":"Quantitative information on the number of households living in energy poverty",
+  "Класификација података за овај запис":"Data classification for this record",
+  "Ко":"Who",
+  "Количина чврсте биомасе која се користи за производњу енергије":"Amount of solid biomass used for energy production",
+  "Коментар / објашњење *":"Comment / explanation *",
+  "Консолидовано":"Consolidated",
+  "Контролна табла":"Dashboard",
+  "Концептуални wireframe · РП2":"Concept wireframe · WP2",
+  "Концептуални wireframe · ниска верност · РП2":"Concept wireframe · low fidelity · WP2",
+  "Концептуални wireframe ниске верности за Радни пакет 2 (Израда концепта имплементације). Није финални дизајн.":"Low-fidelity concept wireframe for Work Package 2 (Development of the implementation concept). Not the final design.",
+  "Координирајућа / водећа институција":"Coordinating / lead institution",
+  "Корак 1":"Step 1",
+  "Корак 2":"Step 2",
+  "Корак 3":"Step 3",
+  "Корак 4":"Step 4",
+  "Корак 5":"Step 5",
+  "Корак 6":"Step 6",
+  "Корисник":"User",
+  "Корисник припада институцији, има улогу и додељен је једној или више табела. Подела унутар табеле постоји само тамо где је Правилник изричито прописује.":"A user belongs to an institution, has a role and is assigned to one or more tables. A split within a table exists only where the Rulebook explicitly prescribes it.",
+  "Корисници":"Users",
+  "Кључне карактеристике и напредак у спровођењу ПиМ":"Key characteristics and progress in implementing PaMs",
+  "Логика доделе на нивоу секције биће усаглашена са корисником у РП2.":"The assignment logic at section level will be agreed with the client in WP2.",
+  "Место за грб/лого министарства":"Placeholder for the ministry coat of arms / logo",
+  "Министарство":"Ministry",
+  "Министарство рударства и енергетике":"Ministry of Mining and Energy",
+  "Министарство рударства и енергетике Републике Србије":"Ministry of Mining and Energy of the Republic of Serbia",
+  "Можете видети читав образац за извештавање, али можете уређивати само секцију(е) додељену вашој институцији.":"You can see the whole reporting form, but you can only edit the section(s) assigned to your institution.",
+  "Можете уређивати":"You can edit",
+  "Мој допринос Обрасцу V":"My contribution to Form V",
+  "Моја одговорност":"My responsibility",
+  "Моји задаци извештавања":"My reporting tasks",
+  "Моји обрасци":"My forms",
+  "На добром путу":"On track",
+  "На прегледу":"Under review",
+  "На шта се односи (опционо)":"What it refers to (optional)",
+  "Назад на Извештавање":"Back to Reporting",
+  "Назад на Институције":"Back to Institutions",
+  "Назив документа":"Document name",
+  "Назив институције":"Institution name",
+  "Назив националног циља":"Name of the national objective",
+  "Назив показатеља":"Indicator name",
+  "Након одобрења образац је спреман за припрему фајла за предају у":"Once approved, the form is ready for preparing the submission file for",
+  "Након предаје, допринос ваше институције иде Водећем известиоцу на потврду. Доприноси других институција за Образац V могу и даље бити у изради.":"Once submitted, your institution's contribution goes to the Lead Reporter for confirmation. Contributions from other institutions to Form V may still be in progress.",
+  "Напредак ка квантитативним националним циљевима за укупну јавну и, где је доступно, приватну потрошњу у ИиИ у вези са технологијама чисте енергије, као и за трошкове технологија и развој учинка":"Progress towards quantitative national objectives for total public and, where available, private R&I spending relating to clean energy technologies, as well as for technology costs and performance development",
+  "Напредак ка националним циљевима који се односе на енергетску безбедност":"Progress towards national objectives relating to energy security",
+  "Напредак ка националним циљевима који се односе на међусобну повезаност електроенергетских система":"Progress towards national objectives relating to the interconnection of electricity systems",
+  "Напредак ка националним циљевима који се односе на недискриминаторно учешће на енергетским тржиштима":"Progress towards national objectives relating to non-discriminatory participation in energy markets",
+  "Напредак ка националним циљевима који се односе на учешће потрошача у енергетском систему и користи од самопроизводње и нових технологија, укључујући паметна бројила":"Progress towards national objectives relating to consumer participation in the energy system and the benefits of self-generation and new technologies, including smart meters",
+  "Напредак ка националним циљевима који се односе на флексибилност енергетског система, укључујући и производњу обновљиве енергије":"Progress towards national objectives relating to the flexibility of the energy system, including renewable energy generation",
+  "Напредак ка националним циљевима којим се циљеви и политике Стратешког плана ЕУ за енергетску технологију преносе у национални контекст":"Progress towards national objectives translating the aims and policies of the EU Strategic Energy Technology Plan into the national context",
+  "Напредак ка националним циљевима постепеног укидања субвенција за енергију, посебно за фосилна горива":"Progress towards national objectives on phasing out energy subsidies, in particular for fossil fuels",
+  "Напредак ка националним циљевима у вези са адекватношћу електроенергетског система":"Progress towards national objectives relating to the adequacy of the electricity system",
+  "Напредак ка националним циљевима у погледу конкурентности":"Progress towards national objectives on competitiveness",
+  "Напредак ка националним циљевима, укључујући дугорочне циљеве за 2050. годину, за примену технологија за декарбонизацију енергетски и угљенично интензивних индустријских сектора и, где је то применљиво, за повезану инфраструктуру за саобраћај, коришћење и складиштење угљеника":"Progress towards national objectives, including long-term objectives for 2050, for deploying technologies to decarbonise energy- and carbon-intensive industrial sectors and, where applicable, for the related carbon transport, use and storage infrastructure",
+  "Напредак ка неквантификационим националним циљевима за укупну јавну и, где је доступно, приватну потрошњу у ИиИ у вези са технологијама чисте енергије, као и за трошкове технологија и развој учинка":"Progress towards non-quantified national objectives for total public and, where available, private R&I spending relating to clean energy technologies, as well as for technology costs and performance development",
+  "Напредак ка финансирању":"Progress towards financing",
+  "Напредак у сваком сектору и разлози зашто је потрошња енергије остала стабилна или је расла у секторима финалне потрошње енергије":"Progress in each sector and the reasons why energy consumption remained stable or grew in final energy consumption sectors",
+  "Напредак у спровођењу квантитативних националних циљева":"Progress in implementing quantitative national objectives",
+  "Напредак у спровођењу неквантификационих националних циљева":"Progress in implementing non-quantified national objectives",
+  "Напредак у успостављању вишенивоског дијалога о клими и енергији из члана 11 Уредбе (ЕУ) 2018/1999":"Progress in establishing the multilevel climate and energy dialogue under Article 11 of Regulation (EU) 2018/1999",
+  "Наручилац је потврдио да":"The client has confirmed that it",
+  "Нафта":"Oil",
+  "Национална дигитална платформа за праћење и извештавање о ИНЕКП":"National digital platform for monitoring and reporting on the INECP",
+  "Национални допринос и индикативна путања за потрошњу примарне и финалне енергије":"National contribution and indicative trajectory for primary and final energy consumption",
+  "Национални циљ 1 – Диверсификација извора и праваца с":"National objective 1 – Diversification of supply sources and rou",
+  "Национални циљ 2":"National objective 2",
+  "Национални циљ 2 – Одржавање стратешких резерви нафте":"National objective 2 – Maintaining strategic oil stocks",
+  "Национални циљеви":"National objectives",
+  "Нацрт":"Draft",
+  "Нацрт ·":"Draft ·",
+  "Нацрт креиран":"Draft created",
+  "Неактивна":"Inactive",
+  "Ништа се не брише":"Nothing is deleted",
+  "Није започето":"Not started",
+  "Није потребна радња":"No action required",
+  "Обавештења":"Notifications",
+  "Обезбеђивање обавезних резерви нафте у складу са обавезама IEA / Енергетске заједнице.":"Securing compulsory oil stocks in line with IEA / Energy Community obligations.",
+  "Обим":"Scope",
+  "Област извештавања":"Reporting area",
+  "Обновљива енергија у сектору саобраћаја":"Renewable energy in the transport sector",
+  "Образац":"Form",
+  "Образац V враћен на исправку":"Form V returned for correction",
+  "Образац V захтева исправку":"Form V requires correction",
+  "Образац V одобрен за извештавање":"Form V approved for reporting",
+  "Образац V – Енергетска безбедност":"Form V – Energy security",
+  "Образац VI предат на преглед":"Form VI submitted for review",
+  "Образац за извештавање":"Reporting form",
+  "Образложење":"Justification",
+  "Образложење измене":"Justification for the change",
+  "Обрасци и корисници":"Forms and users",
+  "Обрасци првој, корисници другој":"Forms to the first, users to the second",
+  "Обухваћени енергетски извори / горива":"Energy sources / fuels covered",
+  "Овај wireframe прати почетну концептуалну фазу (Радни пакет 2) тендера за платформу. Служи за валидацију информационе архитектуре, тока извештавања и институционалних одговорности — не представља финални визуелни дизајн.":"This wireframe belongs to the initial concept phase (Work Package 2) of the platform tender. It serves to validate the information architecture, the reporting flow and institutional responsibilities — it is not the final visual design.",
+  "Овај образац није детаљно изграђен у овом концептуалном wireframe-у.":"This form is not built out in detail in this concept wireframe.",
+  "Овде се бележи само учешће институције у обрасцу за извештавање. Водећи известилац и Достављач података су улоге на нивоу лица, додељене појединачним корисницима у секцији Корисници испод — не самој институцији. Биће усаглашено са корисником у РП2: додела испод нивоа обрасца (нпр. по секцији) илустрована је концептуално на екрану Обрасца V и још није формално моделована овде.":"Only the participation of the institution in a reporting form is recorded here. Lead Reporter and Data Provider are person-level roles, assigned to individual users in the Users section below — not to the institution itself. To be agreed with the client in WP2: assignment below form level (e.g. per section) is illustrated conceptually on the Form V screen and is not yet formally modelled here.",
+  "Овлашћено лице институције":"Authorised person of the institution",
+  "Ово припрема структурисан излаз за каснију обраду / предају на Репортнет (Европска агенција за животну средину) и ReportENER (Европска комисија) — није директна/уживо предаја ни на једну од платформи. Правилник (чл. 18) исту платформу Комисије назива „Policy Reporting Platform“; биће усаглашено са корисником у РП2 који се назив користи.":"This prepares a structured output for later processing / submission to Reportnet (European Environment Agency) and ReportENER (European Commission) — it is not a direct/live submission to either platform. The Rulebook (Art. 18) calls the same Commission platform the “Policy Reporting Platform”; which name is used will be agreed with the client in WP2.",
+  "Ово је искључиво визуелна симулација — нема стварне eID/SSO интеграције.":"This is a purely visual simulation — there is no real eID/SSO integration.",
+  "Ово је учешће на нивоу институције. Водећи известилац и Достављач података су улоге на нивоу лица (Правилник, чл. 19) и додељују се појединачним корисницима, не институцији. Супервизор није везан за институцију — он је из Министарства рударства и енергетике. Биће усаглашено са корисником у РП2: да ли је трећи тип уопште потребан као засебан институционални концепт, будући да Правилник водећег известиоца дефинише као именовано лице, а не као институцију.":"This is participation at institution level. Lead Reporter and Data Provider are person-level roles (Rulebook, Art. 19) and are assigned to individual users, not to the institution. The Supervisor is not tied to an institution — they are from the Ministry of Mining and Energy. To be agreed with the client in WP2: whether the third type is needed at all as a separate institutional concept, given that the Rulebook defines the lead reporter as a named person and not as an institution.",
+  "Ограничи од јавног приказа":"Restrict from public view",
+  "Одговорни субјект":"Responsible entity",
+  "Одговорност на нивоу секције":"Responsibility at section level",
+  "Одговорности у извештавању":"Reporting responsibilities",
+  "Одлука о јавној доступности доноси се у тренутку предаје, за ту предају. У циклусу 2025. Србија је ову опцију применила на анексе I, II, III, IV и XVI, па њихови фајлови нису јавни, док су остали јавно доступни.":"The decision on public availability is taken at the moment of submission, for that submission. In the 2025 cycle Serbia applied this option to annexes I, II, III, IV and XVI, so their files are not public, while the others are publicly available.",
+  "Одобрење Обрасца V за извештавање":"Approval of Form V for reporting",
+  "Одобри за извештавање":"Approve for reporting",
+  "Опис":"Description",
+  "Опште (цео образац)":"General (whole form)",
+  "Опште напомене":"General remarks",
+  "Основни подаци":"Basic data",
+  "Остале националне путање и циљеви":"Other national trajectories and objectives",
+  "Остало":"Other",
+  "Отвори":"Open",
+  "Отвори профил":"Open profile",
+  "Откажи":"Cancel",
+  "Отпремио":"Uploaded by",
+  "Петар Петровић":"Petar Petrović",
+  "Петар Петровић — Водећи известилац":"Petar Petrović — Lead Reporter",
+  "Петар Петровић — Министарство рударства и енергетике":"Petar Petrović — Ministry of Mining and Energy",
+  "Подела институције":"Splitting an institution",
+  "Подели":"Split",
+  "Подели институцију":"Split institution",
+  "Показатељ":"Indicator",
+  "Показатељ – Диверсификација извора снабдевања гасом":"Indicator – Diversification of gas supply sources",
+  "Показатељ – Резерве нафте":"Indicator – Oil stocks",
+  "Показатељи напретка":"Progress indicators",
+  "Помоћ":"Help",
+  "Попуњеност":"Completeness",
+  "Последње ажурирао":"Last updated by",
+  "Пословно осетљиво":"Commercially sensitive",
+  "Потврда идентитета преко eID":"Identity confirmation via eID",
+  "Потврда о предаји":"Submission receipt",
+  "Потврда је доказ да је предаја извршена и издаје се поново при свакој новој предаји. Формат потврде биће усаглашен са корисником у РП2.":"The receipt is proof that the submission was made and is issued again with every new submission. The format of the receipt will be agreed with the client in WP2.",
+  "Потврђено":"Confirmed",
+  "Потврђује предате доприносе и консолидује образац у целину. Везан је за институцију.":"Confirms the submitted contributions and consolidates the form into a whole. Tied to an institution.",
+  "Потврђујем да су достављени подаци прегледани и валидирани од овлашћеног представника институције.":"I confirm that the submitted data have been reviewed and validated by the authorised representative of the institution.",
+  "Потврђујем тачност и потпуност унетих података.":"I confirm the accuracy and completeness of the data entered.",
+  "Потребна поновна провера усклађености са Енергетским билансом.":"A re-check of alignment with the Energy Balance is required.",
+  "Пошаљи захтев за исправку":"Send correction request",
+  "Поље":"Field",
+  "Правилник (чл. 12) пословно осетљиве податке помиње као ограничење при објављивању на интернет страници, али не одређује ко их означава. Биће усаглашено са корисником у РП2.":"The Rulebook (Art. 12) mentions commercially sensitive data as a restriction on publication on the website, but does not determine who marks them as such. To be agreed with the client in WP2.",
+  "Правилник (чл. 23) прописује да се обрасци попуњавају и достављају":"The Rulebook (Art. 23) requires the forms to be filled in and submitted",
+  "Правилник (чл. 23) тражи унос на српском и енглеском. Енглеску верзију предлаже машински превод, али је корисник дужан да је провери и потврди —":"The Rulebook (Art. 23) requires entry in Serbian and in English. The English version is proposed by machine translation, but the user is required to check and confirm it —",
+  "Правилник именује водећег известиоца испод сваке табеле, не за цео образац — у истом обрасцу могу бити различите институције. Изаберите једну или више табела (држите Ctrl / Cmd за више).":"The Rulebook names the lead reporter beneath each table, not for the whole form — the same form may involve different institutions. Select one or more tables (hold Ctrl / Cmd for several).",
+  "Правилник наводи да се у првом и другом циклусу извештавања ове ћелије остављају празне — што се разликује од правила да празна ћелија блокира предају. Биће усаглашено са корисником у РП2.":"The Rulebook states that in the first and second reporting cycle these cells are left empty — which differs from the rule that an empty cell blocks submission. To be agreed with the client in WP2.",
+  "Пратећа документација":"Supporting documents",
+  "Прва нова — назив":"First new one — name",
+  "Прво решите блокирана поља":"Resolve the blocked fields first",
+  "Преведи":"Translate",
+  "Предато":"Submitted",
+  "Предај допринос на преглед":"Submit contribution for review",
+  "Предаја вашег доприноса Обрасцу V?":"Submit your contribution to Form V?",
+  "Прекретнице и индикатори напретка Дугорочне стратегије за обнову националног фонда зграда":"Milestones and progress indicators of the Long-term strategy for the renovation of the national building stock",
+  "Прекретнице и индикатори напретка дугорочне стратегије за обнову националног фонда стамбених и нестамбених зграда – остали индикатори":"Milestones and progress indicators of the long-term strategy for the renovation of the national stock of residential and non-residential buildings – other indicators",
+  "Прекретнице и индикатори напретка дугорочне стратегије за обнову националног фонда стамбених и нестамбених зграда – стопе обновљавања":"Milestones and progress indicators of the long-term strategy for the renovation of the national stock of residential and non-residential buildings – renovation rates",
+  "Прелази у":"Passes to",
+  "Претрага табела…":"Search tables…",
+  "Преузми потврду":"Download receipt",
+  "Прецизна подела по табелама биће усаглашена са корисником у РП2.":"The precise split by tables will be agreed with the client in WP2.",
+  "Пређи на фазу у којој ова улога одлучује":"Go to the stage where this role decides",
+  "Пређи на фазу финалне потврде":"Go to the final confirmation stage",
+  "Прикажи сва":"Show all",
+  "Приказани су обрасци тренутно додељени вама као појединачном кориснику (Водећи известилац), не вашој институцији у целини. Учешће целе институције видљиво је преко Администрација → Институције.":"The forms shown are those currently assigned to you as an individual user (Lead Reporter), not to your institution as a whole. The participation of the whole institution is visible via Administration → Institutions.",
+  "Приказани су обрасци тренутно додељени вама као појединачном кориснику (Достављач података), не вашој институцији у целини. Учешће целе институције видљиво је преко Администрација → Институције.":"The forms shown are those currently assigned to you as an individual user (Data Provider), not to your institution as a whole. The participation of the whole institution is visible via Administration → Institutions.",
+  "Приказани су обрасци тренутно додељени вама као појединачном кориснику (Супервизор), не вашој институцији у целини. Учешће целе институције видљиво је преко Администрација → Институције.":"The forms shown are those currently assigned to you as an individual user (Supervisor), not to your institution as a whole. The participation of the whole institution is visible via Administration → Institutions.",
+  "Примедбе које се шаљу са захтевом (2)":"Findings sent with the request (2)",
+  "Примењени национални фактор примарне енергије за електричну енергију":"National primary energy factor applied for electricity",
+  "Природни гас":"Natural gas",
+  "Приступ платформи искључиво преко националног система eID. Не постоји посебна регистрација корисничким именом и лозинком.":"Access to the platform is exclusively through the national eID system. There is no separate registration with a username and password.",
+  "Пријава преко eID":"Sign in with eID",
+  "Производња електричне енергије и топлоте из ОИЕ у зградама, укључујући, где је доступно, разврстане податке о произведеној, потрошеној и убризганој у мрежу енергији":"Electricity and heat generation from RES in buildings, including, where available, disaggregated data on energy produced, consumed and injected into the grid",
+  "Промене цена роба и коришћења земљишта повезане са коришћењем биомасе и других облика енергије из обновљивих извора":"Changes in commodity prices and land use associated with the use of biomass and other forms of energy from renewable sources",
+  "Профил":"Profile",
+  "Процена подршке за електричну енергију из обновљивих извора":"Estimate of support for electricity from renewable sources",
+  "Процењена вишак производње енергије из обновљивих извора у поређењу са националном путањом ка циљу за 2030 годину":"Estimated surplus production of energy from renewable sources compared with the national trajectory towards the 2030 target",
+  "Процењени утицај производње или употребе биогорива, биотечности и горива из биомасе на биодиверзитет, водне ресурсе, доступност и квалитет воде, квалитет земљишта и ваздуха":"Estimated impact of the production or use of biofuels, bioliquids and biomass fuels on biodiversity, water resources, water availability and quality, and soil and air quality",
+  "Пројектни задатак тражи да сваки скуп података електронски валидира овлашћено лице достављача, чиме се потврђује правна тачност унетих информација.":"The terms of reference require every data set to be electronically validated by an authorised person of the data provider, thereby confirming the legal accuracy of the information entered.",
+  "Радње":"Actions",
+  "Ревизиони траг по пољу":"Audit trail per field",
+  "Регистроване институције":"Registered institutions",
+  "Редослед провере: валидација код достављача → потврђивање → консолидација → финална потврда Супервизора. Нема засебне контроле квалитета као корака у току: по одговору наручиоца, за тачност уноса одговара сам достављач података — унос валидира овлашћено лице његове институције — а Супервизор даје финалну потврду.":"Order of checks: validation at the data provider → confirmation → consolidation → final confirmation by the Supervisor. There is no separate quality-control step in the flow: per the client's answer, the Data Provider is responsible for the accuracy of the entry — validated by the authorised person of their institution — and the Supervisor gives the final confirmation.",
+  "Резерве нафте":"Oil stocks",
+  "Релевантност":"Relevance",
+  "Републички завод за статистику":"Statistical Office of the Republic of Serbia",
+  "Републички завод за статистику; Агенција за енергетику; Србијагас; Министарство рударства и енергетике, ако је релевантно":"Statistical Office of the Republic of Serbia; Energy Agency; Srbijagas; Ministry of Mining and Energy, where relevant",
+  "Референца / извор":"Reference / source",
+  "Ризично":"At risk",
+  "Рок":"Deadline",
+  "Рок за Образац II истиче за 5 дана":"The deadline for Form II expires in 5 days",
+  "Рок за исправку (опционо)":"Correction deadline (optional)",
+  "Рок ускоро":"Deadline approaching",
+  "Рокови":"Deadlines",
+  "Садржај помоћи и упутства за кориснике Дигиталне платформе за праћење и извештавање о ИНЕКП биће обезбеђен у наредној фази, након што се ток извештавања и обрасци коначно утврде.":"Help content and user guides for the Digital platform for monitoring and reporting on the INECP will be provided in the next phase, once the reporting flow and the forms are finally established.",
+  "Само Образац V – Енергетска безбедност је имплементиран од почетка до краја, да би приказао поновно употребљив шаблон детаља обрасца (вођен улогом × статусом). Сваки други образац за извештавање (прилог) би пратио исти шаблон након што се концепт потврди и пренесе у наредну фазу.":"Only Form V – Energy security is implemented end to end, in order to show the reusable form-detail template (driven by role × status). Every other reporting form (annex) would follow the same template once the concept is confirmed and carried into the next phase.",
+  "Само за преглед":"View only",
+  "Сачувај":"Save",
+  "Сачувај измену":"Save change",
+  "Сачувај институцију":"Save institution",
+  "Сачувај нацрт":"Save draft",
+  "Свака измена сваког поља: из које вредности у коју, ко је изменио и када. Измене Супервизора носе и образложење.":"Every change to every field: from which value to which, who changed it and when. Changes made by the Supervisor also carry a justification.",
+  "Свака институција попуњава":"Each institution fills in",
+  "Свако поље мора имати вредност или ознаку NA / NAv / C.":"Every field must have either a value or the notation key NA / NAv / C.",
+  "Све преузима друга нова институција":"The second new institution takes over everything",
+  "Све преузима прва нова институција":"The first new institution takes over everything",
+  "Сви обрасци":"All forms",
+  "Секторски и укупни удели енергије из обновљивих извора":"Sectoral and overall shares of energy from renewable sources",
+  "Секција 1 – Показатељи снабдевања":"Section 1 – Supply indicators",
+  "Симулација преусмеравања на национални систем eID (eid.gov.rs)… Идентитет потврђен.":"Simulated redirect to the national eID system (eid.gov.rs)… Identity confirmed.",
+  "Симулирај истовремену измену (демо)":"Simulate a concurrent change (demo)",
+  "Систем у који се предаје":"Target system",
+  "Скорашња обавештења / задаци":"Recent notifications / tasks",
+  "Скраћени назив":"Short name",
+  "Следећа радња:":"Next action:",
+  "Смањење зависности од једног правца снабдевања развојем интерконекција и алтернативних уговора о снабдевању.":"Reducing dependence on a single supply route by developing interconnections and alternative supply contracts.",
+  "Снабдевање биомасом за енергетску употребу":"Biomass supply for energy use",
+  "Спајање институције":"Merging an institution",
+  "Споји":"Merge",
+  "Споји у другу":"Merge into another",
+  "Србијагас":"Srbijagas",
+  "Српски":"Serbian",
+  "Стандардно":"Standard",
+  "Статус":"Status",
+  "Статус доприноса":"Contribution status",
+  "Супервизор":"Supervisor",
+  "Супервизор (финална потврда)":"Supervisor (final confirmation)",
+  "Супервизор може сам да измени податак, али свака таква измена мора имати образложење. Оно остаје у ревизионом трагу заједно са старом и новом вредношћу.":"The Supervisor may change a value directly, but every such change must carry a justification. It stays in the audit trail together with the old and the new value.",
+  "Супервизор нема задатке уноса — управља институцијама, корисницима и њиховим улогама, надгледа све обрасце и даје финалну потврду.":"The Supervisor has no data-entry tasks — they manage institutions, users and their roles, oversee all forms and give the final confirmation.",
+  "Супервизор се не додељује институцији — он је из Министарства рударства и енергетике и надгледа све обрасце.":"The Supervisor is not assigned to an institution — they are from the Ministry of Mining and Energy and oversee all forms.",
+  "Супервизорски приступ":"Supervisor access",
+  "Табела 1 – Извештавање о информацијама о спровођењу регионалне сара…":"Table 1 – Reporting of information on the implementation of regiona…",
+  "Табела 1 – Извештавање о спровођењу препорука":"Table 1 – Reporting on the implementation of…",
+  "Табела 1 – Информације о напретку ка националним индикативним циљев…":"Table 1 – Information on progress towards national indicative objec…",
+  "Табела 1 – Квантитативне информације о броју домаћинстава која живе…":"Table 1 – Quantitative information on the number of households livi…",
+  "Табела 1 – Кључне карактеристике и напредак у спровођењу ПиМ":"Table 1 – Key characteristics and progress in implementing…",
+  "Табела 1 – Напредак ка националним циљевима који се односе на енергетску безбедност":"Table 1 – Progress towards national objectives relating to energy security",
+  "Табела 1 – Напредак ка националним циљевима који се односе на енерг…":"Table 1 – Progress towards national objectives relating to energy s…",
+  "Табела 1 – Напредак ка националним циљевима који се односе на међус…":"Table 1 – Progress towards national objectives relating to the inte…",
+  "Табела 1 – Напредак ка националним циљевима којим се циљеви и полит…":"Table 1 – Progress towards national objectives translating the aims…",
+  "Табела 1 – Напредак ка националним циљевима постепеног укидања субв…":"Table 1 – Progress towards national objectives on phasing out energ…",
+  "Табела 1 – Напредак ка финансирању":"Table 1 – Progress towards financ…",
+  "Табела 1 – Напредак у сваком сектору и разлози зашто је потрошња ен…":"Table 1 – Progress in each sector and the reasons why energy consum…",
+  "Табела 1 – Напредак у успостављању вишенивоског дијалога о клими и …":"Table 1 – Progress in establishing the multilevel climate and energ…",
+  "Табела 1 – Национални допринос и индикативна путања за потрошњу при…":"Table 1 – National contribution and indicative trajectory for prima…",
+  "Табела 1 – Секторски и укупни удели енергије из обновљивих извора":"Table 1 – Sectoral and overall shares of energy from renewable s…",
+  "Табела 1 – Тренутни и пројектовани национални напредак ка националн…":"Table 1 – Current and projected national progress towards national…",
+  "Табела 1 – Укупна реновирана површина грејаних и/или хлађених зград…":"Table 1 – Total renovated floor area of heated and/or cooled buildi…",
+  "Табела 1 – Утицај спровођења ИНЕКП на радна места, раднике и регионе":"Table 1 – Impact of INECP implementation on jobs, workers and regio…",
+  "Табела 1 – Утицаји на квалитет ваздуха и емисије у ваздух":"Table 1 – Impacts on air quality and emissions to air",
+  "Табела 1 – Уштеде енергије остварене у складу са чланом 7 Директиве…":"Table 1 – Energy savings achieved in accordance with Article 7 of D…",
+  "Табела 1 – Функционисање система гаранција порекла за електричну ен…":"Table 1 – Functioning of the system of guarantees of origin for ele…",
+  "Табела 1 – Циљеви адаптације у интегрисаним националним плановима з…":"Table 1 – Adaptation objectives in integrated national energy and c…",
+  "Табела 1 – национални циљеви енергетске безбедности":"Table 1 – national energy security objectives",
+  "Табела 2 – Алтернативне мере политике наведене у члану 7б и члану 2…":"Table 2 – Alternative policy measures referred to in Article 7b and…",
+  "Табела 2 – Доступни резултати ex-ante и ex-post процена ефеката пој…":"Table 2 – Available results of ex-ante and ex-post assessments of t…",
+  "Табела 2 – Извештавање о индикаторима у вези са енергетским сиромаш…":"Table 2 – Reporting on indicators relating to energy poverty",
+  "Табела 2 – Износ уштеде енергије у подобним зградама у власништву и…":"Table 2 – Amount of energy savings in eligible buildings owned and…",
+  "Табела 2 – Информације о адаптацији које могу утицати на остваривањ…":"Table 2 – Information on adaptation that may affect the achievement…",
+  "Табела 2 – Информације о пројектима преноса од интереса ЕЗ (PECI) и…":"Table 2 – Information on transmission projects of EnC interest (PEC…",
+  "Табела 2 – Напредак ка квантитативним националним циљевима за укупн…":"Table 2 – Progress towards quantitative national objectives for tot…",
+  "Табела 2 – Напредак у спровођењу квантитативних националних циљева":"Table 2 – Progress in implementing quantitative national objectives",
+  "Табела 2 – Прекретнице и индикатори напретка Дугорочне стратегије з…":"Table 2 – Milestones and progress indicators of the Long-term strat…",
+  "Табела 2 – Промене цена роба и коришћења земљишта повезане са кориш…":"Table 2 – Changes in commodity prices and land use associated with…",
+  "Табела 2 – Тренутни и пројектовани напредак ка националним циљевима…":"Table 2 – Current and projected progress towards national GHG emiss…",
+  "Табела 2 – Укупан инсталирани капацитет сваке технологије обновљиве…":"Table 2 – Total installed capacity of each renewable energy technol…",
+  "Табела 2 – Укупна површина зграда са укупном корисном површином пре…":"Table 2 – Total floor area of buildings with a total useful floor a…",
+  "Табела 2 – Утицај спровођења ИНЕКП на промоцију људских права и род…":"Table 2 – Impact of INECP implementation on the promotion of human…",
+  "Табела 2 – Уштеде енергије постигнуте кроз члан 7 Директиве 2012/27…":"Table 2 – Energy savings achieved through Article 7 of Directive 20…",
+  "Табела 2 – квантитативни национални циљеви":"Table 2 – quantitative national objectives",
+  "Табела 3 – Број енергетских прегледа и обухват члана 8(4) Директиве…":"Table 3 – Number of energy audits and the coverage of Article 8(4)…",
+  "Табела 3 – Доступни резултати ex-ante и ex-post процена ефеката пој…":"Table 3 – Available results of ex-ante and ex-post assessments of t…",
+  "Табела 3 – Извештавање о националним индикаторима у вези са енергет…":"Table 3 – Reporting on national indicators relating to energy pover…",
+  "Табела 3 – Информације о другим главним инфраструктурним пројектима":"Table 3 – Information on other major infrastructure projects",
+  "Табела 3 – Информације о мерама опорезивања":"Table 3 – Information on taxation measures",
+  "Табела 3 – Напредак ка неквантификационим националним циљевима за у…":"Table 3 – Progress towards non-quantified national objectives for t…",
+  "Табела 3 – Напредак у спровођењу неквантификационих националних циљева":"Table 3 – Progress in implementing non-quantified national objectives",
+  "Табела 3 – Напредак у спровођењу неквантификационих националних циљ…":"Table 3 – Progress in implementing non-quantified national objectiv…",
+  "Табела 3 – Прекретнице и индикатори напретка дугорочне стратегије з…":"Table 3 – Milestones and progress indicators of the long-term strat…",
+  "Табела 3 – Процењена вишак производње енергије из обновљивих извора…":"Table 3 – Estimated surplus production of energy from renewable sou…",
+  "Табела 3 – Тренутне и пројектоване емисије и уклањања GHG из LULUCF":"Table 3 – Current and projected GHG emissions and removals from LU…",
+  "Табела 3 – Укупан стварни допринос (бруто производња електричне ене…":"Table 3 – Total actual contribution (gross electricity generation)…",
+  "Табела 3 – неквантификациони национални циљеви":"Table 3 – non-quantified national objectives",
+  "Табела 4 – Доступни пројектовани и остварени трошкови и користи пој…":"Table 4 – Available projected and realised costs and benefits of in…",
+  "Табела 4 – Информације о националној дефиницији енергетског сиромаш…":"Table 4 – Information on the national definition of energy poverty",
+  "Табела 4 – Информације о трајању појединачних акција које испуњавај…":"Table 4 – Information on the duration of individual actions qualify…",
+  "Табела 4 – Напредак ка националним циљевима који се односе на флекс…":"Table 4 – Progress towards national objectives relating to the flex…",
+  "Табела 4 – Напредак ка националним циљевима, укључујући дугорочне ц…":"Table 4 – Progress towards national objectives, including long-term…",
+  "Табела 4 – Прекретнице и индикатори напретка дугорочне стратегије з…":"Table 4 – Milestones and progress indicators of the long-term strat…",
+  "Табела 4 – Примењени национални фактор примарне енергије за електри…":"Table 4 – National primary energy factor applied for electricity",
+  "Табела 4 – Технолошки развој и примена биогорива произведених од си…":"Table 4 – Technological development and deployment of biofuels prod…",
+  "Табела 4 – Тренутни и пројектовани напредак ка остваривању других н…":"Table 4 – Current and projected progress towards other national obj…",
+  "Табела 4 – Укупан стварни допринос технологија ОИЕ у грејању и хлађ…":"Table 4 – Total actual contribution of RES technologies in heating…",
+  "Табела 5 – Број и површина нових и реновираних зграда са приближно …":"Table 5 – Number and floor area of new and renovated nearly zero-en…",
+  "Табела 5 – Допринос дугорочне стратегије реновирања стамбених и нес…":"Table 5 – Contribution of the long-term renovation strategy for res…",
+  "Табела 5 – Напредак ка националним циљевима који се односе на недис…":"Table 5 – Progress towards national objectives relating to non-disc…",
+  "Табела 5 – Напредак ка националним циљевима у погледу конкурентности":"Table 5 – Progress towards national objectives on competitiveness",
+  "Табела 5 – Обновљива енергија у сектору саобраћаја":"Table 5 – Renewable energy in the transport secto…",
+  "Табела 5 – Процењени утицај производње или употребе биогорива, биот…":"Table 5 – Estimated impact of the production or use of biofuels, bi…",
+  "Табела 6 – Ажурирање осталих националних циљева у вези са енергетск…":"Table 6 – Update of other national energy efficiency objectives as…",
+  "Табела 6 – Запажени случајеви преваре у ланцу чувања биогорива, био…":"Table 6 – Observed cases of fraud in the chain of custody of biofue…",
+  "Табела 6 – Интернет веза до веб странице где је доступан списак или…":"Table 6 – Internet link to the website where the list or interface…",
+  "Табела 6 – Напредак ка националним циљевима који се односе на учешћ…":"Table 6 – Progress towards national objectives relating to consumer…",
+  "Табела 6 – Снабдевање биомасом за енергетску употребу":"Table 6 – Biomass supply for energy use",
+  "Табела 7 – Напредак ка националним циљевима у вези са адекватношћу …":"Table 7 – Progress towards national objectives relating to the adeq…",
+  "Табела 7 – Остале националне путање и циљеви":"Table 7 – Other national trajectories and o…",
+  "Табела 7 – Удео биоразградивог отпада у постројењима за прераду ене…":"Table 7 – Share of biodegradable waste in waste-to-energy plants us…",
+  "Табела 8 – Производња електричне енергије и топлоте из ОИЕ у зграда…":"Table 8 – Electricity and heat generation from RES in buildings, in…",
+  "Табела 8 – Процена подршке за електричну енергију из обновљивих изв…":"Table 8 – Estimate of support for electricity from renewable source…",
+  "Табела 9 – Количина чврсте биомасе која се користи за производњу ен…":"Table 9 – Amount of solid biomass used for energy production",
+  "Табеле":"Tables",
+  "Тачан број водећих известилаца по обрасцу и коначни ауторитет потврђивања биће усаглашени са корисником у РП2.":"The exact number of Lead Reporters per form and the final confirming authority will be agreed with the client in WP2.",
+  "Тачан поступак овлашћене валидације биће усаглашен са корисником у РП2.":"The exact procedure for authorised validation will be agreed with the client in WP2.",
+  "Технолошки развој и примена биогорива произведених од сировина наведених у Прилогу IX Директиве (ЕУ) 2018/2001":"Technological development and deployment of biofuels produced from the feedstocks listed in Annex IX to Directive (EU) 2018/2001",
+  "Тип":"Type",
+  "Тип институције":"Institution type",
+  "Тип учешћа":"Type of participation",
+  "Тренутна фаза:":"Current stage:",
+  "Тренутна фаза: Нацрт. Супервизор може да измени било које поље у било којој фази, уз обавезно образложење које остаје у ревизионом трагу.":"Current stage: Draft. The Supervisor may change any field at any stage, with a mandatory justification that stays in the audit trail.",
+  "Тренутне и пројектоване емисије и уклањања GHG из LULUCF":"Current and projected GHG emissions and removals from LULUCF",
+  "Тренутни и пројектовани напредак ка националним циљевима смањења емисија GHG у циљу климатске неутралности, искључујући емисије GHG из LULUCF-а":"Current and projected progress towards national GHG emission reduction objectives with a view to climate neutrality, excluding GHG emissions from LULUCF",
+  "Тренутни и пројектовани напредак ка остваривању других националних циљева у вези са GHG":"Current and projected progress towards other national objectives relating to GHG",
+  "Тренутни и пројектовани национални напредак ка националним циљевима смањења емисије GHG у циљу климатске неутралности":"Current and projected national progress towards national GHG emission reduction objectives with a view to climate neutrality",
+  "Тренутно сте пријављени као":"You are currently signed in as",
+  "У вашој улози образац се прегледа, а не уређује — унос је на институцијама којима су секције додељене.":"In your role the form is reviewed, not edited — the entry is with the institutions the sections are assigned to.",
+  "У поље се уписује број, или једна ознака уместо вредности:":"A number is entered in the field, or a single notation key instead of a value:",
+  "У ћелију се уписује број, а ако вредности нема — ознака":"A number is entered in the cell; if there is no value — a notation key",
+  "У ћелију се уписује број, или ознака NA / NAv / C уместо вредности.":"A number is entered in the cell, or the notation key NA / NAv / C instead of a value.",
+  "Удео биоразградивог отпада у постројењима за прераду енергије од отпада која се користе за производњу енергије":"Share of biodegradable waste in waste-to-energy plants used for energy production",
+  "Укупан инсталирани капацитет сваке технологије обновљиве енергије":"Total installed capacity of each renewable energy technology",
+  "Укупан стварни допринос (бруто производња електричне енергије) од технологија ОИЕ":"Total actual contribution (gross electricity generation) from RES technologies",
+  "Укупан стварни допринос технологија ОИЕ у грејању и хлађењу":"Total actual contribution of RES technologies in heating and cooling",
+  "Укупна површина зграда са укупном корисном површином преко 250 м2 у власништву и под употребом централне власти, које 1. јануара у годинама X-2 и X-1 нису испуњавале захтеве енергетских својстава из члана 5(1) Директиве 2012/27/ЕУ, како је прилагођено и усвојено одлукама Министарског савета 2015/08/MC-EnC, 2021/14/MC-EnC и 2022/02/MC-EnC":"Total floor area of buildings with a total useful floor area over 250 m2 owned and used by central government which, on 1 January of the years X-2 and X-1, did not meet the energy performance requirements of Article 5(1) of Directive 2012/27/EU, as adapted and adopted by Ministerial Council Decisions 2015/08/MC-EnC, 2021/14/MC-EnC and 2022/02/MC-EnC",
+  "Укупна реновирана површина грејаних и/или хлађених зграда у власништву и под управом централне власти":"Total renovated floor area of heated and/or cooled buildings owned and managed by central government",
+  "Улазите на почетак тока извештавања, као Јелена Ковачевић (Достављач података). Платформа вас кроз ток сама води — када предате свој део, пребацује вас на лице које је следеће на реду и то вам јави.":"You enter at the start of the reporting flow, as Jelena Kovačević (Data Provider). The platform guides you through the flow — once you submit your part, it switches you to the person who is next in line and tells you so.",
+  "Улога":"Role",
+  "Унос у току":"Entry in progress",
+  "Уноси податке, електронски их валидира и предаје образац. Везан је за своју институцију и види само своје додељене табеле.":"Enters the data, validates it electronically and submits the form. Tied to their own institution and sees only the tables assigned to them.",
+  "Унутар једне институције различита лица могу радити различите табеле, па и делове исте табеле — свако одговара за свој унос и дужно је да га провери, а Супервизор на крају потврђује проверу целог обрасца и свих уноса. Образац за извештавање може имати више додељених корисника, из више институција, и више од једног Водећег известиоца — број овде није ограничен. У званичној додели за Србију од 20.03.2025. по сваком анексу наведена су два лица (известилац и су-известилац), а платформа ЕЕА дозвољава највише два по обрасцу. Биће усаглашено са корисником у РП2: да ли се уводи горња граница и како се дели право потврђивања када их је више.":"Within a single institution, different people may work on different tables, and even on parts of the same table — each is responsible for their own entry and required to check it, while the Supervisor finally confirms the check of the whole form and of all entries. A reporting form may have several assigned users, from several institutions, and more than one Lead Reporter — the number is not limited here. In the official assignment for Serbia of 20 March 2025, two people are named for each annex (reporter and co-reporter), and the EEA platform allows at most two per form. To be agreed with the client in WP2: whether an upper limit is introduced and how the right to confirm is shared when there is more than one.",
+  "Уреди":"Edit",
+  "Утицај спровођења ИНЕКП на промоцију људских права и родне равноправности и решавање неједнакости у енергетском сиромаштву":"Impact of INECP implementation on the promotion of human rights and gender equality and on addressing inequalities in energy poverty",
+  "Утицај спровођења ИНЕКП на радна места, раднике и регионе":"Impact of INECP implementation on jobs, workers and regions",
+  "Утицаји на квалитет ваздуха и емисије у ваздух":"Impacts on air quality and emissions to air",
+  "Учесница институција":"Participating institution",
+  "Учеснице / институције-даваоци података":"Participating / data-providing institutions",
+  "Учешће институције у обрасцима за извештавање":"Participation of the institution in reporting forms",
+  "Учешће у обрасцима":"Participation in forms",
+  "Уштеде енергије остварене у складу са чланом 7 Директиве 2012/27/ЕУ у години X-2(1)":"Energy savings achieved in accordance with Article 7 of Directive 2012/27/EU in year X-2(1)",
+  "Уштеде енергије постигнуте кроз члан 7 Директиве 2012/27/ЕУ у години X-3 (1)":"Energy savings achieved through Article 7 of Directive 2012/27/EU in year X-3 (1)",
+  "Уђи у платформу":"Enter the platform",
+  "Финална потврда":"Final confirmation",
+  "Формат":"Format",
+  "Формати CSV и JSON нису потврђени за ове платформе: Репортнет прихвата XLSX, XLSX са валидацијама, ZIP са прилозима и ZIP са по једним CSV-ом за сваку табелу, док JSON постоји само преко API-ја; за платформу Комисије формат није познат. Биће усаглашено са корисником у РП2.":"The CSV and JSON formats are not confirmed for these platforms: Reportnet accepts XLSX, XLSX with validations, ZIP with attachments and ZIP with one CSV per table, while JSON exists only through the API; for the Commission platform the format is not known. To be agreed with the client in WP2.",
+  "Функционисање система гаранција порекла за електричну енергију, гас и грејање и хлађење из обновљивих извора":"Functioning of the system of guarantees of origin for electricity, gas and heating and cooling from renewable sources",
+  "Циклус извештавања":"Reporting cycle",
+  "Циклус извештавања 2027 ·":"Reporting cycle 2027 ·",
+  "Циљ 1 од 2":"Objective 1 of 2",
+  "Циљ 1 — Назив — превод на енглески није потврђен · Циљ 1 — Опис — превод на енглески није потврђен · Циљ 2 — Назив — превод на енглески није потврђен · Циљ 2 — Опис — превод на енглески није потврђен":"Objective 1 — Name — the English translation is not confirmed · Objective 1 — Description — the English translation is not confirmed · Objective 2 — Name — the English translation is not confirmed · Objective 2 — Description — the English translation is not confirmed",
+  "Циљ 2 од 2":"Objective 2 of 2",
+  "Циљеви адаптације у интегрисаним националним плановима за енергију и климу":"Adaptation objectives in integrated national energy and climate plans",
+  "Циљна вредност":"Target value",
+  "Циљна година":"Target year",
+  "Чека се довршавање уноса и електронска валидација од Достављача података.":"Waiting for the entry to be completed and electronically validated by the Data Provider.",
+  "Шта треба да урадим? — тренутни задаци за: Водећи известилац":"What do I need to do? — current tasks for: Lead Reporter",
+  "Шта треба да урадим? — тренутни задаци за: Достављач података":"What do I need to do? — current tasks for: Data Provider",
+  "административно":"administrative",
+  "број":"number",
+  "број или NA / NAv / C":"number or NA / NAv / C",
+  "дана":"days",
+  "име и презиме":"first and last name",
+  "на српском и енглеском језику":"in both Serbian and English",
+  "нема превода":"no translation",
+  "неће користити машински увоз у Reportnet":"will not use machine import into Reportnet",
+  "нпр. Јелена Ковачевић":"e.g. Jelena Kovačević",
+  "нпр. Вредност усклађена са коначним енергетским билансом Евростата.":"e.g. Value aligned with the final Eurostat energy balance.",
+  "обавезна поља означена *":"mandatory fields marked *",
+  "обавезно":"mandatory",
+  "одговорност се додељује по табели":"responsibility is assigned per table",
+  "предаја је блокирана док превод није потврђен":"submission is blocked until the translation is confirmed",
+  "своју верзију обрасца и својих табела":"its own version of the form and of its tables",
+  "то значи да се пријављују календарске године":"this means that the reported calendar years are",
+  "— Јелена Ковачевић":"— Jelena Kovačević",
+  "— Јелена Ковачевић, Републички завод за статистику":"— Jelena Kovačević, Statistical Office of the Republic of Serbia",
+  "— Јован Симић, Министарство рударства и енергетике":"— Jovan Simić, Ministry of Mining and Energy",
+  "— Петар Петровић, Агенција за енергетику":"— Petar Petrović, Energy Agency",
+  "— Супервизор податке уноси ручно у Reportnet. Извоз је зато припрема за човека: уредан преглед по табелама, у формату који се лако прати уз екран Reportnet-а.":"— the Supervisor enters the data into Reportnet manually. The export is therefore an aid for a person: a clean table-by-table view, in a format that is easy to follow next to the Reportnet screen.",
+  "— доставља податке и информације из своје надлежности (Правилник, чл. 20).":"— it provides data and information within its remit (Rulebook, Art. 20).",
+  "— затворена институција остаје у систему, а њене предаје и ревизиони траг остају приписани њој.":"— the closed institution stays in the system, and its submissions and audit trail remain attributed to it.",
+  "— институција из које долази Водећи известилац за овај образац и која координира доприносе осталих.":"— the institution the Lead Reporter for this form comes from, and which coordinates the contributions of the others.",
+  "— испод су верзије и њихови статуси. Водећи известилац те верзије потврђује и консолидује у један образац, а Супервизор даје финалну потврду. Ниједна верзија се не брише: остаје у систему са својим ревизионим трагом.":"— the versions and their statuses are listed below. The Lead Reporter confirms those versions and consolidates them into a single form, and the Supervisor gives the final confirmation. No version is ever deleted: it stays in the system with its own audit trail.",
+  "— наведена је у прилогу обрасца и укључује се кроз координацију, али се подаци од ње не траже непосредно.":"— it is listed in the annex to the form and is involved through coordination, but data are not requested from it directly.",
+  "— није доступно,":"— not available,",
+  "— није применљиво,":"— not applicable,",
+  "— поверљиво. Празно поље блокира предају.":"— confidential. An empty field blocks submission.",
+  "— постојећа остаје у систему са датумом затварања, а све предаје и ревизиони траг остају приписани институцији каква је тада била.":"— the existing one stays in the system with its closing date, and all submissions and the audit trail remain attributed to the institution as it was at that time."
+,
+  /* мешовити низови: улога је већ преведена кроз t(), па и тај облик мора у речник */
+  "У":"To",
+  "Шта треба да урадим? — тренутни задаци за: Data Provider":"What do I need to do? — current tasks for: Data Provider",
+  "Шта треба да урадим? — тренутни задаци за: Lead Reporter":"What do I need to do? — current tasks for: Lead Reporter",
+  "Шта треба да урадим? — тренутни задаци за: Supervisor":"What do I need to do? — current tasks for: Supervisor",
+  "Приказани су обрасци тренутно додељени вама као појединачном кориснику (Data Provider), не вашој институцији у целини. Учешће целе институције видљиво је преко Администрација → Институције.":"The forms shown are those currently assigned to you as an individual user (Data Provider), not to your institution as a whole. The participation of the whole institution is visible via Administration → Institutions.",
+  "Приказани су обрасци тренутно додељени вама као појединачном кориснику (Lead Reporter), не вашој институцији у целини. Учешће целе институције видљиво је преко Администрација → Институције.":"The forms shown are those currently assigned to you as an individual user (Lead Reporter), not to your institution as a whole. The participation of the whole institution is visible via Administration → Institutions.",
+  "Приказани су обрасци тренутно додељени вама као појединачном кориснику (Supervisor), не вашој институцији у целини. Учешће целе институције видљиво је преко Администрација → Институције.":"The forms shown are those currently assigned to you as an individual user (Supervisor), not to your institution as a whole. The participation of the whole institution is visible via Administration → Institutions."
+,
+  /* статусне фазе и текстови који зависе од статуса */
+  "3 од 3 потребних доприноса завршено":"3 of 3 required contributions completed",
+  "Агенција за енергетику — унос валидиран код достављача":"Energy Agency — entry validated at the data provider",
+  "Валидирано":"Validated",
+  "Валидирано код достављача":"Validated at the data provider",
+  "Валидирано — спремно за предају":"Validated — ready for submission",
+  "Водећи известилац је потврдио допринос. Чека се консолидација обрасца.":"The Lead Reporter has confirmed the contribution. Awaiting consolidation of the form.",
+  "Врати у нацрт":"Return to draft",
+  "Враћа образац Достављачу података.":"Returns the form to the Data Provider.",
+  "Враћено на исправку":"Returned for correction",
+  "Враћено: Републички завод за статистику":"Returned to: Statistical Office of the Republic of Serbia",
+  "Допринос потврдио Водећи известилац":"Contribution confirmed by the Lead Reporter",
+  "Допринос предат на преглед":"Contribution submitted for review",
+  "Допринос предат. Чека се потврда Водећег известиоца.":"Contribution submitted. Awaiting confirmation by the Lead Reporter.",
+  "Допринос је предат. Чека се потврда Водећег известиоца.":"The contribution has been submitted. Awaiting confirmation by the Lead Reporter.",
+  "Захтевана измена":"Change requested",
+  "Захтевана измена — чека се поновна предаја Достављача података.":"Change requested — awaiting resubmission by the Data Provider.",
+  "Захтевана исправка":"Correction requested",
+  "Захтевана исправка — враћено онима који су попунили табелу":"Correction requested — returned to those who filled in the table",
+  "Захтевао Водећи известилац дана 15. нов. 2026.: \"Молимо исправите наведене примедбе.\"":"Requested by the Lead Reporter on 15 Nov 2026: “Please correct the findings listed.”",
+  "Или измените поље сами — свака измена Супервизора захтева образложење и остаје у ревизионом трагу.":"Or change the field yourself — every change by the Supervisor requires a justification and stays in the audit trail.",
+  "Исправка захтевана од Водећи известилац — 15. нов. 2026.":"Correction requested by the Lead Reporter — 15 Nov 2026",
+  "Консолидацијом се доприноси свих институција спајају у један образац и предају Супервизору.":"Consolidation merges the contributions of all institutions into a single form and submits it to the Supervisor.",
+  "Консолидуј образац":"Consolidate form",
+  "Молимо исправите наведене примедбе.":"Please correct the findings listed.",
+  "Образац консолидован":"Form consolidated",
+  "Образац је консолидован. Чека се финална потврда Супервизора.":"The form has been consolidated. Awaiting final confirmation by the Supervisor.",
+  "Образац је финално потврђен.":"The form has been finally confirmed.",
+  "Образац је финално потврђен. Нема потребе за даљом радњом.":"The form has been finally confirmed. No further action is required.",
+  "Овлашћено лице достављача је валидирало унос. Чека се предаја.":"The authorised person of the data provider has validated the entry. Awaiting submission.",
+  "Одобрено за извештавање":"Approved for reporting",
+  "Одобрио Јован Симић (Супервизор) · 28. нов. 2026.":"Approved by Jovan Simić (Supervisor) · 28 Nov 2026",
+  "Поново предај":"Resubmit",
+  "Потврди допринос":"Confirm contribution",
+  "Потврђено — спремно за консолидацију":"Confirmed — ready for consolidation",
+  "Предао Јелена Ковачевић · Републички завод за статистику · 14. нов. 2026. → Статус: Предато. Доприноси других институција за Образац V могу и даље бити у изради.":"Submitted by Jelena Kovačević · Statistical Office of the Republic of Serbia · 14 Nov 2026 → Status: Submitted. Contributions from other institutions to Form V may still be in progress.",
+  "Предато — чека потврду":"Submitted — awaiting confirmation",
+  "Предајом допринос иде Водећем известиоцу. До тада можете вратити образац у нацрт и допунити га.":"On submission the contribution goes to the Lead Reporter. Until then you can return the form to draft and add to it.",
+  "Примедбе које треба отклонити:":"Findings to be resolved:",
+  "Републички завод за статистику — унос валидиран код достављача":"Statistical Office of the Republic of Serbia — entry validated at the data provider",
+  "Сва обавезна поља попуњена или означена":"All mandatory fields filled in or marked with a notation key",
+  "Следећи корак: припрема фајла за предају у ReportENER.":"Next step: preparing the submission file for ReportENER.",
+  "Спремно за финалну потврду":"Ready for final confirmation",
+  "Србијагас — унос валидиран код достављача":"Srbijagas — entry validated at the data provider",
+  "Српски — извор; термини Правилника":"Serbian — source; Rulebook terminology",
+  "Супервизор је потврдио образац. Спреман за унос у Reportnet / извоз.":"The Supervisor has confirmed the form. Ready for entry into Reportnet / export.",
+  "Тренутна фаза: Валидирано. Супервизор може да измени било које поље у било којој фази, уз обавезно образложење које остаје у ревизионом трагу.":"Current stage: Validated. The Supervisor may change any field at any stage, with a mandatory justification that stays in the audit trail.",
+  "Тренутна фаза: Захтевана исправка. Супервизор може да измени било које поље у било којој фази, уз обавезно образложење које остаје у ревизионом трагу.":"Current stage: Correction requested. The Supervisor may change any field at any stage, with a mandatory justification that stays in the audit trail.",
+  "Тренутна фаза: Консолидовано. Супервизор може да измени било које поље у било којој фази, уз обавезно образложење које остаје у ревизионом трагу.":"Current stage: Consolidated. The Supervisor may change any field at any stage, with a mandatory justification that stays in the audit trail.",
+  "Тренутна фаза: Потврђено. Супервизор може да измени било које поље у било којој фази, уз обавезно образложење које остаје у ревизионом трагу.":"Current stage: Confirmed. The Supervisor may change any field at any stage, with a mandatory justification that stays in the audit trail.",
+  "Тренутна фаза: Предато. Супервизор може да измени било које поље у било којој фази, уз обавезно образложење које остаје у ревизионом трагу.":"Current stage: Submitted. The Supervisor may change any field at any stage, with a mandatory justification that stays in the audit trail.",
+  "Тренутна фаза: Финално потврђено. Супервизор може да измени било које поље у било којој фази, уз обавезно образложење које остаје у ревизионом трагу.":"Current stage: Finally confirmed. The Supervisor may change any field at any stage, with a mandatory justification that stays in the audit trail.",
+  "Унос валидирало овлашћено лице институције":"Entry validated by the authorised person of the institution",
+  "Унос валидиран код достављача":"Entry validated at the data provider",
+  "Условно":"Conditional",
+  "Финално потврђено":"Finally confirmed",
+  "Финално потврђено — за унос у Reportnet":"Finally confirmed — for entry into Reportnet",
+  "Финалном потврдом образац постаје спреман за унос у Reportnet, што обавља Супервизор.":"With the final confirmation the form becomes ready for entry into Reportnet, which is done by the Supervisor.",
+  "Чека се измена и поновна предаја од Достављача података.":"Awaiting the change and resubmission by the Data Provider."
+,
+  /* ознаке двојезичног уноса */
+  "потврђено":"confirmed",
+  "нема превода":"no translation",
+  "машински превод — потврдити":"machine translation — to be confirmed",
+  "Потврди превод":"Confirm translation",
+  "машински превод":"machine translation",
+  "Предаја је блокирана док има празних поља или недозвољених уноса.":"Submission is blocked while there are empty fields or entries that are not allowed."
+,
+  "Чека потврду":"Awaiting confirmation"
+,
+  "изворна верзија":"source version"
+};
+/* уз енглески се приказује и српски оригинал — само за термине из Правилника */
+var OBA_JEZIKA = ['Нацрт','Валидација достављача','Предато','Потврђено','Консолидовано','Финална потврда',
+  'Достављач података','Водећи известилац','Супервизор'];
+var ULOGA_EN_SR = [['Data Provider','Достављач података'],['Lead Reporter','Водећи известилац'],['Supervisor','Супервизор']];
+function trUI(s, dubina){
+  dubina = dubina||0;
+  var en = SR2EN[s];
+  if(en!==undefined) return (OBA_JEZIKA.indexOf(s)>=0 && en!==s) ? en+' ('+s+')' : en;
+  if(dubina>2) return null;
+  /* улога је већ преведена кроз t(), па низ више не одговара кључу — врати српски облик */
+  var alt = s, menjano = false;
+  for(var i=0;i<ULOGA_EN_SR.length;i++){
+    if(alt.indexOf(ULOGA_EN_SR[i][0])>=0){ alt = alt.split(ULOGA_EN_SR[i][0]).join(ULOGA_EN_SR[i][1]); menjano = true; }
+  }
+  if(menjano){ var r = trUI(alt, dubina+1); if(r!==null) return r; }
+  /* суфикси ✓ и · иду уз назив фазе */
+  var m = s.match(/^([\s\S]*?)\s([\u2713\u00b7])$/);
+  if(m){ var r2 = trUI(m[1], dubina+1); if(r2!==null) return r2+' '+m[2]; }
+  return null;
+}
+/* Текст који се склапа у коду (бројеви, називи поља) не може кроз речник — иде кроз L(). */
+function L(sr,en){ return S.lang==='en' ? en : sr; }
+var PREVOD_LOG = [];
+function vratiSrpski(){
+  for(var i=PREVOD_LOG.length-1;i>=0;i--){ var r=PREVOD_LOG[i];
+    try{ if(r.a) r.el.setAttribute(r.a, r.sr); else r.n.nodeValue = r.sr; }catch(e){}
+  }
+  PREVOD_LOG = [];
+}
+function prevediUI(){
+  if(S.lang!=='en'){ vratiSrpski(); return; }
+  var wlk = document.createTreeWalker(document.body, 4, null, false), n;
+  while((n = wlk.nextNode())){
+    var pn = n.parentNode, tag = pn && pn.nodeName;
+    if(tag==='SCRIPT' || tag==='STYLE' || tag==='TEXTAREA') continue;
+    var raw = n.nodeValue, s = raw.replace(/\s+/g,' ').trim();
+    if(!s) continue;
+    var en = trUI(s); if(en===null) continue;
+    PREVOD_LOG.push({n:n, sr:raw});
+    n.nodeValue = raw.match(/^\s*/)[0] + en + raw.match(/\s*$/)[0];
+  }
+  ['placeholder','title'].forEach(function(a){
+    document.querySelectorAll('['+a+']').forEach(function(el){
+      var v = el.getAttribute(a), en = v && trUI(v.replace(/\s+/g,' ').trim());
+      if(en){ PREVOD_LOG.push({el:el, a:a, sr:v}); el.setAttribute(a, en); }
+    });
+  });
+}
+
 /* ===================== state ===================== */
-var ACTOR = {dp:'Јелена Ковачевић', support:'Марко Илић', lead:'Петар Петровић', coord:'Милица Радовић', admin:'Јован Симић'};
-var ORG = {dp:'Републички завод за статистику', support:'Министарство рударства и енергетике', lead:'Министарство рударства и енергетике', coord:'Министарство рударства и енергетике', admin:'Министарство рударства и енергетике'};
-var ACTOR_EN = {dp:'Jelena Kovačević', support:'Marko Ilić', lead:'Petar Petrović', coord:'Milica Radović', admin:'Jovan Simić'};
+var ACTOR = {dp:'Јелена Ковачевић', lead:'Петар Петровић', super:'Јован Симић'};
+var ORG = {dp:'Републички завод за статистику', lead:'Агенција за енергетику', super:'Министарство рударства и енергетике'};
+/* Достављач података и Водећи известилац су везани за институцију; Супервизор није — он је из Министарства. */
+var VEZAN_ZA_INSTITUCIJU = {dp:true, lead:true, super:false};
+var ACTOR_EN = {dp:'Jelena Kovačević', lead:'Petar Petrović', super:'Jovan Simić'};
 function actorName(k){ return S.lang==='en' ? (ACTOR_EN[k]||ACTOR[k]) : ACTOR[k]; }
 var ORG_EN = {
   'Републички завод за статистику':'Statistical Office of the Republic of Serbia',
@@ -737,20 +1494,16 @@ var ORG_EN = {
   'Србијагас':'Srbijagas'
 };
 function orgName(k){ var s = ORG[k]; return (S.lang==='en' && ORG_EN[s]) ? ORG_EN[s] : s; }
-var ROLE_KEY = {dp:'role_dp', support:'role_support', lead:'role_lead', coord:'role_coord', admin:'role_admin'};
+var ROLE_KEY = {dp:'role_dp', lead:'role_lead', super:'role_super'};
 var ROLE_DESC_SR = {
-  dp:'Уноси, чува нацрт и предаје свој додељени допринос обрасцу (само своју секцију) — не цео образац.',
-  support:'Врши QA/QC контролу предатих доприноса, додаје коментаре и захтева исправке или их означава као завршене.',
-  lead:'Прегледа спремност свих институционалних доприноса и потврђује / консолидује образац у целини.',
-  coord:'Даје коначно одобрење обрасца за извештавање и покреће/дозвољава извоз. По члану 18. Правилника послове Националног координатора извештавања обавља Министарство — ово лице их обавља у његово име.',
-  admin:'Управља институцијама, корисницима, улогама и подешавањима система — не учествује у самом извештавању. Правилник ову улогу не помиње; по члану 23. платформу успоставља и администрира Министарство, па је ово системска, техничка улога у оквиру те обавезе.'
+  dp:'Уноси податке, електронски их валидира и предаје образац. Везан је за своју институцију и види само своје додељене табеле.',
+  lead:'Потврђује предате доприносе и консолидује образац у целину. Везан је за институцију.',
+  super:'Даје финалну потврду и уноси податке у Reportnet. Може да затражи измену, али и да је сам унесе уз обавезно образложење. Није везан за институцију — из Министарства рударства и енергетике.'
 };
 var ROLE_DESC_EN = {
-  dp:'Enters data, saves the draft and submits its assigned contribution to the form (its own section only) — not the whole form.',
-  support:'Runs QA/QC control of submitted contributions, adds findings and either requests a correction or marks the control as complete.',
-  lead:'Reviews the readiness of all institutional contributions and confirms / consolidates the form as a whole.',
-  coord:'Gives the final approval of the form for reporting and enables the export. Under Article 18 the National Reporting Coordinator function is performed by the Ministry — this person performs it on its behalf.',
-  admin:'Manages institutions, users, roles and system settings — does not take part in the reporting itself. The Pravilnik does not name this role; under Article 23 the platform is set up and administered by the Ministry, so this is a technical role within that duty.'
+  dp:'Enters data, validates it electronically and submits the form. Bound to its institution and sees only its assigned tables.',
+  lead:'Confirms submitted contributions and consolidates the form as a whole. Bound to an institution.',
+  super:'Gives the final confirmation and enters the data into Reportnet. May request a change, or make it directly with a mandatory justification. Not bound to an institution — from the Ministry of Mining and Energy.'
 };
 var ROLE_DESC = ROLE_DESC_SR;
 function roleDesc(k){ return (S.lang==='en' ? ROLE_DESC_EN : ROLE_DESC_SR)[k]; }
@@ -764,15 +1517,16 @@ var S = {
   activityOpen:false,
   editingInstitution:-1,
   formV:{
-    status:'draft', // draft | submitted | under_review | ready_for_confirmation | correction_requested | confirmed | approved
+    status:'draft', // draft | validated | submitted | correction_requested | confirmed | consolidated | approved
     correction:null, // {comment, field, deadline, fromRole, date}
     hadCorrection:false, // whether a correction was ever actually requested in this run-through (drives the conditional stepper box)
     corrCount:0,         // how many times the form went back for correction
-    /* Nalazi QA/QC kontrole — stvarna lista kojoj izvestilac podrske dodaje svoje nalaze.
-       Dva pocetna su tu da demo odmah ima sadrzaj. */
-    qaNalazi:[
-      {text:'Циљна вредност недостаје.', mesto:'Национални циљ 2', by:'Марко Илић', date:'14. нов. 2026.'},
-      {text:'Проверити усклађеност са Енергетским билансом.', mesto:'Показатељ – Резерве нафте', by:'Марко Илић', date:'14. нов. 2026.'}
+    audit:[],            // ревизиони траг по пољу: шта, из чега у шта, ко, када, образложење
+    /* Примедбе које уз захтев за измену пишу Водећи известилац или Супервизор,
+       свака везана за место у обрасцу. Две почетне су ту да демо одмах има садржај. */
+    primedbe:[
+      {text:'Циљна вредност недостаје.', mesto:'Национални циљ 2', by:'Петар Петровић', date:'14. нов. 2026.'},
+      {text:'Проверити усклађеност са Енергетским билансом.', mesto:'Показатељ – Резерве нафте', by:'Петар Петровић', date:'14. нов. 2026.'}
     ],
     submittedInfo:null,
     approvedInfo:null,
@@ -968,10 +1722,11 @@ var PROPISAN_DEO = { 'II|6': 'Опис усклађености за шумск�
 /* ===================== institutions dataset ===================== */
 /* Institution-level rows record participation only (item 6): "Participating institution" /
    "Data Provider institution" / "Coordinating / Lead institution" (TBD, see modal-assignform note).
-   Person-level roles (Lead Reporter / Support Reporter / Data Provider / National Reporting
-   Coordinator) live on the Users arrays below, per user, never on the institution itself. */
+   Person-level roles (Data Provider / Lead Reporter) live on the Users arrays below, per user,
+   never on the institution itself. The Supervisor is not tied to an institution at all — they are
+   from the Ministry of Mining and Energy. */
 var INSTITUTIONS = [
-  {name:'Министарство рударства и енергетике', short:'МРЕ', type:'Министарство', active:true,
+  {name:'Министарство рударства и енергетике', short:'МРЕ', type:'Министарство', active:true, od:'1. јан. 2025.', do:null, nastalaIz:[], preslaU:null,
     resp:[
       {form:'Образац I – Декарбонизација: емисије GHG', area:'Декарбонизација', participation:'Институција-давалац података'},
       {form:'Образац II – Декарбонизација: обновљива енергија', area:'Декарбонизација', participation:'Координирајућа / водећа институција'},
@@ -981,17 +1736,16 @@ var INSTITUTIONS = [
     ],
     users:[
       {name:'Петар Петровић', role:'Водећи известилац', tables:['Образац V, табела 1','Образац V, табела 2','Образац V, табела 3']},
-      {name:'Ана Репац', role:'Водећи известилац (су-известилац)', tables:['Образац V, табела 2','Образац V, табела 3']},
-      {name:'Марко Илић', role:'Помоћни известилац', tables:['Образац V, табела 1','Образац V, табела 2','Образац V, табела 3']},
-      {name:'Милица Радовић', role:'Национални координатор извештавања', tables:['Образац V, табела 1','Образац V, табела 2','Образац V, табела 3']}
+      {name:'Ана Репац', role:'Водећи известилац', tables:['Образац V, табела 2','Образац V, табела 3']},
+            {name:'Ана Репац', role:'Водећи известилац', tables:['Образац V, табела 2','Образац V, табела 3']}
     ]},
-  {name:'Републички завод за статистику', short:'РЗС', type:'Агенција', active:true,
+  {name:'Републички завод за статистику', short:'РЗС', type:'Агенција', active:true, od:'1. јан. 2025.', do:null, nastalaIz:[], preslaU:null,
     resp:[
       {form:'Образац V – Енергетска безбедност', area:'Енергетска безбедност', participation:'Институција-давалац података'},
       {form:'Образац VII – Истраживање, иновације и конкурентност', area:'Истраживање, иновације и конкурентност', participation:'Координирајућа / водећа институција'}
     ],
     users:[{name:'Јелена Ковачевић', role:'Достављач података', tables:['Образац V, табела 1'], part:'Подаци о енергетској безбедности'}]},
-  {name:'Агенција за енергетику', short:'АЕ', type:'Агенција', active:true,
+  {name:'Агенција за енергетику', short:'АЕ', type:'Агенција', active:true, od:'1. јан. 2025.', do:null, nastalaIz:[], preslaU:null,
     resp:[
       {form:'Образац V – Енергетска безбедност', area:'Енергетска безбедност', participation:'Институција-давалац података'},
       {form:'Образац VI – Унутрашње енергетско тржиште', area:'Унутрашње енергетско тржиште', participation:'Координирајућа / водећа институција'},
@@ -1001,7 +1755,7 @@ var INSTITUTIONS = [
       {name:'Никола Ђорђић', role:'Достављач података', tables:['Образац V, табела 2']},
       {name:'Соња Марковић', role:'Водећи известилац', tables:['Образац VI, табела 1','Образац VI, табела 4']}
     ]},
-  {name:'Србијагас', short:'СГ', type:'Државно предузеће', active:true,
+  {name:'Србијагас', short:'СГ', type:'Државно предузеће', active:true, od:'1. јан. 2025.', do:null, nastalaIz:[], preslaU:null,
     resp:[{form:'Образац V – Енергетска безбедност', area:'Енергетска безбедност', participation:'Институција-давалац података'}],
     users:[{name:'Душан Павловић', role:'Достављач података', tables:['Образац V, табела 3']}]}
 ];
@@ -1014,7 +1768,9 @@ function upisiCiljniSistem(){
   var a = document.getElementById('approveSystem'); if(a) a.textContent = s;
 }
 function openModal(id){
-  if(id==='modal-export' || id==='modal-approve') upisiCiljniSistem(); document.getElementById(id).classList.add('open'); }
+  if(id==='modal-export' || id==='modal-approve') upisiCiljniSistem();
+  document.getElementById(id).classList.add('open');
+  prevediUI(); /* модали се пуне мимо renderAll, па и они пролазе кроз слој превода */ }
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('.modal-bg').forEach(function(bg){
@@ -1030,23 +1786,23 @@ document.addEventListener('click', function(e){
    Administrator, po odluci narucioca, moze videti i po potrebi menjati unete podatke u
    svakoj fazi — svaka takva izmena se belezi u istoriji kao administrativna intervencija. */
 function canEditStage(){ return S.role==='dp' && (S.formV.status==='draft' || S.formV.status==='correction_requested'); }
-function isAdminOverride(){ return S.role==='admin'; }
-function canEdit(){ return (canEditStage() || isAdminOverride()) && !S.formV.conflict; }
+function isSupervizor(){ return S.role==='super'; }
+function canEdit(){ return (canEditStage() || isSupervizor()) && !S.formV.conflict; }
 
 /* ===================== nav ===================== */
 /* Nav visibility follows "each role sees only what it needs to do its own job":
-   - Data Provider / Support Reporter / Lead Reporter only ever work their OWN assigned forms
+   - Data Provider / Lead Reporter only ever work their OWN assigned forms
      -> no "All Forms" for them.
-   - National Reporting Coordinator genuinely needs system-wide visibility to coordinate/approve
-     across institutions -> keeps "All Forms".
+   - The Supervisor genuinely needs system-wide visibility to oversee all forms and give the final
+     confirmation -> keeps "All Forms".
    - Administrator's job is institutions/users, not reporting -> no Reporting section at all. */
 var NAV = [
   {id:'dashboard', screen:'dashboard', labelKey:'nav_dashboard'},
   {id:'reporting', screen:'reporting', labelKey:'nav_reporting', group:true, children:[
-    {id:'my', screen:'reporting', tab:'my', labelKey:'nav_myforms', hideFor:['admin']},
-    {id:'all', screen:'reporting', tab:'all', labelKey:'nav_allforms', hideFor:['dp','support','lead']}
+    {id:'my', screen:'reporting', tab:'my', labelKey:'nav_myforms', hideFor:['super']},
+    {id:'all', screen:'reporting', tab:'all', labelKey:'nav_allforms', hideFor:['dp','lead']}
   ]},
-  {id:'admin', screen:'institutions', labelKey:'nav_admin', group:true, onlyFor:['admin'], children:[
+  {id:'admin', screen:'institutions', labelKey:'nav_admin', group:true, onlyFor:['super'], children:[
     {id:'institutions', screen:'institutions', labelKey:'nav_institutions'}
   ]},
   /* Pomoc nije deo toka rada — ide na dno, odvojena crtom od radnih stavki. */
@@ -1100,15 +1856,15 @@ function setLang(l){
 /* Demo skok na fazu — da se ekran svake uloge moze pokazati bez prolaska celog toka.
    Postavlja i podatke koji uz tu fazu idu (ko je predao, ko odobrio), da ekran ne bude prazan. */
 /* Faza u kojoj svaka uloga stvarno odlucuje — koristi se za pomocni skok iz slepe ulice. */
-var FAZA_ULOGE = { support:'under_review', lead:'ready_for_confirmation', coord:'confirmed', dp:'draft' };
+var FAZA_ULOGE = { dp:'draft', lead:'submitted', super:'consolidated' };
 var DEMO_FAZE = [
-  {v:'draft',                  l:'1. Нацрт'},
-  {v:'submitted',              l:'2. Предато'},
-  {v:'under_review',           l:'3. Под контролом (QA/QC)'},
-  {v:'correction_requested',   l:'4. Захтевана исправка'},
-  {v:'ready_for_confirmation', l:'5. Спремно за потврду'},
-  {v:'confirmed',              l:'6. Потврђено / консолидовано'},
-  {v:'approved',               l:'7. Одобрено за извештавање'}
+  {v:'draft',                l:'1. Нацрт'},
+  {v:'validated',            l:'2. Валидирано код достављача'},
+  {v:'submitted',            l:'3. Предато'},
+  {v:'correction_requested', l:'— Захтевана измена'},
+  {v:'confirmed',            l:'4. Потврђено'},
+  {v:'consolidated',         l:'5. Консолидовано'},
+  {v:'approved',             l:'6. Финално потврђено'}
 ];
 function setDemoFazu(v){
   S.formV.status = v;
@@ -1118,13 +1874,13 @@ function setDemoFazu(v){
   } else {
     if(!S.formV.submittedInfo) S.formV.submittedInfo={by:ACTOR.dp, inst:ORG.dp, date:'14. нов. 2026.'};
     if(v==='correction_requested' && !S.formV.correction){
-      S.formV.correction={comment:'Молимо исправите наведене налазе.', nalazi:S.formV.qaNalazi.slice(),
-        field:'', fromRole:t('role_support'), returnedTo:ORG.dp, date:'15. нов. 2026.'};
+      S.formV.correction={comment:'Молимо исправите наведене примедбе.', nalazi:S.formV.primedbe.slice(),
+        field:'', fromRole:t('role_lead'), returnedTo:ORG.dp, date:'15. нов. 2026.'};
       S.formV.hadCorrection=true;
       if(!S.formV.corrCount) S.formV.corrCount=1;
     }
     if(v==='approved' && !S.formV.approvedInfo){
-      S.formV.approvedInfo={by:ACTOR.coord, role:t('role_coord'), date:'28. нов. 2026.'};
+      S.formV.approvedInfo={by:ACTOR.super, role:t('role_super'), date:'28. нов. 2026.'};
     }
   }
   renderAll();
@@ -1192,14 +1948,15 @@ function showMoreNotif(){
 function computeTiles(){
   var v = S.formV.status, tasks=0, due=0, corr=0, done=0;
   if(S.role==='dp'){ tasks=2; due=1; }
-  else if(S.role==='coord'){ due=1; done=1; }
+  else if(S.role==='super'){ due=1; done=1; }
   if(v==='draft' && S.role==='dp') tasks++;
   if(v==='correction_requested' && S.role==='dp'){ tasks++; corr++; }
-  if(v==='submitted' && S.role==='support') tasks++;
-  if(v==='under_review' && S.role==='support') tasks++;
+  if(v==='submitted' && S.role==='lead') tasks++;
+  if(v==='confirmed' && S.role==='lead') tasks++;
+  if(v==='validated' && S.role==='dp') tasks++;
   if(v==='ready_for_confirmation' && S.role==='lead') tasks++;
-  if(v==='confirmed' && S.role==='coord') tasks++;
-  if(v==='approved' && S.role!=='admin') done++; // Administrator's tiles aren't about reporting progress
+  if(v==='consolidated' && S.role==='super') tasks++;
+  if(v==='approved' && S.role!=='super') done++; // Supervizorove plocice nisu o napretku unosa
   return {tasks:tasks, due:due, corr:corr, done:done};
 }
 function dashFormVRow(){
@@ -1211,9 +1968,9 @@ function dashFormVRow(){
    illustrative for the concept demo, not a fully modelled per-user task engine. ---- */
 var MY_TASKS = {
   dp:    [{id:'V',  resp:'Достављач података – Секција 1'}],
-  support:[{id:'V', resp:'Помоћни известилац'}, {id:'VI', resp:'Помоћни известилац'}],
+
   lead:  [{id:'V',  resp:'Водећи известилац'}],
-  coord: [{id:'V',  resp:'Национални координатор извештавања'}],
+  coord: [{id:'V',  resp:'Супервизор — финална потврда'}],
   admin: [] // Administrator has no reporting tasks — sees institutions/users instead, not Form V
 };
 function myTaskRows(){
@@ -1225,11 +1982,11 @@ function myTaskRows(){
     }
     // Илустративни други пример (Образац VI) — статус овде одражава лични задатак корисника,
     // не нужно укупни институционални статус обрасца приказан под Сви обрасци.
-    return {id:'VI', name:'Образац VI – Унутрашње енергетско тржиште', area:'Унутрашње енергетско тржиште', inst:'Агенција за енергетику', deadline:'15. дец. 2026.', status:'Чека QA/QC', pct:null, resp:tk.resp};
+    return {id:'VI', name:'Образац VI – Унутрашње енергетско тржиште', area:'Унутрашње енергетско тржиште', inst:'Агенција за енергетику', deadline:'15. дец. 2026.', status:'Чека потврду', pct:null, resp:tk.resp};
   });
 }
 function renderDashboard(){
-  if(S.role==='admin'){ renderAdminDashboard(); return; }
+  if(S.role==='super'){ renderAdminDashboard(); return; }
 
   document.getElementById('dashSubcap').textContent = 'Шта треба да урадим? — тренутни задаци за: ' + t(ROLE_KEY[S.role]);
   var tiles = computeTiles();
@@ -1280,7 +2037,7 @@ function renderAdminDashboard(){
 
   document.getElementById('dashFormsCardTitle').textContent = 'Институције';
   document.getElementById('dashFormsCardBody').innerHTML =
-    '<p class="note" style="margin-top:0;">Администратор нема задатке извештавања — управља институцијама, корисницима и њиховим улогама.</p>'+
+    '<p class="note" style="margin-top:0;">Супервизор нема задатке уноса — управља институцијама, корисницима и њиховим улогама, надгледа све обрасце и даје финалну потврду.</p>'+
     '<div class="scroll"><table><thead><tr><th>Институција</th><th>Тип</th><th>Учешће у обрасцима</th><th>Корисници</th><th></th></tr></thead><tbody>'+
     INSTITUTIONS.map(function(inst,i){
       return '<tr><td>'+esc(inst.name)+'</td><td>'+esc(inst.type)+'</td><td>'+inst.resp.length+'</td><td>'+inst.users.length+'</td>'+
@@ -1289,7 +2046,7 @@ function renderAdminDashboard(){
     '</tbody></table></div>';
 
   document.getElementById('dashRecent').innerHTML =
-    ['Марко Илић додат као Помоћни известилац','Институција Србијагас ажурирана','Додељен образац Форма VII Републичком заводу за статистику'].map(function(x){
+    ['Ана Репац додата као Водећи известилац','Институција Србијагас ажурирана','Додељен образац Форма VII Републичком заводу за статистику'].map(function(x){
       return '<div class="small" style="padding:5px 0; border-bottom:1px solid var(--border);">'+x+'</div>';
     }).join('');
 }
@@ -1299,9 +2056,9 @@ function openPlaceholder(name){
 }
 
 /* ===================== reporting list ===================== */
-/* Only the Coordinator's job genuinely requires system-wide visibility — everyone else
-   (Data Provider / Support Reporter / Lead Reporter) only ever works their own forms. */
-var ALL_FORMS_ROLES = ['coord','admin'];
+/* Only the Supervisor's job genuinely requires system-wide visibility — the other two
+   (Data Provider / Lead Reporter) only ever work their own forms. */
+var ALL_FORMS_ROLES = ['super'];
 function setReportingTab(tab){
   if(tab==='all' && ALL_FORMS_ROLES.indexOf(S.role)<0) return; // guarded — role has no All Forms
   S.reportingTab = tab;
@@ -1346,24 +2103,84 @@ function renderReporting(){
    precisely instead of a quantitative value". The paired _Notation columns seen in submitted
    files belong to the exported file, not to data entry. An empty cell is a blocker. */
 var OZNAKE = ['NA','NAv','C'];
+
+/* ===== Двојезични унос =====
+   Правилник (чл. 23) тражи попуњавање на српском и енглеском. По одговору наручиоца,
+   енглеску верзију предлаже машински превод (Azure AI Translator, `sr-Cyrl` → `en`),
+   али је корисник дужан да је провери и потврди — одговорност за тачност остаје на њему.
+   Док превод није потврђен, предаја је блокирана. */
+var PREVOD_STATUS = {MASINSKI:'машински превод', POTVRDJEN:'потврђено', PRAZNO:'нема превода'};
+/* Демонстрација без стварног позива сервиса — у платформи иде Text Translation API по пољу,
+   са појмовником термина ИНЕКП и кеширањем већ преведених текстова. */
+var DEMO_PREVOD = {
+  'Диверсификација извора и праваца снабдевања природним гасом':'Diversification of natural gas supply sources and routes',
+  'Смањење зависности од једног правца снабдевања развојем интерконекција и алтернативних уговора о снабдевању.':'Reducing dependence on a single supply route by developing interconnections and alternative supply contracts.',
+  'Одрживост резерви нафте и деривата':'Sustainability of oil and petroleum product reserves',
+  'Одржавање обавезних резерви у складу са преузетим обавезама.':'Maintaining compulsory reserves in line with assumed obligations.'
+};
+function masinskiPrevod(txt){
+  if(!txt) return '';
+  if(DEMO_PREVOD[txt]) return DEMO_PREVOD[txt];
+  return '[EN] '+txt;   /* у платформи: одговор Text Translation API-ја */
+}
+function prevediPolje(kind, i, field){
+  var obj = (kind==='obj') ? S.formV.objectives[i] : S.formV.indicators[i];
+  if(!obj) return;
+  obj._en = obj._en || {}; obj._st = obj._st || {};
+  obj._en[field] = masinskiPrevod(obj[field]);
+  obj._st[field] = PREVOD_STATUS.MASINSKI;
+  pushActivity('Машински превод предложен за поље: '+field, ACTOR[S.role]);
+  renderObjectives(); renderIndicators(); renderBlokade();
+}
+function potvrdiPrevod(kind, i, field){
+  var obj = (kind==='obj') ? S.formV.objectives[i] : S.formV.indicators[i];
+  if(!obj || !obj._en || !obj._en[field]) return;
+  obj._st = obj._st || {};
+  obj._st[field] = PREVOD_STATUS.POTVRDJEN;
+  auditPolje('Превод: '+field+(kind==='obj'?' (Циљ '+(i+1)+')':''), PREVOD_STATUS.MASINSKI, PREVOD_STATUS.POTVRDJEN);
+  pushActivity('Превод потврђен за поље: '+field, ACTOR[S.role]);
+  renderObjectives(); renderIndicators(); renderBlokade();
+}
+function updEn(kind, i, field, val){
+  var obj = (kind==='obj') ? S.formV.objectives[i] : S.formV.indicators[i];
+  if(!obj) return;
+  obj._en = obj._en || {}; obj._st = obj._st || {};
+  obj._en[field] = val;
+  if(obj._st[field]===PREVOD_STATUS.POTVRDJEN) obj._st[field] = PREVOD_STATUS.MASINSKI;  /* измена руши потврду */
+  renderBlokade();
+}
+/* Поља која по чл. 23 морају постојати и на енглеском */
+var DVOJEZICNA_POLJA = ['name','desc'];
+function nepotvrdjeniPrevodi(){
+  var out=[];
+  S.formV.objectives.forEach(function(o,i){
+    DVOJEZICNA_POLJA.forEach(function(f){
+      if(!o[f]) return;
+      var st = (o._st||{})[f];
+      if(st!==PREVOD_STATUS.POTVRDJEN) out.push(L('Циљ ','Objective ')+(i+1)+' — '+(f==='name'?L('Назив','Name'):L('Опис','Description')));
+    });
+  });
+  return out;
+}
 function jePrazno(v){ return v===undefined || v===null || String(v).trim()===''; }
 function jeOznaka(v){ return OZNAKE.indexOf(String(v).trim()) >= 0; }
 function jeBroj(v){ return String(v).trim()!=='' && isFinite(Number(String(v).trim().replace(',', '.'))); }
 /* Returns '' when the cell is fine, otherwise why it blocks. */
 function problemCelije(v){
-  if(jePrazno(v)) return 'празно';
+  if(jePrazno(v)) return L('празно','empty');
   if(jeBroj(v) || jeOznaka(v)) return '';
-  return 'недозвољен унос';
+  return L('недозвољен унос','not an allowed entry');
 }
 function blokadeUObrascu(){
   var out=[];
+  nepotvrdjeniPrevodi().forEach(function(x){ out.push(x+L(' — превод на енглески није потврђен',' — English translation not confirmed')); });
   S.formV.objectives.forEach(function(o,i){
     var p = problemCelije(o.year);
-    if(p) out.push('Циљ '+(i+1)+' — Циљна година ('+p+')');
+    if(p) out.push(L('Циљ ','Objective ')+(i+1)+L(' — Циљна година (',' — Target year (')+p+')');
   });
   S.formV.indicators.forEach(function(r,i){
-    var ime = r.name || ('Показатељ '+(i+1));
-    [['prev','X-3'],['curr','X-2'],['target','Циљна вредност']].forEach(function(par){
+    var ime = r.name || (L('Показатељ ','Indicator ')+(i+1));
+    [['prev','X-3'],['curr','X-2'],['target',L('Циљна вредност','Target value')]].forEach(function(par){
       var p = problemCelije(r[par[0]]);
       if(p) out.push(ime+' — '+par[1]+' ('+p+')');
     });
@@ -1423,12 +2240,12 @@ function renderGodine(){
     godinaX(-3)+'</strong> (X-3) и <strong>'+godinaX(-2)+'</strong> (X-2). Не пријављује се '+godinaX(-1)+
     ', јер енергетска статистика за ту годину још није коначна у моменту предаје.';
 }
-var STEPS = ['Нацрт','Предато','Под контролом','Спремно за потврду','Потврђено/Консолидовано','Одобрено за извештавање'];
+var STEPS = ['Нацрт','Валидација достављача','Предато','Потврђено','Консолидовано','Финална потврда'];
 function stepIndex(status){
-  return {draft:0, submitted:1, under_review:2, correction_requested:2, ready_for_confirmation:3, confirmed:4, approved:5}[status];
+  return {draft:0, validated:1, submitted:2, correction_requested:2, confirmed:3, consolidated:4, approved:5}[status];
 }
 /* Main line = six steps every form passes. A requested correction is a conditional detour, not a
-   step in the line — rendered as a dashed box after QA/QC and only once it has actually happened.
+   step in the line — rendered as a dashed box after the submission step and only once it has actually happened.
    An un-ticked "Step 4" in the middle of the line reads as a skipped requirement instead. */
 function chainBoxes(){
   var st = S.formV.status, cur = stepIndex(st), naIspravci = (st==='correction_requested');
@@ -1444,21 +2261,67 @@ function chainBoxes(){
   return out;
 }
 function statusLabel(status){
-  return {draft:'Нацрт', submitted:'Предато', under_review:'Под контролом', ready_for_confirmation:'Спремно за потврду', correction_requested:'Захтевана исправка', confirmed:'Потврђено/Консолидовано', approved:'Одобрено за извештавање'}[status];
+  return {draft:'Нацрт', validated:'Валидирано', submitted:'Предато', correction_requested:'Захтевана исправка', confirmed:'Потврђено', consolidated:'Консолидовано', approved:'Финално потврђено'}[status];
 }
 function completionPct(){
-  return {draft:70, submitted:75, under_review:85, ready_for_confirmation:85, correction_requested:70, confirmed:95, approved:100}[S.formV.status];
+  return {draft:70, validated:80, submitted:85, correction_requested:70, confirmed:92, consolidated:96, approved:100}[S.formV.status];
 }
 function stageInfo(status){
   return {
-    draft:{label:'Нацрт', nextBy:t(ROLE_KEY.dp), desc:'Чека се довршавање и предаја од стране Достављача података.'},
-    submitted:{label:'Предато — чека QA/QC контролу', nextBy:t(ROLE_KEY.support), desc:'Допринос предат од Достављача података. Чека се почетак QA/QC контроле од Помоћног известиоца.'},
-    under_review:{label:'Под контролом (QA/QC)', nextBy:t(ROLE_KEY.support), desc:'Чека се контрола квалитета од Помоћног известиоца.'},
-    ready_for_confirmation:{label:'Под контролом — спремно за потврду', nextBy:t(ROLE_KEY.lead), desc:'QA/QC контрола завршена. Чека се потврда / консолидација од Водећег известиоца.'},
-    correction_requested:{label:'Захтевана исправка', nextBy:t(ROLE_KEY.dp), desc:'Чека се исправка и поновна предаја од Достављача података.'},
-    confirmed:{label:'Потврђено / Консолидовано — спремно за одобрење', nextBy:t(ROLE_KEY.coord), desc:'Чека се коначно одобрење Националног координатора извештавања.'},
-    approved:{label:'Одобрено за извештавање / извоз', nextBy:'—', desc:'Образац V је одобрен. Спреман за извоз / даљу обраду.'}
-  }[status];
+    draft:{label:'Нацрт', nextBy:t(ROLE_KEY.dp), desc:'Чека се довршавање уноса и електронска валидација од Достављача података.'},
+    validated:{label:'Валидирано код достављача', nextBy:t(ROLE_KEY.dp), desc:'Овлашћено лице достављача је валидирало унос. Чека се предаја.'},
+    submitted:{label:'Предато', nextBy:t(ROLE_KEY.lead), desc:'Допринос предат. Чека се потврда Водећег известиоца.'},
+    correction_requested:{label:'Захтевана измена', nextBy:t(ROLE_KEY.dp), desc:'Чека се измена и поновна предаја од Достављача података.'},
+    confirmed:{label:'Потврђено', nextBy:t(ROLE_KEY.lead), desc:'Водећи известилац је потврдио допринос. Чека се консолидација обрасца.'},
+    consolidated:{label:'Консолидовано', nextBy:t(ROLE_KEY.super), desc:'Образац је консолидован. Чека се финална потврда Супервизора.'},
+    approved:{label:'Финално потврђено — за унос у Reportnet', nextBy:'—', desc:'Супервизор је потврдио образац. Спреман за унос у Reportnet / извоз.'}
+  }[status] || {label:String(status||'—'), nextBy:'—', desc:''};
+}
+/* ===== Ревизиони траг по пољу =====
+   Свака измена сваког поља се бележи: шта, из чега у шта, ко и када.
+   Измену Супервизора прати обавезно образложење. */
+function auditPolje(polje, staro, novo, obrazlozenje){
+  if(String(staro||'')===String(novo||'')) return;
+  S.formV.audit.push({
+    polje: polje,
+    staro: (staro===''||staro===undefined||staro===null) ? '(празно)' : String(staro),
+    novo:  (novo===''||novo===undefined||novo===null)  ? '(празно)' : String(novo),
+    ko: ACTOR[S.role], uloga: t(ROLE_KEY[S.role]),
+    kada: nextDemoDate(), obrazlozenje: obrazlozenje || ''
+  });
+  renderAudit();
+}
+var _cekaObrazlozenje = null;
+/* Супервизор може да измени свако поље, али не без образложења. */
+function traziObrazlozenje(polje, staro, novo, primeni){
+  _cekaObrazlozenje = {polje:polje, staro:staro, novo:novo, primeni:primeni};
+  var el=document.getElementById('obrPolje'); if(el) el.textContent=polje;
+  var st=document.getElementById('obrStaro'); if(st) st.textContent=(staro===''?'(празно)':staro);
+  var nv=document.getElementById('obrNovo');  if(nv) nv.textContent=(novo===''?'(празно)':novo);
+  var tx=document.getElementById('obrTekst'); if(tx) tx.value='';
+  openModal('modal-obrazlozenje');
+}
+function potvrdiObrazlozenje(){
+  var tx=document.getElementById('obrTekst');
+  if(!tx || !tx.value.trim()){ if(tx) tx.focus(); return; }
+  var z=_cekaObrazlozenje; _cekaObrazlozenje=null;
+  closeModal('modal-obrazlozenje');
+  if(!z) return;
+  if(typeof z.primeni==='function') z.primeni();
+  auditPolje(z.polje, z.staro, z.novo, tx.value.trim());
+  pushActivity('Административна измена поља: '+z.polje, ACTOR.super);
+  renderAll();
+}
+function renderAudit(){
+  var el=document.getElementById('auditBody'); if(!el) return;
+  var a=S.formV.audit;
+  el.innerHTML = a.length ? a.slice().reverse().map(function(x){
+    return '<tr><td>'+esc(x.polje)+'</td><td class="small">'+esc(x.staro)+' → <strong>'+esc(x.novo)+'</strong></td>'+
+      '<td class="small">'+esc(x.ko)+'<div class="xs muted">'+esc(x.uloga)+'</div></td>'+
+      '<td class="small">'+esc(x.kada)+'</td><td class="small">'+(x.obrazlozenje?esc(x.obrazlozenje):'—')+'</td></tr>';
+  }).join('') : '<tr><td colspan="5" class="muted small">Још нема измена поља у овом циклусу.</td></tr>';
+  var br=document.getElementById('auditCount'); if(br) br.textContent=a.length;
+  prevediUI();
 }
 function pushActivity(action, actor){
   S.formV.activity.push({action:action, actor:actor, date: nextDemoDate()});
@@ -1485,6 +2348,7 @@ function renderFormV(){
 
   renderRokovi();
   renderGodine();
+  renderAudit();
   renderFormvBanner();
   renderContributions();
   renderCorrectionCallout();
@@ -1502,15 +2366,15 @@ function renderFormV(){
 
 function renderFormvBanner(){
   var el = document.getElementById('formvBanner');
-  if(S.formV.submittedInfo && (S.formV.status==='submitted' || S.formV.status==='under_review')){
+  if(S.formV.submittedInfo && S.formV.status==='submitted'){
     el.innerHTML = '<div class="banner-ok"><div class="bt">Допринос предат на преглед</div>'+
       'Предао '+S.formV.submittedInfo.by+' · '+S.formV.submittedInfo.inst+' · '+S.formV.submittedInfo.date+' → Статус: '+statusLabel(S.formV.status)+'. Доприноси других институција за Образац V могу и даље бити у изради.</div>';
   } else if(S.formV.status==='approved' && S.formV.approvedInfo){
     /* U trenutku odobrenja izvoz je sledeci korak — dugme ide u baner, gde oko vec gleda. */
-    var mozeIzvoz = (S.role==='lead' || S.role==='coord' || S.role==='admin');
+    var mozeIzvoz = (S.role==='super');
     el.innerHTML = '<div class="banner-ok" style="border-width:2px; border-color:var(--text-primary);">'+
       '<div style="display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;">'+
-        '<div><div class="bt">Одобрено за извештавање</div>'+
+        '<div><div class="bt">Финално потврђено</div>'+
         'Одобрио '+S.formV.approvedInfo.by+' ('+S.formV.approvedInfo.role+') · '+S.formV.approvedInfo.date+
         '<div class="small muted" style="margin-top:4px;">Следећи корак: припрема фајла за предају у '+(CILJNI_SISTEM['V']||'европски систем')+'.'+
           (S.formV.restrictPublic ? ' Означено као ограничено од јавног приказа.' : '')+'</div></div>'+
@@ -1532,7 +2396,7 @@ function renderCorrectionCallout(){
     el.innerHTML = '<div class="callout strong">'+
       '<div class="callout-h">Исправка захтевана од '+c.fromRole+' — '+c.date+'</div>'+
       '<div>'+esc(c.comment)+'</div>'+
-      ((c.nalazi && c.nalazi.length) ? '<div class="small" style="margin-top:8px;"><strong>Налази које треба отклонити:</strong></div>'+
+      ((c.nalazi && c.nalazi.length) ? '<div class="small" style="margin-top:8px;"><strong>Примедбе које треба отклонити:</strong></div>'+
         c.nalazi.map(function(x,i){
           return '<div class="small" style="padding:3px 0;">'+(i+1)+'. '+esc(x.text)+
             (x.mesto ? ' <span class="badge">'+esc(x.mesto)+'</span>' : '')+'</div>';
@@ -1574,10 +2438,10 @@ function renderSectionResponsibility(){
 
   /* Administrator sme da menja sve sekcije (administrativni приступ), Достављач података
      само своју, а известиоци и координатор ниједну — они прегледају и одлучују. */
-  var admin = isAdminOverride();
+  var admin = isSupervizor();
   if(intro){
     intro.textContent = admin
-      ? 'Као администратор можете уређивати све секције, независно од тога којој су институцији додељене. Свака измена се бележи у историји.'
+      ? 'Као Супервизор можете уређивати све секције, независно од тога којој су институцији додељене. Свака измена се бележи у историји.'
       : (S.role==='dp'
           ? 'Можете видети читав образац за извештавање, али можете уређивати само секцију(е) додељену вашој институцији.'
           : 'У вашој улози образац се прегледа, а не уређује — унос је на институцијама којима су секције додељене.');
@@ -1634,7 +2498,7 @@ function renderConcurrency(){
 }
 function simulateConflict(){
   S.formV.conflict = true;
-  S.formV.lastUpdated = {by:'Марко Илић', time:'11:15'};
+  S.formV.lastUpdated = {by:'Ана Репац', time:'11:15'};
   pushActivity('Откривена истовремена измена (демо)', 'Систем (демо)');
   renderFormV();
 }
@@ -1643,6 +2507,33 @@ function resolveConflict(){
   renderFormV();
 }
 
+/* Двојезично поље: српски унос лево, енглески предлог десно, са статусом превода.
+   Док превод није потврђен, поље носи видљиву ознаку и предаја је блокирана. */
+function dvoPolje(kind, i, field, labela, vrednost, tip, editable){
+  var obj = (kind==='obj') ? S.formV.objectives[i] : S.formV.indicators[i];
+  var en = (obj._en||{})[field] || '';
+  var st = (obj._st||{})[field] || (en ? PREVOD_STATUS.MASINSKI : PREVOD_STATUS.PRAZNO);
+  var d = editable ? '' : 'disabled';
+  var potvrdjen = (st===PREVOD_STATUS.POTVRDJEN);
+  var badge = potvrdjen
+    ? '<span class="badge">потврђено</span>'
+    : '<span class="badge solid">'+(en ? 'машински превод — потврдити' : 'нема превода')+'</span>';
+  var unos = (tip==='textarea')
+    ? '<textarea '+d+' rows="2" oninput="updObj('+i+',\''+field+'\',this.value)">'+esc(vrednost||'')+'</textarea>'
+    : '<input '+d+' value="'+esc(vrednost||'')+'" oninput="updObj('+i+',\''+field+'\',this.value)">';
+  var unosEn = (tip==='textarea')
+    ? '<textarea '+d+' rows="2" oninput="updEn(\''+kind+'\','+i+',\''+field+'\',this.value)">'+esc(en)+'</textarea>'
+    : '<input '+d+' value="'+esc(en)+'" oninput="updEn(\''+kind+'\','+i+',\''+field+'\',this.value)">';
+  return '<div class="fld"><label>'+labela+' <span class="req">*</span> <span class="badge">обавезно</span></label>'+
+    '<div class="grid2" style="gap:10px;">'+
+      '<div><div class="xs muted" style="margin-bottom:3px;">Српски <span class="badge">изворна верзија</span></div>'+unos+'</div>'+
+      '<div><div class="xs muted" style="margin-bottom:3px; display:flex; justify-content:space-between; gap:6px; align-items:center;">'+
+        '<span>Енглески '+badge+'</span>'+
+        (editable ? '<span><span class="btn sm" onclick="prevediPolje(\''+kind+'\','+i+',\''+field+'\')">Преведи</span>'+
+                    (en && !potvrdjen ? ' <span class="btn sm" onclick="potvrdiPrevod(\''+kind+'\','+i+',\''+field+'\')">Потврди превод</span>' : '')+'</span>' : '')+
+      '</div>'+unosEn+'</div>'+
+    '</div></div>';
+}
 function renderObjectives(){
   var editable = canEdit();
   var html = S.formV.objectives.map(function(o,i){
@@ -1666,10 +2557,8 @@ function renderObjectives(){
     }
     return '<div class="entry-card">'+
       '<div class="ec-h">Циљ '+(i+1)+' од '+S.formV.objectives.length+'</div>'+
-      '<div class="fld"><label>Назив националног циља <span class="req">*</span> <span class="badge">обавезно</span></label>'+
-        '<input '+d+' value="'+esc(o.name)+'" oninput="updObj('+i+',\'name\',this.value)"></div>'+
-      '<div class="fld"><label>Опис <span class="req">*</span> <span class="badge">обавезно</span></label>'+
-        '<textarea '+d+' rows="2" oninput="updObj('+i+',\'desc\',this.value)">'+esc(o.desc)+'</textarea></div>'+
+      dvoPolje('obj', i, 'name', 'Назив националног циља', o.name, 'input', editable)+
+      dvoPolje('obj', i, 'desc', 'Опис', o.desc, 'textarea', editable)+
       '<div class="grid2">'+
         '<div class="fld"><label>Релевантност</label><input '+d+' value="'+esc(o.relevance)+'" oninput="updObj('+i+',\'relevance\',this.value)"></div>'+
         '<div class="fld"><label>Циљна година'+(problemCelije(o.year)?' <span class="badge solid">блокира предају</span>':'')+'</label>'+
@@ -1684,14 +2573,22 @@ function renderObjectives(){
       '</div>';
   }).join('');
   document.getElementById('objectivesList').innerHTML = html;
+  prevediUI(); /* делимичан приказ мимо renderAll — и он кроз слој превода */
 }
 function updObj(i, field, val){
+  var staro = S.formV.objectives[i][field];
+  var naziv = 'Циљ '+(i+1)+' — '+({name:'Назив националног циља',desc:'Опис',relevance:'Релевантност',year:'Циљна година',status:'Статус',responsible:'Одговорни субјект',reference:'Референца / извор',comments:'Опште напомене'}[field] || field);
+  if(isSupervizor() && String(staro||'')!==String(val||'')){
+    traziObrazlozenje(naziv, staro, val, function(){ S.formV.objectives[i][field] = val; });
+    return;
+  }
   S.formV.objectives[i][field] = val;
+  auditPolje(naziv, staro, val);
   if(field==='year') renderBlokade();
   /* administrativna intervencija se belezi u istoriji, jednom po nizu izmena */
-  if(isAdminOverride() && !S.formV.adminEditLogged){
+  if(isSupervizor() && !S.formV.adminEditLogged){
     S.formV.adminEditLogged = true;
-    pushActivity('Административна измена унетих података', ACTOR.admin);
+    pushActivity('Административна измена унетих података', ACTOR.super);
     renderActivity();
   }
 }
@@ -1722,12 +2619,20 @@ function renderIndicators(){
   }).join('');
   document.getElementById('btnAddIndicator').classList.toggle('hidden', !ed);
   renderBlokade();
+  prevediUI();
 }
 function updInd(i, field, val){
+  var staro = S.formV.indicators[i][field];
+  var naziv = (S.formV.indicators[i].name||('Показатељ '+(i+1)))+' — '+({prev:'X-3',curr:'X-2',target:'Циљна вредност'}[field] || field);
+  if(isSupervizor() && String(staro||'')!==String(val||'')){
+    traziObrazlozenje(naziv, staro, val, function(){ S.formV.indicators[i][field] = val; });
+    return;
+  }
   S.formV.indicators[i][field] = val;
-  if(isAdminOverride() && !S.formV.adminEditLogged){
+  auditPolje(naziv, staro, val);
+  if(isSupervizor() && !S.formV.adminEditLogged){
     S.formV.adminEditLogged = true;
-    pushActivity('Административна измена унетих података', ACTOR.admin);
+    pushActivity('Административна измена унетих података', ACTOR.super);
     renderActivity();
   }
   renderBlokade();
@@ -1750,14 +2655,15 @@ function renderBlokade(){
   if(!lista.length){ el.innerHTML=''; el.classList.add('hidden'); }
   else {
     el.classList.remove('hidden');
-    el.innerHTML = '<div class="callout-h">Блокира предају: '+lista.length+' '+(lista.length===1?'поље':'поља')+'</div>'+
-      '<div class="small">'+lista.slice(0,6).map(esc).join(' · ')+(lista.length>6 ? ' · и још '+(lista.length-6) : '')+'</div>'+
-      '<div class="xs" style="margin-top:5px; opacity:.85;">У ћелију се уписује број, или ознака NA / NAv / C уместо вредности.</div>';
+    el.innerHTML = '<div class="callout-h">'+L('Блокира предају: ','Blocks submission: ')+lista.length+' '+
+        L(lista.length===1?'поље':'поља', lista.length===1?'field':'fields')+'</div>'+
+      '<div class="small">'+lista.slice(0,6).map(esc).join(' · ')+(lista.length>6 ? L(' · и још ',' · and ')+(lista.length-6) : '')+'</div>'+
+      '<div class="xs" style="margin-top:5px; opacity:.85;">'+L('У ћелију се уписује број, или ознака NA / NAv / C уместо вредности.','A number is entered in the cell, or the notation key NA / NAv / C instead of a value.')+'</div>';
   }
   var b = document.getElementById('btnSubmitContribution');
   if(b){
     b.disabled = lista.length>0;
-    b.title = lista.length ? 'Предаја је блокирана док има празних поља или недозвољених уноса.' : '';
+    b.title = lista.length ? L('Предаја је блокирана док има празних поља или недозвољених уноса.','Submission is blocked while there are empty fields or entries that are not allowed.') : '';
   }
 }
 function openAddIndicator(){
@@ -1830,117 +2736,114 @@ function showMoreActivity(){
 function renderFormvSidePanel(){
   var el = document.getElementById('formvSidePanel');
   var st = S.formV.status;
-  if(S.role==='support' && st==='submitted'){
-    el.innerHTML = '<div class="side-panel"><h3>Допринос чека QA/QC контролу</h3>'+
-      '<p class="small muted">Достављач података је предао свој допринос Обрасцу V. Контрола квалитета (QA/QC) још није почела.</p>'+
-      '<div><button class="btn pri" onclick="startQaQc()">'+t('btn_start_qaqc')+'</button></div>'+
-      '<div style="margin-top:10px; border-top:1px solid var(--border); padding-top:10px;">'+
-        '<button class="btn" onclick="openCorrection()">'+t('btn_request_correction')+'</button>'+
-        '<div class="note" style="margin-top:5px;">Враћа образац онима који су га попунили.</div>'+
-      '</div></div>';
-  } else if(S.role==='support' && st==='under_review'){
-    var brNalaza = S.formV.qaNalazi.length;
-    el.innerHTML = '<div class="side-panel"><h3>QA/QC контрола — '+
-        (brNalaza ? 'уочено налаза: '+brNalaza : 'нема уочених налаза')+'</h3>'+
-      '<div id="qaNalaziList"></div>'+
-      '<div class="fld" style="margin-top:10px;"><label>На шта се налаз односи</label>'+
-        '<select id="qaNalazMesto">'+
-          mestaUObrascu().map(function(x){ return '<option>'+esc(x)+'</option>'; }).join('')+
-        '</select></div>'+
-      '<div class="fld"><label>Упиши налаз</label>'+
-        '<textarea id="qaCommentInput" rows="2" placeholder="нпр. Циљна вредност за 2030. није унета"></textarea></div>'+
-      '<button class="btn sm" onclick="addQaComment()">+ Додај налаз</button>'+
-      '<p class="note" style="margin-top:10px;">По члану 19. Правилника Помоћни известилац „доставља резултате контроле квалитета надлежном Водећем известиоцу“ — враћање обрасца је одлука Водећег известиоца. Овде је оба пута задржано у демонстрацији, а начин примене биће усаглашен са корисником у РП2.</p>'+
-      '<div id="qaBlokada" class="callout strong hidden" style="margin-top:12px;"></div>'+
+
+  /* ДОСТАВЉАЧ ПОДАТАКА — кораци 1–3: унос, валидација, предаја */
+  if(S.role==='dp' && (st==='draft' || st==='correction_requested')){
+    var blok = blokadeUObrascu().length;
+    el.innerHTML = '<div class="side-panel"><h3>'+(st==='draft' ? 'Унос у току' : 'Захтевана измена')+'</h3>'+
+      '<p class="small muted">Када завршите унос, овлашћено лице ваше институције електронски валидира податке — то Правилник и пројектни задатак изричито траже — а затим се образац предаје.</p>'+
+      (blok ? '<div class="callout strong" style="margin-top:10px;"><div class="callout-h">Блокира валидацију: '+blok+' поља</div><div class="small">Свако поље мора имати вредност или ознаку NA / NAv / C.</div></div>' : '')+
       '<div style="margin-top:14px;">'+
-        '<button class="btn pri" onclick="completeQaQc()">'+t('btn_qaqc_complete')+'</button>'+
-      '</div>'+
-      '<div style="margin-top:10px; border-top:1px solid var(--border); padding-top:10px;">'+
-        '<button class="btn" onclick="openCorrection()">'+t('btn_request_correction')+'</button>'+
-        '<div class="note" style="margin-top:5px;">Враћа образац онима који су га попунили.</div>'+
+        '<button class="btn pri" id="btnValidate" '+(blok?'disabled title="Прво решите блокирана поља"':'')+' onclick="openValidate()">Валидирај унос</button>'+
       '</div></div>';
-    renderQaNalaze();
-  } else if(S.role==='lead' && st==='ready_for_confirmation'){
-    el.innerHTML = '<div class="side-panel"><h3>Спремност институционалних доприноса</h3>'+
+  } else if(S.role==='dp' && st==='validated'){
+    el.innerHTML = '<div class="side-panel"><h3>Валидирано — спремно за предају</h3>'+
+      checklistRow('Сва обавезна поља попуњена или означена', true)+
+      checklistRow('Унос валидирало овлашћено лице институције', true)+
+      '<p class="small muted" style="margin-top:8px;">Предајом допринос иде Водећем известиоцу. До тада можете вратити образац у нацрт и допунити га.</p>'+
+      '<div style="margin-top:14px;">'+
+        '<button class="btn pri" id="btnSubmitContribution" onclick="openModal(\'modal-submit\')">'+t('btn_submit_review')+'</button> '+
+        '<button class="btn" onclick="vratiUNacrt()">Врати у нацрт</button>'+
+      '</div></div>';
+
+  /* ВОДЕЋИ ИЗВЕСТИЛАЦ — кораци 4–5: потврда и консолидација */
+  } else if(S.role==='lead' && st==='submitted'){
+    el.innerHTML = '<div class="side-panel"><h3>Предато — чека потврду</h3>'+
       contributionsReadinessHtml()+
       '<div style="margin-top:14px;">'+
-        '<button class="btn pri" onclick="leadConfirm()">'+t('btn_confirm_consolidate')+'</button>'+
+        '<button class="btn pri" onclick="leadConfirm()">Потврди допринос</button>'+
       '</div>'+
       '<div style="margin-top:10px; border-top:1px solid var(--border); padding-top:10px;">'+
         '<button class="btn" onclick="openCorrection()">'+t('btn_request_correction')+'</button>'+
-        '<div class="note" style="margin-top:5px;">Враћа образац онима који су га попунили.</div>'+
+        '<div class="note" style="margin-top:5px;">Враћа образац Достављачу података.</div>'+
       '</div></div>';
-  } else if(S.role==='coord' && st==='confirmed'){
-    el.innerHTML = '<div class="side-panel"><h3>Спремно за коначно одобрење</h3>'+
-      checklistRow('Образац за извештавање је потпун', true)+
-      checklistRow('QA/QC контрола завршена', true)+
-      checklistRow('Потврда Водећег известиоца завршена', true)+
+  } else if(S.role==='lead' && st==='confirmed'){
+    el.innerHTML = '<div class="side-panel"><h3>Потврђено — спремно за консолидацију</h3>'+
+      contributionsReadinessHtml()+
+      '<p class="small muted" style="margin-top:8px;">Консолидацијом се доприноси свих институција спајају у један образац и предају Супервизору.</p>'+
       '<div style="margin-top:14px;">'+
-        '<button class="btn pri" onclick="openApprove()">'+t('btn_approve')+'</button>'+
+        '<button class="btn pri" onclick="leadConsolidate()">Консолидуј образац</button>'+
       '</div>'+
       '<div style="margin-top:10px; border-top:1px solid var(--border); padding-top:10px;">'+
         '<button class="btn" onclick="openCorrection()">'+t('btn_request_correction')+'</button>'+
-        '<div class="note" style="margin-top:5px;">Враћа образац онима који су га попунили.</div>'+
       '</div></div>';
-  } else if(S.role==='support' || S.role==='lead' || S.role==='coord'){
-    /* Nema slepe ulice: kad uloga nema sta da radi, kaze se koga se ceka i nudi se jedan
-       klik do faze u kojoj ta uloga odlucuje. Ispravka ostaje dostupna, ali kao tise dugme. */
-    var moze = (st!=='draft' && st!=='correction_requested');
+
+  /* СУПЕРВИЗОР — финална потврда, може и сам да измени уз образложење */
+  } else if(S.role==='super' && st==='consolidated'){
+    el.innerHTML = '<div class="side-panel"><h3>Спремно за финалну потврду</h3>'+
+      checklistRow('Унос валидиран код достављача', true)+
+      checklistRow('Допринос потврдио Водећи известилац', true)+
+      checklistRow('Образац консолидован', true)+
+      '<p class="small muted" style="margin-top:8px;">Финалном потврдом образац постаје спреман за унос у Reportnet, што обавља Супервизор.</p>'+
+      '<div style="margin-top:14px;">'+
+        '<button class="btn pri" onclick="openApprove()">Финална потврда</button>'+
+      '</div>'+
+      '<div style="margin-top:10px; border-top:1px solid var(--border); padding-top:10px;">'+
+        '<button class="btn" onclick="openCorrection()">'+t('btn_request_correction')+'</button>'+
+        '<div class="note" style="margin-top:5px;">Или измените поље сами — свака измена Супервизора захтева образложење и остаје у ревизионом трагу.</div>'+
+      '</div></div>';
+  } else if(S.role==='super'){
+    el.innerHTML = '<div class="side-panel"><h3>Супервизорски приступ</h3>'+
+      '<p class="small muted">Тренутна фаза: '+statusLabel(st)+'. Супервизор може да измени било које поље у било којој фази, уз обавезно образложење које остаје у ревизионом трагу.</p>'+
+      (FAZA_ULOGE.super!==st ? '<div style="margin-top:12px;"><button class="btn pri" onclick="setDemoFazu(\'consolidated\')">Пређи на фазу финалне потврде</button>'+
+        '<p class="note" style="margin-top:8px; margin-bottom:0;">Демо пречица — у стварној платформи фазу помера радња претходне улоге.</p></div>' : '')+
+      '<div style="margin-top:12px; border-top:1px solid var(--border); padding-top:12px;">'+
+        '<button class="btn" onclick="openCorrection()">'+t('btn_request_correction')+'</button></div>'+
+      '</div>';
+
+  /* улога нема шта да ради у овој фази */
+  } else {
     var faza = FAZA_ULOGE[S.role];
     var skok = (faza && faza!==st)
-      ? '<button class="btn pri" onclick="setDemoFazu(\''+faza+'\')">Пређи на фазу у којој ова улога одлучује</button>'
-      : '';
+      ? '<button class="btn pri" onclick="setDemoFazu(\''+faza+'\')">Пређи на фазу у којој ова улога одлучује</button>' : '';
+    var mozeIspravku = (S.role==='lead' && st!=='draft' && st!=='correction_requested');
     el.innerHTML = '<div class="side-panel"><h3>Није потребна радња</h3>'+
       '<p class="small muted">'+waitingText(S.role, st)+'</p>'+
       (skok ? '<div style="margin-top:12px;">'+skok+
               '<p class="note" style="margin-top:8px; margin-bottom:0;">Демо пречица — у стварној платформи фазу помера радња претходне улоге.</p></div>' : '')+
-      (moze ? '<div style="margin-top:12px; border-top:1px solid var(--border); padding-top:12px;">'+
-              '<button class="btn" onclick="openCorrection()">'+t('btn_request_correction')+'</button>'+
-              '<p class="note" style="margin-top:6px; margin-bottom:0;">Исправку можете затражити у било којој фази.</p></div>' : '')+
+      (mozeIspravku ? '<div style="margin-top:12px; border-top:1px solid var(--border); padding-top:12px;">'+
+              '<button class="btn" onclick="openCorrection()">'+t('btn_request_correction')+'</button></div>' : '')+
       '</div>';
-  } else if(S.role==='admin'){
-    el.innerHTML = '<div class="side-panel"><h3>Административни приступ</h3>'+
-      '<p class="small muted">Администратор не учествује у извештавању, али може видети и по потреби изменити унете податке у свакој фази — на пример да отклони застој или очигледну грешку.</p>'+
-      '<div class="callout strong" style="margin:10px 0 0;">'+
-        '<div class="callout-h">Измене се бележе</div>'+
-        '<div class="small">Свака измена коју администратор унесе улази у историју као административна интервенција, са именом и датумом.</div>'+
-      '</div>'+
-      '<p class="note" style="margin-top:10px;">Правилник администратору не даје улогу у самом извештавању, па обим овог приступа треба усагласити у РП2.</p>'+
-      '</div>';
-  } else {
-    el.innerHTML='';
   }
 }
 function checklistRow(label, done){
   return '<div class="checklist-row"><span class="chk-mark'+(done?' yes':'')+'">'+(done?'✓':'')+'</span>'+label+'</div>';
 }
-/* ---- Glavni izveštač: spremnost doprinosa po institucijama, pre potvrde/konsolidacije celog obrasca ---- */
+/* Водећи известилац: спремност доприноса по институцијама, пре потврде и консолидације */
 function contributionsReadinessHtml(){
   var n = S.formV.contributions.length;
   var rows = S.formV.contributions.map(function(c){
-    return checklistRow(esc(c.institution)+' — QA/QC контрола завршена', true);
+    return checklistRow(esc(c.institution)+' — унос валидиран код достављача', true);
   }).join('');
   return rows + '<p class="small" style="margin-top:8px; font-weight:600;">'+n+' од '+n+' потребних доприноса завршено</p>';
 }
 function waitingText(role, st){
-  if(st==='draft') return 'Чека се предаја од Достављача података.';
-  if(st==='submitted') return 'Допринос предат — чека се почетак QA/QC контроле од Помоћног известиоца.';
-  if(st==='correction_requested') return 'Захтевана исправка — чека се поновна предаја од Достављача података.';
-  if(role==='support') return 'Није потребна QA/QC радња у овој фази (тренутни статус: '+statusLabel(st)+').';
-  if(role==='lead'){
-    if(st==='under_review') return 'Чека се QA/QC контрола од Помоћног известиоца.';
-    if(st==='confirmed') return 'Већ потврђено / консолидовано. Чека се одобрење координатора.';
-    if(st==='approved') return 'Одобрено. Нема потребе за даљом радњом.';
+  if(role==='dp'){
+    if(st==='submitted')     return 'Допринос је предат. Чека се потврда Водећег известиоца.';
+    if(st==='confirmed')     return 'Водећи известилац је потврдио допринос. Чека се консолидација обрасца.';
+    if(st==='consolidated')  return 'Образац је консолидован. Чека се финална потврда Супервизора.';
+    if(st==='approved')      return 'Образац је финално потврђен. Нема потребе за даљом радњом.';
   }
-  if(role==='coord'){
-    if(st==='under_review') return 'Чека се QA/QC контрола од Помоћног известиоца.';
-    if(st==='ready_for_confirmation') return 'Чека се потврда Водећег известиоца.';
-    if(st==='approved') return 'Већ одобрено за извештавање.';
+  if(role==='lead'){
+    if(st==='draft' || st==='validated') return 'Достављач података још уноси и валидира свој допринос.';
+    if(st==='correction_requested')      return 'Захтевана измена — чека се поновна предаја Достављача података.';
+    if(st==='consolidated')              return 'Образац је консолидован. Чека се финална потврда Супервизора.';
+    if(st==='approved')                  return 'Образац је финално потврђен.';
   }
   return 'Није потребна радња у овој фази.';
 }
 /* Mesta u obrascu na koja se nalaz moze vezati — izvedena iz stvarnog sadrzaja ekrana,
-   da izvestilac podrske moze da kaze NA STA se greska odnosi, a ne samo da greska postoji. */
+   da onaj ko trazi izmenu moze da kaze NA STA se odnosi, a ne samo da nesto nije u redu. */
 function mestaUObrascu(){
   var m = [];
   FORMV_SECTIONS.forEach(function(s){ m.push(s.name); });
@@ -1952,36 +2855,9 @@ function mestaUObrascu(){
   m.push('Опште (цео образац)');
   return m;
 }
-function renderQaNalaze(){
-  var list = document.getElementById('qaNalaziList');
-  if(!list) return;
-  if(!S.formV.qaNalazi.length){
-    list.innerHTML = '<p class="small muted" style="margin:0;">Још нема уписаних налаза.</p>';
-    return;
-  }
-  list.innerHTML = S.formV.qaNalazi.map(function(n,i){
-    return '<div class="issue"><div style="display:flex; justify-content:space-between; gap:8px;">'+
-      '<div>'+(i+1)+'. '+esc(n.text)+'</div>'+
-      '<span class="btn sm" style="flex:0 0 auto; padding:1px 7px;" onclick="removeQaNalaz('+i+')" title="Обриши налаз">×</span>'+
-      '</div>'+
-      (n.mesto ? '<div class="xs" style="margin-top:4px;"><span class="badge">'+esc(n.mesto)+'</span></div>' : '')+
-      '<div class="muted xs" style="margin-top:3px;">'+esc(n.by)+' · '+esc(n.date)+'</div></div>';
-  }).join('');
-}
-function addQaComment(){
-  var el = document.getElementById('qaCommentInput');
-  var v = el.value.trim();
-  if(!v) return;
-  var ms = document.getElementById('qaNalazMesto');
-  S.formV.qaNalazi.push({text:v, mesto:(ms ? ms.value : ''), by:ACTOR[S.role], date:nextDemoDate()});
-  pushActivity('Уписан налаз QA/QC контроле', ACTOR[S.role]);
-  el.value='';
-  renderFormvSidePanel();   /* osvezi i brojac u naslovu */
-  renderActivity();
-}
-function removeQaNalaz(i){
-  S.formV.qaNalazi.splice(i,1);
-  pushActivity('Налаз обрисан', ACTOR[S.role]);
+function removePrimedbu(i){
+  S.formV.primedbe.splice(i,1);
+  pushActivity('Примедба обрисана', ACTOR[S.role]);
   renderFormvSidePanel();
   renderActivity();
 }
@@ -2003,7 +2879,7 @@ function renderFormvBottomActions(){
 }
 function renderFormvTopActions(){
   var el = document.getElementById('formvActionsTop');
-  var canExport = (S.role==='lead' || S.role==='coord' || S.role==='admin');
+  var canExport = (S.role==='super');
   if(!canExport){ el.innerHTML=''; return; }
   var enabled = S.formV.status==='approved';
   el.innerHTML = '<button class="btn'+(enabled?' pri':'')+'" '+(enabled?'':'disabled title="Доступно када образац буде одобрен за извештавање/извоз"')+' onclick="'+(enabled?"openModal('modal-export')":'')+'">'+t('btn_export')+'</button>';
@@ -2044,11 +2920,32 @@ function saveDraft(){
 function toggleSubmitBtn(){
   document.getElementById('btnConfirmSubmit').disabled = !document.getElementById('submitCheck').checked;
 }
+function openValidate(){ openModal('modal-validate'); }
+function confirmValidate(){
+  var ime = document.getElementById('valPerson').value.trim();
+  if(!ime){ document.getElementById('valPerson').focus(); return; }
+  S.formV.status='validated';
+  S.formV.validacija = {by:ime, org:ORG[S.role], date:nextDemoDate()};
+  pushActivity('Унос електронски валидиран ('+ime+')', ACTOR.dp);
+  closeModal('modal-validate');
+  renderFormV();
+}
+function vratiUNacrt(){
+  S.formV.status='draft'; S.formV.validacija=null;
+  pushActivity('Враћено у нацрт', ACTOR[S.role]);
+  renderFormV();
+}
+function leadConsolidate(){
+  S.formV.status='consolidated';
+  pushActivity('Образац консолидован', ACTOR.lead);
+  predajUlozi('super', 'Образац консолидован.');
+}
 function confirmSubmit(){
   var wasCorrection = S.formV.status==='correction_requested';
-  // Initial submission goes to "Submitted" and waits for the Support Reporter to start QA/QC;
-  // a resubmission after a correction returns directly to "Under review" (QA/QC was already under way).
-  S.formV.status = wasCorrection ? 'under_review' : 'submitted';
+  // Предаја води у „Предато" и чека потврду Водећег известиоца. Нема контроле квалитета као корака:
+  // по одговору наручиоца за тачност уноса одговара сам достављач (унос валидира
+  // овлашћено лице институције), а Супервизор даје финалну потврду.
+  S.formV.status = 'submitted';
   S.formV.correction = null;
   S.formV.submittedInfo = {by:ACTOR.dp, inst:ORG.dp, date: nextDemoDate()};
   if(wasCorrection){
@@ -2059,47 +2956,24 @@ function confirmSubmit(){
   document.getElementById('submitCheck').checked=false;
   document.getElementById('btnConfirmSubmit').disabled=true;
   closeModal('modal-submit');
-  predajUlozi('support', wasCorrection ? 'Допринос поново предат.' : 'Допринос предат на преглед.');
-}
-
-/* ---- actions: QA/QC ---- */
-function startQaQc(){
-  S.formV.status = 'under_review';
-  pushActivity('QA/QC контрола започета', ACTOR.support);
-  renderFormV();
-}
-function completeQaQc(){
-  /* Reportnet halts a release while blockers exist; the same gate applies to open findings here. */
-  var otv = S.formV.qaNalazi.length;
-  if(otv){
-    var el = document.getElementById('qaBlokada');
-    if(el){
-      el.classList.remove('hidden');
-      el.innerHTML = '<div class="callout-h">Контрола се не може завршити — '+otv+' '+(otv===1?'отворен налаз':'отворених налаза')+'</div>'+
-        '<div class="small">Или отклоните налазе, или их пошаљите Достављачу података преко „Захтевај исправку".</div>';
-    }
-    return;
-  }
-  S.formV.status = 'ready_for_confirmation';
-  pushActivity('QA/QC контрола завршена', ACTOR.support);
-  predajUlozi('lead', 'QA/QC контрола завршена.');
+  predajUlozi('lead', wasCorrection ? 'Допринос поново предат.' : 'Допринос предат на потврду.');
 }
 
 /* ---- actions: correction (shared modal, any reviewing role) ---- */
-/* Kad se otvara zahtev za ispravku, pokazi koliko nalaza QA/QC kontrole ide sa njim. */
+/* Kad se otvara zahtev za ispravku, pokazi koliko upisanih primedbi ide sa njim. */
 function openCorrection(){
   /* Uz zahtev idu upisani nalazi, svaki sa mestom na koje se odnosi — da onaj ko ispravlja
      zna gde da gleda, a ne samo da nesto nije u redu. */
-  var box = document.getElementById('corrNalaziBox');
+  var box = document.getElementById('corrPrimedbeBox');
   if(box){
-    var n = S.formV.qaNalazi;
+    var n = S.formV.primedbe;
     box.innerHTML = n.length
-      ? '<div class="fld"><label>Налази који се шаљу са захтевом ('+n.length+')</label>'+
+      ? '<div class="fld"><label>Примедбе које се шаљу са захтевом ('+n.length+')</label>'+
         n.map(function(x,i){
           return '<div class="issue" style="margin-bottom:6px;">'+(i+1)+'. '+esc(x.text)+
             (x.mesto ? ' <span class="badge">'+esc(x.mesto)+'</span>' : '')+'</div>';
         }).join('')+'</div>'
-      : '<p class="note" style="margin-top:0;">Нема уписаних налаза QA/QC контроле. Можете их уписати у панелу десно, или само оставити коментар испод.</p>';
+      : '<p class="note" style="margin-top:0;">Нема уписаних примедби. Можете их уписати испод, или само оставити коментар.</p>';
   }
   var f = document.getElementById('corrField');
   if(f){
@@ -2114,7 +2988,7 @@ function sendCorrection(){
   var fromRole = t(ROLE_KEY[S.role]);
   S.formV.correction = {
     comment:comment,
-    nalazi: S.formV.qaNalazi.slice(),
+    nalazi: S.formV.primedbe.slice(),
     field: document.getElementById('corrField').value,
     deadline: document.getElementById('corrDeadline').value,
     fromRole: fromRole,
@@ -2125,9 +2999,9 @@ function sendCorrection(){
   S.formV.status = 'correction_requested';
   S.formV.hadCorrection = true;
   S.formV.corrCount++;
-  /* The findings travel with the request, so the reviewer's open list is cleared — after the
-     resubmission QA/QC starts from a clean slate instead of blocking on already-sent findings. */
-  S.formV.qaNalazi = [];
+  /* Примедбе путују уз захтев, па се отворена листа прегледача празни — после поновне
+     предаје преглед почиње чист, а не блокиран већ послатим примедбама. */
+  S.formV.primedbe = [];
   pushActivity('Захтевана исправка', ACTOR[S.role]);
   document.getElementById('corrComment').value='';
   document.getElementById('corrField').value='';
@@ -2139,8 +3013,8 @@ function sendCorrection(){
 /* ---- actions: Lead Reporter / Coordinator ---- */
 function leadConfirm(){
   S.formV.status = 'confirmed';
-  pushActivity('Потврђено / Консолидовано', ACTOR.lead);
-  predajUlozi('coord', 'Образац потврђен и консолидован.');
+  pushActivity('Допринос потврђен', ACTOR.lead);
+  renderFormV();
 }
 function openApprove(){
   var c = document.getElementById('approveRestrict');
@@ -2151,16 +3025,16 @@ function coordApprove(){
   var c = document.getElementById('approveRestrict');
   S.formV.restrictPublic = !!(c && c.checked);
   S.formV.status = 'approved';
-  S.formV.approvedInfo = {by:ACTOR.coord, role:t(ROLE_KEY.coord), date: nextDemoDate()};
+  S.formV.approvedInfo = {by:ACTOR.super, role:t(ROLE_KEY.super), date: nextDemoDate()};
   /* The receipt is the proof of submission, regenerated on every (re)submission — Reportnet does
      the same: "A downloadable confirmation receipt … regenerates when users resubmit". */
   S.formV.potvrda = {
-    by: ACTOR.coord, role: t(ROLE_KEY.coord), date: S.formV.approvedInfo.date,
+    by: ACTOR.super, role: t(ROLE_KEY.super), date: S.formV.approvedInfo.date,
     ciklus: '2027', sistem: CILJNI_SISTEM['V'] || '—',
     javno: S.formV.restrictPublic ? 'ограничено од јавног приказа' : 'доступно у јавном приказу',
     broj: 'RS-V-2027-' + (1000 + S.formV.corrCount * 7 + 3)
   };
-  pushActivity('Одобрено'+(S.formV.restrictPublic?' (ограничено од јавног приказа)':''), ACTOR.coord);
+  pushActivity('Одобрено'+(S.formV.restrictPublic?' (ограничено од јавног приказа)':''), ACTOR.super);
   closeModal('modal-approve');
   renderFormV();
 }
@@ -2193,11 +3067,20 @@ function doExport(){
 }
 
 /* ===================== Institutions / Administration ===================== */
+function statusInstitucije(inst){
+  if(inst.preslaU) return '<span class="badge">Затворена</span> <span class="xs muted">→ '+esc(inst.preslaU)+'</span>';
+  if(!inst.active)  return '<span class="badge">Неактивна</span>';
+  return '<span class="badge solid">Активна</span>';
+}
 function renderInstitutions(){
   document.getElementById('institutionsBody').innerHTML = INSTITUTIONS.map(function(inst,i){
-    return '<tr class="clk" onclick="openInstitutionDetail('+i+')"><td>'+esc(inst.name)+'</td><td>'+esc(inst.type)+'</td>'+
-      '<td>'+inst.resp.length+'</td><td>'+inst.users.length+'</td>'+
-      '<td><span class="badge">'+(inst.active?'Активна':'Неактивна')+'</span></td>'+
+    var nasl = (inst.nastalaIz && inst.nastalaIz.length)
+      ? '<div class="xs muted">настала од: '+inst.nastalaIz.map(esc).join(', ')+'</div>' : '';
+    var trajanje = '<div class="xs muted">'+esc(inst.od||'—')+' → '+(inst.do ? esc(inst.do) : 'у примени')+'</div>';
+    return '<tr class="clk" onclick="openInstitutionDetail('+i+')"><td>'+esc(inst.name)+nasl+trajanje+'</td><td>'+esc(inst.type)+'</td>'+
+      '<td>'+inst.resp.length+'</td><td>'+inst.users.filter(function(u){return u.aktivan!==false;}).length+
+        (inst.users.some(function(u){return u.aktivan===false;}) ? ' <span class="xs muted">(+'+inst.users.filter(function(u){return u.aktivan===false;}).length+' затворених)</span>' : '')+'</td>'+
+      '<td>'+statusInstitucije(inst)+'</td>'+
       '<td><button class="btn sm" onclick="event.stopPropagation(); openInstitutionDetail('+i+')">'+t('btn_edit')+'</button></td></tr>';
   }).join('');
 }
@@ -2229,13 +3112,14 @@ function renderInstResp(inst){
   }).join('') || '<tr><td class="muted" colspan="4">Још нема додељених образаца за извештавање.</td></tr>';
 }
 function renderInstUsers(inst){
-  document.getElementById('instUsersBody').innerHTML = inst.users.map(function(u){
-    var tabs = (u.tables && u.tables.length)
-      ? u.tables.map(function(t){ return '<div>'+esc(t)+'</div>'; }).join('')
-      : '<span class="muted">—</span>';
+  document.getElementById('instUsersBody').innerHTML = inst.users.map(function(u,ix){
     var part = u.part ? '<div class="muted small">Део табеле: '+esc(u.part)+'</div>' : '';
-    return '<tr><td>'+esc(u.name)+'</td><td><span class="badge">'+esc(u.role)+'</span></td><td>'+tabs+part+'</td></tr>';
-  }).join('') || '<tr><td class="muted" colspan="3">Још нема додељених корисника.</td></tr>';
+    var zatv = (u.aktivan===false) ? '<div class="xs muted">приступ затворен '+esc(u.zatvoren||'')+' — уноси и ревизиони траг остају приписани</div>' : '';
+    return '<tr'+(u.aktivan===false?' style="opacity:.62;"':'')+'><td>'+esc(u.name)+part+zatv+'</td><td>'+esc(u.role)+'</td><td class="small">'+
+      (u.tables||[]).map(esc).join('<br>')+'</td>'+
+      '<td style="white-space:nowrap;"><button class="btn sm" onclick="openEditUser('+ix+')">Измени</button> '+
+      '<button class="btn sm" onclick="closeUser('+ix+')">'+(u.aktivan===false?'Активирај':'Затвори приступ')+'</button></td></tr>';
+  }).join('');
 }
 function saveInstitution(){
   var name = document.getElementById('instName').value.trim() || '(институција без назива)';
@@ -2270,6 +3154,90 @@ function saveAssignForm(){
   inst.resp.push({form:formName, area:area, participation:participation});
   renderInstResp(inst);
   closeModal('modal-assignform');
+}
+var _editUserIx = null;
+function openAssignUserNovi(){
+  _editUserIx=null;
+  var h=document.querySelector('#modal-assignuser h3'); if(h) h.textContent='Додели корисника';
+  openAssignUser();
+}
+/* ===== Реорганизација институција — без губитка података =====
+   Институција се никада не брише: затвара се датумом и добија наследника, а све
+   предаје и ревизиони траг остају приписани институцији каква је тада била. */
+function openSplit(){
+  var inst=currentEditingInst(); if(!inst) return;
+  document.getElementById('splitFrom').value=inst.name;
+  document.getElementById('splitNameA').value=inst.name+' — део 1';
+  document.getElementById('splitShortA').value=(inst.short||'')+'1';
+  document.getElementById('splitNameB').value=inst.name+' — део 2';
+  document.getElementById('splitShortB').value=(inst.short||'')+'2';
+  openModal('modal-split');
+}
+function doSplit(){
+  var inst=currentEditingInst(); if(!inst) return;
+  var a=document.getElementById('splitNameA').value.trim()||'(нова 1)';
+  var b=document.getElementById('splitNameB').value.trim()||'(нова 2)';
+  var kada=document.getElementById('splitDate').value.trim()||nextDemoDate();
+  var gde=document.getElementById('splitWhere').value;
+  function kopija(x){ return Object.assign({}, x, {presloIz:inst.name}); }
+  INSTITUTIONS.push(
+    {name:a, short:document.getElementById('splitShortA').value.trim(), type:inst.type, active:true,
+     od:kada, do:null, nastalaIz:[inst.name], preslaU:null,
+     resp:(gde==='B'?[]:inst.resp.map(kopija)), users:(gde==='A'?inst.users.map(kopija):[])},
+    {name:b, short:document.getElementById('splitShortB').value.trim(), type:inst.type, active:true,
+     od:kada, do:null, nastalaIz:[inst.name], preslaU:null,
+     resp:(gde==='B'?inst.resp.map(kopija):[]), users:(gde==='A'?[]:inst.users.map(kopija))});
+  inst.active=false; inst.do=kada; inst.preslaU=a+' и '+b;
+  pushActivity('Институција подељена: '+inst.name+' → '+a+' и '+b+' ('+kada+')', ACTOR.super);
+  closeModal('modal-split');
+  showScreen('institutions');
+}
+function openMerge(){
+  var inst=currentEditingInst(); if(!inst) return;
+  document.getElementById('mergeFrom').value=inst.name;
+  document.getElementById('mergeTo').innerHTML = INSTITUTIONS
+    .filter(function(x){ return x!==inst && !x.preslaU; })
+    .map(function(x){ return '<option>'+esc(x.name)+'</option>'; }).join('');
+  openModal('modal-merge');
+}
+function doMerge(){
+  var inst=currentEditingInst(); if(!inst) return;
+  var kada=document.getElementById('mergeDate').value.trim()||nextDemoDate();
+  var ime=document.getElementById('mergeTo').value;
+  var cilj=INSTITUTIONS.filter(function(x){ return x.name===ime; })[0];
+  if(!cilj){ closeModal('modal-merge'); return; }
+  inst.resp.forEach(function(r){ cilj.resp.push(Object.assign({}, r, {presloIz:inst.name})); });
+  inst.users.forEach(function(u){ cilj.users.push(Object.assign({}, u, {presloIz:inst.name})); });
+  cilj.nastalaIz=(cilj.nastalaIz||[]).concat([inst.name]);
+  inst.active=false; inst.do=kada; inst.preslaU=cilj.name;
+  pushActivity('Институција спојена: '+inst.name+' → '+cilj.name+' ('+kada+')', ACTOR.super);
+  closeModal('modal-merge');
+  showScreen('institutions');
+}
+function openEditUser(ix){
+  var inst = currentEditingInst(); if(!inst) return;
+  var u = inst.users[ix]; if(!u) return;
+  _editUserIx = ix;
+  openAssignUser();
+  document.getElementById('assignUserName').value = u.name;
+  var r=document.getElementById('assignUserRole');
+  for(var k=0;k<r.options.length;k++) if(r.options[k].value===u.role || r.options[k].textContent===u.role) r.selectedIndex=k;
+  var sel=document.getElementById('assignUserTables');
+  Array.prototype.forEach.call(sel.options, function(o){ o.selected = (u.tables||[]).indexOf(o.textContent)>=0; });
+  syncTablePartOptions();
+  var pp=document.getElementById('assignUserPart');
+  if(pp && u.part){ for(var m=0;m<pp.options.length;m++) if(pp.options[m].textContent===u.part) pp.selectedIndex=m; }
+  var h=document.querySelector('#modal-assignuser h3'); if(h) h.textContent='Измени корисника';
+}
+/* Корисник се никада не брише — само му се затвара приступ, да сви његови уноси
+   и ревизиони траг остану приписани њему. */
+function closeUser(ix){
+  var inst = currentEditingInst(); if(!inst) return;
+  var u = inst.users[ix]; if(!u) return;
+  u.aktivan = (u.aktivan===false) ? true : false;
+  u.zatvoren = (u.aktivan===false) ? nextDemoDate() : null;
+  pushActivity((u.aktivan===false ? 'Затворен приступ кориснику: ' : 'Поново активиран корисник: ')+u.name, ACTOR.super);
+  renderInstUsers(inst);
 }
 function openAssignUser(){
   document.getElementById('assignUserName').value='';
@@ -2350,6 +3318,7 @@ function syncTablePartOptions(){
   }
 }
 function saveAssignUser(){
+  var _ix = _editUserIx; _editUserIx = null;
   var inst = currentEditingInst();
   if(!inst){ closeModal('modal-assignuser'); return; }
   var name = document.getElementById('assignUserName').value.trim() || '(нови корисник)';
@@ -2360,7 +3329,17 @@ function saveAssignUser(){
     if(o.selected){ var p=o.value.split('|'); tabs.push('Образац '+p[0]+', табела '+p[1]); }
   });
   var part = document.getElementById('assignUserPart').value;
-  inst.users.push({name:name, role:role, tables: tabs, part: part});
+  var zapis = {name:name, role:role, tables: tabs, part:(part==='Цела табела'?'':part)};
+  if(_editUserIx!==null && inst.users[_editUserIx]){
+    zapis.aktivan = inst.users[_editUserIx].aktivan;
+    inst.users[_editUserIx] = zapis;
+    pushActivity('Измењен корисник: '+name, ACTOR.super);
+  } else {
+    inst.users.push(zapis);
+    pushActivity('Додељен корисник: '+name, ACTOR.super);
+  }
+  _editUserIx = null;
+  var h=document.querySelector('#modal-assignuser h3'); if(h) h.textContent='Додели корисника';
   renderInstUsers(inst);
   closeModal('modal-assignuser');
 }
@@ -2397,6 +3376,7 @@ function renderAll(){
   if(S.screen==='formv') renderFormV();
   if(S.screen==='notifications') renderNotifFull();
   if(S.screen==='institutions') renderInstitutions();
+  prevediUI();
 }
 
 /* ===================== login / init ===================== */
@@ -2426,8 +3406,8 @@ function enterApp(role){
   // Each simulated login lands on that role's own dashboard — matches "a different person just signed in".
   showScreen('dashboard');
 }
-var LICA = ['dp','support','lead','coord','admin'];
-var SAMO_ADMIN_EKRANI = ['institutions','institution-detail'];
+var LICA = ['dp','lead','super'];
+var SAMO_SUPER_EKRANI = ['institutions','institution-detail'];
 /* Demo-only: switch person in place. The flow itself advances roles automatically
    (see predajUlozi) — this exists to reach a role the flow does not lead to, e.g. the Administrator. */
 function promeniLice(r){
@@ -2435,7 +3415,7 @@ function promeniLice(r){
   S.role = r;
   S.predaja = null;
   if(ALL_FORMS_ROLES.indexOf(S.role)<0 && S.reportingTab==='all') S.reportingTab='my';
-  if(r!=='admin' && SAMO_ADMIN_EKRANI.indexOf(S.screen)>=0){ showScreen('dashboard'); return; }
+  if(r!=='super' && SAMO_SUPER_EKRANI.indexOf(S.screen)>=0){ showScreen('dashboard'); return; }
   renderAll();
 }
 renderAll();
