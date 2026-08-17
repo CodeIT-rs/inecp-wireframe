@@ -269,8 +269,8 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
             </div>
             <div id="formvActionsTop" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
           </div>
-          <p class="note hidden" id="srFormNote">Interface labels are switched with the SR/EN toggle in the header. Terms taken from the Rulebook (workflow stages, roles) keep the Serbian original in brackets, so this screen can be checked against the Rulebook, which is written in Serbian. Data are not switched by this toggle: each field holds a Serbian and an English value and both are reported (Rulebook, Art. 23). The Serbian is the source version, the English is the confirmed translation — both stay editable in either interface language. What controls editing is the role, the stage and the assignment, not the interface language.</p>
-          <p class="note">Правилник (чл. 23) прописује да се обрасци попуњавају и достављају <strong>на српском и енглеском језику</strong>, и у електронској и у штампаној форми. Наручилац је потврдио да се и интерфејс и унос раде на оба језика: интерфејс се пребацује прекидачем СР/EN у заглављу, а свако поље за унос има српску и енглеску верзију. Излаз за штампу биће усаглашен са корисником у РП2.</p>
+          <p class="note hidden" id="srFormNote">Interface labels are switched with the SR/EN toggle in the header. Terms taken from the Rulebook (workflow stages, roles) keep the Serbian original in brackets, so this screen can be checked against the Rulebook, which is written in Serbian. Data are not switched by this toggle: each field holds a Serbian and an English value and both are reported (Rulebook, Art. 23). The Serbian is the source version, the English is the confirmed translation. You edit the language the interface is in: in EN mode the Serbian field is locked, in SR mode the English one is — one click on “Edit” switches the interface to that language and puts the cursor in the field, so nothing becomes unreachable. Whether you may edit at all is decided by the role, the stage and the assignment.</p>
+          <p class="note">Правилник (чл. 23) прописује да се обрасци попуњавају и достављају <strong>на српском и енглеском језику</strong>, и у електронској и у штампаној форми. Наручилац је потврдио да се и интерфејс и унос раде на оба језика: интерфејс се пребацује прекидачем СР/EN у заглављу, а свако поље за унос има српску и енглеску верзију. Уређује се језик у ком је интерфејс — друга страна је закључана да се не би случајно мењала, а дугме „Уреди" пребацује интерфејс на тај језик и уводи курсор у то поље. Излаз за штампу биће усаглашен са корисником у РП2.</p>
 
           <div id="formvBanner"></div>
 
@@ -834,7 +834,6 @@ var SR2EN = {
   "+ Додај показатељ":"+ Add indicator",
   "+ Додели корисника":"+ Assign user",
   "+ Додели образац":"+ Assign form",
-  ", и у електронској и у штампаној форми. Наручилац је потврдио да се и интерфејс и унос раде на оба језика: интерфејс се пребацује прекидачем СР/EN у заглављу, а свако поље за унос има српску и енглеску верзију. Излаз за штампу биће усаглашен са корисником у РП2.":", in electronic and in printed form. The client has confirmed that both the interface and data entry are in both languages: the interface is switched with the SR/EN toggle in the header, and every input field has a Serbian and an English version. The print output will be agreed with the client in WP2.",
   ". Одговорност за тачност превода остаје на институцији која уноси.":". Responsibility for the accuracy of the translation remains with the institution entering the data.",
   "1. Циљна вредност недостаје.":"1. The target value is missing.",
   "1. март 2027. — потврђен пакет образаца Националном координатору (чл. 19)":"1 March 2027 — confirmed package of forms to the National Reporting Coordinator (Art. 19)",
@@ -1430,6 +1429,12 @@ var SR2EN = {
   "Чека потврду":"Awaiting confirmation"
 ,
   "изворна верзија":"source version"
+,
+  "закључано у EN режиму":"locked in EN mode",
+  "закључано у SR режиму":"locked in SR mode",
+  "Уреди":"Edit"
+,
+  ", и у електронској и у штампаној форми. Наручилац је потврдио да се и интерфејс и унос раде на оба језика: интерфејс се пребацује прекидачем СР/EN у заглављу, а свако поље за унос има српску и енглеску верзију. Уређује се језик у ком је интерфејс — друга страна је закључана да се не би случајно мењала, а дугме „Уреди\" пребацује интерфејс на тај језик и уводи курсор у то поље. Излаз за штампу биће усаглашен са корисником у РП2.":", in electronic and in printed form. The client has confirmed that both the interface and data entry are in both languages: the interface is switched with the SR/EN toggle in the header, and every input field has a Serbian and an English version. You edit the language the interface is in — the other side is locked so it cannot be changed by accident, and the “Edit” button switches the interface to that language and puts the cursor in that field. The print output will be agreed with the client in WP2."
 };
 /* уз енглески се приказује и српски оригинал — само за термине из Правилника */
 var OBA_JEZIKA = ['Нацрт','Валидација достављача','Предато','Потврђено','Консолидовано','Финална потврда',
@@ -2509,27 +2514,48 @@ function resolveConflict(){
 
 /* Двојезично поље: српски унос лево, енглески предлог десно, са статусом превода.
    Док превод није потврђен, поље носи видљиву ознаку и предаја је блокирана. */
+/* Уређује се језик у ком је интерфејс: у SR режиму српско поље, у EN режиму енглеско.
+   Друга страна је закључана, али се једним кликом („Уреди") пребацује интерфејс на тај
+   језик и курсор стаје у то поље — ништа не постаје недоступно, само се не мења случајно. */
+function urediNaJeziku(jezik, kind, i, field){
+  setLang(jezik);
+  var el = document.getElementById('dvo-'+kind+'-'+i+'-'+field+'-'+jezik);
+  if(el){ el.focus(); if(el.setSelectionRange){ var n=(el.value||'').length; try{ el.setSelectionRange(n,n); }catch(e){} } }
+}
 function dvoPolje(kind, i, field, labela, vrednost, tip, editable){
   var obj = (kind==='obj') ? S.formV.objectives[i] : S.formV.indicators[i];
   var en = (obj._en||{})[field] || '';
   var st = (obj._st||{})[field] || (en ? PREVOD_STATUS.MASINSKI : PREVOD_STATUS.PRAZNO);
-  var d = editable ? '' : 'disabled';
+  var enRezim = (S.lang==='en');
+  var srEdit = editable && !enRezim;
+  var enEdit = editable && enRezim;
+  var dSr = srEdit ? '' : 'disabled';
+  var dEn = enEdit ? '' : 'disabled';
   var potvrdjen = (st===PREVOD_STATUS.POTVRDJEN);
   var badge = potvrdjen
     ? '<span class="badge">потврђено</span>'
     : '<span class="badge solid">'+(en ? 'машински превод — потврдити' : 'нема превода')+'</span>';
+  var id = 'dvo-'+kind+'-'+i+'-'+field+'-';
   var unos = (tip==='textarea')
-    ? '<textarea '+d+' rows="2" oninput="updObj('+i+',\''+field+'\',this.value)">'+esc(vrednost||'')+'</textarea>'
-    : '<input '+d+' value="'+esc(vrednost||'')+'" oninput="updObj('+i+',\''+field+'\',this.value)">';
+    ? '<textarea id="'+id+'sr" '+dSr+' rows="2" oninput="updObj('+i+',\''+field+'\',this.value)">'+esc(vrednost||'')+'</textarea>'
+    : '<input id="'+id+'sr" '+dSr+' value="'+esc(vrednost||'')+'" oninput="updObj('+i+',\''+field+'\',this.value)">';
   var unosEn = (tip==='textarea')
-    ? '<textarea '+d+' rows="2" oninput="updEn(\''+kind+'\','+i+',\''+field+'\',this.value)">'+esc(en)+'</textarea>'
-    : '<input '+d+' value="'+esc(en)+'" oninput="updEn(\''+kind+'\','+i+',\''+field+'\',this.value)">';
+    ? '<textarea id="'+id+'en" '+dEn+' rows="2" oninput="updEn(\''+kind+'\','+i+',\''+field+'\',this.value)">'+esc(en)+'</textarea>'
+    : '<input id="'+id+'en" '+dEn+' value="'+esc(en)+'" oninput="updEn(\''+kind+'\','+i+',\''+field+'\',this.value)">';
+  function dugmeUredi(jezik){
+    return editable ? ' <span class="btn sm" onclick="urediNaJeziku(\''+jezik+'\',\''+kind+'\','+i+',\''+field+'\')">Уреди</span>' : '';
+  }
   return '<div class="fld"><label>'+labela+' <span class="req">*</span> <span class="badge">обавезно</span></label>'+
     '<div class="grid2" style="gap:10px;">'+
-      '<div><div class="xs muted" style="margin-bottom:3px;">Српски <span class="badge">изворна верзија</span></div>'+unos+'</div>'+
+      '<div><div class="xs muted" style="margin-bottom:3px; display:flex; justify-content:space-between; gap:6px; align-items:center;">'+
+        '<span>Српски <span class="badge">изворна верзија</span></span>'+
+        (enRezim ? '<span class="xs muted">закључано у EN режиму'+dugmeUredi('sr')+'</span>' : '')+
+      '</div>'+unos+'</div>'+
       '<div><div class="xs muted" style="margin-bottom:3px; display:flex; justify-content:space-between; gap:6px; align-items:center;">'+
         '<span>Енглески '+badge+'</span>'+
-        (editable ? '<span><span class="btn sm" onclick="prevediPolje(\''+kind+'\','+i+',\''+field+'\')">Преведи</span>'+
+        (editable ? '<span>'+
+                    (enRezim ? '' : '<span class="xs muted">закључано у SR режиму'+dugmeUredi('en')+'</span> ')+
+                    '<span class="btn sm" onclick="prevediPolje(\''+kind+'\','+i+',\''+field+'\')">Преведи</span>'+
                     (en && !potvrdjen ? ' <span class="btn sm" onclick="potvrdiPrevod(\''+kind+'\','+i+',\''+field+'\')">Потврди превод</span>' : '')+'</span>' : '')+
       '</div>'+unosEn+'</div>'+
     '</div></div>';
