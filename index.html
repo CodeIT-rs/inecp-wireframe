@@ -2802,6 +2802,13 @@ function renderBlokade(){
       '<div class="small">'+lista.slice(0,6).map(esc).join(' · ')+(lista.length>6 ? L(' · и још ',' · and ')+(lista.length-6) : '')+'</div>'+
       '<div class="xs" style="margin-top:5px; opacity:.85;">'+L('У ћелију се уписује број, или ознака NA / NAv / C уместо вредности.','A number is entered in the cell, or the notation key NA / NAv / C instead of a value.')+'</div>';
   }
+  /* Дугме за валидацију живи у бочном панелу, који се не приказује поново при свакој
+     измени ћелије — зато и њега држимо у складу са блокадама одавде. */
+  var v = document.getElementById('btnValidate');
+  if(v){
+    v.disabled = lista.length>0;
+    v.title = lista.length ? L('Прво решите блокирана поља','Resolve the blocked fields first') : '';
+  }
   var b = document.getElementById('btnSubmitContribution');
   if(b){
     b.disabled = lista.length>0;
