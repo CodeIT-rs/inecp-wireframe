@@ -146,6 +146,8 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
 .callout{border:1px solid var(--border-strong); border-radius:6px; padding:12px 14px; margin-bottom:16px; background:var(--surface-1);}
 .callout.strong{border-width:2px; border-color:var(--text-primary);}
 .callout-h{font-weight:600; margin-bottom:6px; font-size:12.5px;}
+/* ред-заглавље групе у табели доприноса: табела (шаблон), под њом инстанце */
+tbody tr.grp td{background:var(--surface-1); font-size:12px;}
 .banner-ok{border:1px solid var(--border-strong); border-radius:6px; padding:12px 14px; margin-bottom:16px; background:var(--surface-1); font-size:12.5px;}
 .banner-ok .bt{font-weight:600; margin-bottom:4px;}
 .side-panel{border:1px solid var(--border-strong); border-radius:6px; padding:14px; background:var(--surface-1);}
@@ -281,9 +283,10 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
           <div class="card">
             <div class="card-h">Институционални доприноси</div>
             <div class="card-b">
+              <p class="note" style="margin-top:0;"><strong>Табела из Правилника је шаблон, а не једна заједничка табела.</strong> Кад се једна табела додели двема или више институција, свака добија <strong>своју инстанцу</strong>: свој унос, свој статус, свој ревизиони траг — ништа се не дели ни преписује. Водећи известилац те инстанце при консолидацији спаја у једну табелу за извештавање. Правило спајања по типу табеле (збир, спајање редова или ручни избор) биће усаглашено са корисником у РП2.</p>
               <p class="note" style="margin-top:0;">Свака институција попуњава <strong>своју верзију обрасца и својих табела</strong> — испод су верзије и њихови статуси. Водећи известилац те верзије потврђује и консолидује у један образац, а Супервизор даје финалну потврду. Ниједна верзија се не брише: остаје у систему са својим ревизионим трагом.</p>
               <div class="scroll"><table class="freeze-1">
-                <thead><tr><th>Институција</th><th>Додељени обим</th><th>Статус</th><th>Попуњеност</th></tr></thead>
+                <thead><tr><th>Табела / институција</th><th>Шта се пуни</th><th>Статус</th><th>Попуњеност</th></tr></thead>
                 <tbody id="contributionsBody"></tbody>
               </table></div>
             </div>
@@ -732,6 +735,12 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
       <select id="assignFormSel" onchange="syncAssignArea()"></select>
     </div>
     <div class="fld"><label>Област извештавања</label><input id="assignAreaAuto" disabled></div>
+    <div class="fld"><label>Табеле у обрасцу <span class="badge">одговорност се додељује по табели</span></label>
+      <select id="assignFormTables" multiple size="6"></select>
+      <p class="xs muted" style="margin-top:4px;">Изаберите једну или више табела (држите Ctrl / Cmd за више). Ако не изаберете ниједну, институција је уписана на нивоу обрасца.</p>
+    </div>
+    <div class="fld"><label>Део табеле (опционо)</label><input id="assignFormPart" placeholder="нпр. редови за природни гас"></div>
+    <p class="note">Табела је <strong>шаблон</strong>. Ако је изабрана табела већ додељена другој институцији, ова институција добија <strong>своју инстанцу</strong> те табеле — свој унос, свој статус и свој ревизиони траг. Инстанце се не деле и не преписују; Водећи известилац их при консолидацији спаја у једну табелу за извештавање.</p>
     <div class="fld"><label>Тип учешћа</label>
       <select id="assignPartSel">
         <option>Учесница институција</option>
@@ -1504,6 +1513,25 @@ var SR2EN = {
   "ранији називи":"former names",
   "раније: ":"formerly: ",
   "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name",
+  /* шаблон табеле и инстанце */
+  "Табела / институција":"Table / institution",
+  "Шта се пуни":"What is filled in",
+  "Табела из Правилника је шаблон, а не једна заједничка табела.":"A table from the Rulebook is a template, not one shared table.",
+  "Кад се једна табела додели двема или више институција, свака добија":"When one table is assigned to two or more institutions, each of them gets",
+  "своју инстанцу":"its own instance",
+  ": свој унос, свој статус, свој ревизиони траг — ништа се не дели ни преписује. Водећи известилац те инстанце при консолидацији спаја у једну табелу за извештавање. Правило спајања по типу табеле (збир, спајање редова или ручни избор) биће усаглашено са корисником у РП2.":": its own entry, its own status, its own audit trail — nothing is shared and nothing is overwritten. On consolidation the Lead Reporter merges those instances into a single table for reporting. The merge rule per table type (sum, union of rows, or manual choice) will be agreed with the client in WP2.",
+  "Табела је":"A table is",
+  "шаблон":"a template",
+  ". Ако је изабрана табела већ додељена другој институцији, ова институција добија":". If the selected table is already assigned to another institution, this institution gets",
+  "те табеле — свој унос, свој статус и свој ревизиони траг. Инстанце се не деле и не преписују; Водећи известилац их при консолидацији спаја у једну табелу за извештавање.":"of that table — its own entry, its own status and its own audit trail. Instances are not shared and not overwritten; on consolidation the Lead Reporter merges them into a single table for reporting.",
+  "редови за увоз":"rows for imports",
+  /* додела табела институцији */
+  "Табеле у обрасцу":"Tables in the form",
+  "Део табеле (опционо)":"Part of the table (optional)",
+  "нпр. редови за природни гас":"e.g. rows for natural gas",
+  "Изаберите једну или више табела (држите Ctrl / Cmd за више). Ако не изаберете ниједну, институција је уписана на нивоу обрасца.":"Select one or more tables (hold Ctrl / Cmd for several). If you select none, the institution is recorded at form level.",
+  "редови за природни гас":"rows for natural gas",
+  "Табеле овог обрасца нису унете у овај wireframe":"The tables of this form are not entered in this wireframe",
   /* Дневник измена */
   "Дневник измена":"Change log",
   "Записи":"Records",
@@ -1553,6 +1581,17 @@ function trUI(s, dubina){
     if(alt.indexOf(ULOGA_EN_SR[i][0])>=0){ alt = alt.split(ULOGA_EN_SR[i][0]).join(ULOGA_EN_SR[i][1]); menjano = true; }
   }
   if(menjano){ var r = trUI(alt, dubina+1); if(r!==null) return r; }
+  /* скраћен назив табеле („Табела 2 – Напредак…") — нађи цео кључ по префиксу и
+     скрати превод на исту дужину, да не зависимо од дужине скраћивања у приказу */
+  if(/…$/.test(s)){
+    var jezgro = s.slice(0,-1);
+    for(var kk in SR2EN){
+      if(kk.length>jezgro.length && kk.indexOf(jezgro)===0){
+        var pun = SR2EN[kk];
+        return pun.length<=s.length ? pun : pun.slice(0, s.length-1).replace(/\s+$/,'')+'…';
+      }
+    }
+  }
   /* суфикси ✓ и · иду уз назив фазе */
   var m = s.match(/^([\s\S]*?)\s([\u2713\u00b7])$/);
   if(m){ var r2 = trUI(m[1], dubina+1); if(r2!==null) return r2+' '+m[2]; }
@@ -1642,9 +1681,13 @@ var S = {
     conflict:false,
     // Институционални доприноси Обрасцу V — један образац, више институција/обима, консолидује Водећи известилац.
     contributions:[
-      {institution:'Републички завод за статистику', scope:'Табела 1 – национални циљеви енергетске безбедности', status:'Предато', pct:100},
-      {institution:'Агенција за енергетику', scope:'Табела 2 – квантитативни национални циљеви', status:'На прегледу', pct:80},
-      {institution:'Србијагас', scope:'Табела 3 – неквантификациони национални циљеви', status:'Нацрт', pct:50}
+      /* Табела из Правилника је шаблон. Један ред овде = једна ИНСТАНЦА те табеле код
+         једне институције: свој унос, свој статус, свој ревизиони траг. Иста табела
+         може имати више инстанци (в. Табела 2 испод). */
+      {tId:'V/1', institution:'Републички завод за статистику', deo:'', status:'Предато', pct:100},
+      {tId:'V/2', institution:'Агенција за енергетику', deo:'', status:'На прегледу', pct:80},
+      {tId:'V/2', institution:'Србијагас', deo:'редови за природни гас', status:'Нацрт', pct:40},
+      {tId:'V/3', institution:'Србијагас', deo:'', status:'Нацрт', pct:50}
     ],
     objectives:[
       {name:'Диверсификација извора и праваца снабдевања природним гасом', desc:'Смањење зависности од једног правца снабдевања развојем интерконекција и алтернативних уговора о снабдевању.', relevance:'Директно подржава сигурност снабдевања гасом у складу са Регулативом (ЕУ) 2017/1938.', year:'2030', status:'На добром путу', responsible:'Министарство рударства и енергетике', sources:'Природни гас, Електрична енергија', reference:'Национални енергетски и климатски план, гл. 4.2', comments:'', classification:'standard'},
@@ -2537,11 +2580,36 @@ function renderCorrectionCallout(){
 }
 
 /* ---- Institutional contributions: one form, multiple institutional contributions, consolidated by the Lead Reporter ---- */
+/* Назив табеле из Правилника по идентитету „образац/број". Идентитет је оно што
+   спаја инстанце; назив је само приказ. */
+function nazivTabele(tId){
+  var p = String(tId).split('/');
+  var l = (TABELE[p[0]]||[]).filter(function(x){ return String(x.n)===p[1]; })[0];
+  return l ? ('Табела '+p[1]+' – '+l.t) : String(tId);
+}
 function renderContributions(){
   var el = document.getElementById('contributionsBody');
   if(!el) return;
-  el.innerHTML = S.formV.contributions.map(function(c){
-    return '<tr><td>'+esc(c.institution)+'</td><td>'+esc(c.scope)+'</td><td><span class="badge">'+esc(c.status)+'</span></td><td>'+c.pct+'%</td></tr>';
+  /* Групише се по ИДЕНТИТЕТУ табеле (образац/број), не по називу — иначе би исти
+     шаблон под два различита записа назива изгледао као две табеле. */
+  var po = {}, red = [];
+  S.formV.contributions.forEach(function(c){
+    var k = c.tId || c.tabela || c.scope || '—';
+    if(!po[k]){ po[k]=[]; red.push(k); }
+    po[k].push(c);
+  });
+  el.innerHTML = red.map(function(k){
+    var lista = po[k];
+    var pun = nazivTabele(k);
+    var kratko = pun.length>78 ? pun.slice(0,76)+'…' : pun;
+    var glava = '<tr class="grp"><td colspan="3" title="'+esc(pun)+'"><strong>'+esc(kratko)+'</strong></td>'+
+      '<td>'+lista.length+' '+L(lista.length===1?'инстанца':(lista.length<5?'инстанце':'инстанци'), lista.length===1?'instance':'instances')+'</td></tr>';
+    return glava + lista.map(function(c){
+      var deo = c.deo ? '<div class="xs muted">'+L('део: ','part: ')+'<span>'+esc(c.deo)+'</span></div>' : '';
+      return '<tr><td style="padding-left:22px;">'+esc(c.institution)+deo+'</td>'+
+        '<td class="xs muted">'+L('своја инстанца — свој унос и ревизиони траг','own instance — own entry and audit trail')+'</td>'+
+        '<td><span class="badge">'+esc(c.status)+'</span></td><td>'+c.pct+'%</td></tr>';
+    }).join('');
   }).join('');
 }
 
@@ -2981,9 +3049,21 @@ function checklistRow(label, done){
 function contributionsReadinessHtml(){
   var n = S.formV.contributions.length;
   var rows = S.formV.contributions.map(function(c){
-    return checklistRow(esc(c.institution)+' — унос валидиран код достављача', true);
+    return checklistRow('<span>'+esc(c.institution)+'</span>'+(c.deo ? ' (<span>'+esc(c.deo)+'</span>)' : '')+
+      ' — '+L('унос валидиран код достављача','entry validated at the data provider'), true);
   }).join('');
-  return rows + '<p class="small" style="margin-top:8px; font-weight:600;">'+n+' од '+n+' потребних доприноса завршено</p>';
+  /* Табеле са више инстанци се при консолидацији спајају — то Водећи известилац мора да види. */
+  var po={};
+  S.formV.contributions.forEach(function(c){ var k=c.tId||c.tabela||c.scope||'—'; po[k]=(po[k]||0)+1; });
+  var viseInstanci = Object.keys(po).filter(function(k){ return po[k]>1; });
+  var spajanje = viseInstanci.length
+    ? '<div class="callout" style="margin-top:10px;"><div class="callout-h">'+L('За спајање: ','To be merged: ')+viseInstanci.length+' '+
+        L(viseInstanci.length===1?'табела':'табеле', viseInstanci.length===1?'table':'tables')+'</div><div class="small">'+
+        viseInstanci.map(function(k){ var nz=nazivTabele(k); return '<span>'+esc(nz.length>70?nz.slice(0,68)+'…':nz)+'</span> — '+po[k]+' '+L('инстанце','instances'); }).join('<br>')+
+        '<div class="xs muted" style="margin-top:4px;">'+L('Консолидацијом инстанце исте табеле постају једна табела за извештавање. Правило спајања биће усаглашено у РП2.','On consolidation the instances of the same table become one table for reporting. The merge rule will be agreed in WP2.')+'</div></div></div>'
+    : '';
+  return rows + '<p class="small" style="margin-top:8px; font-weight:600;">'+
+    L(n+' од '+n+' потребних доприноса завршено', n+' of '+n+' required contributions completed')+'</p>' + spajanje;
 }
 function waitingText(role, st){
   if(role==='dp'){
@@ -3364,7 +3444,10 @@ function currentEditingInst(){
 }
 function renderInstResp(inst){
   document.getElementById('instRespBody').innerHTML = inst.resp.map(function(r){
-    return '<tr><td>'+esc(r.form)+'</td><td>'+esc(r.area)+'</td><td><span class="badge">'+esc(r.participation)+'</span></td><td></td></tr>';
+    var tb = (r.tables && r.tables.length)
+      ? '<div class="xs muted">'+L('табеле: ','tables: ')+r.tables.map(function(n){ return 'Табела '+n; }).join(', ')+(r.deo ? ' ('+esc(r.deo)+')' : '')+'</div>'
+      : '<div class="xs muted">'+L('на нивоу обрасца','at form level')+'</div>';
+    return '<tr><td>'+esc(r.form)+tb+'</td><td>'+esc(r.area)+'</td><td><span class="badge">'+esc(r.participation)+'</span></td><td></td></tr>';
   }).join('') || '<tr><td class="muted" colspan="4">Још нема додељених образаца за извештавање.</td></tr>';
 }
 function renderInstUsers(inst){
@@ -3413,21 +3496,53 @@ function ranijiNazivi(inst){
 }
 function openAssignForm(){
   var sel = document.getElementById('assignFormSel');
-  sel.innerHTML = FORMS.map(function(f){ return '<option value="'+f.area+'">'+f.name+'</option>'; }).join('');
+  sel.innerHTML = FORMS.map(function(f){ return '<option value="'+f.id+'">'+f.name+'</option>'; }).join('');
+  var dp = document.getElementById('assignFormPart'); if(dp) dp.value='';
   syncAssignArea();
   openModal('modal-assignform');
 }
 function syncAssignArea(){
-  document.getElementById('assignAreaAuto').value = document.getElementById('assignFormSel').value;
+  var id = document.getElementById('assignFormSel').value;
+  var f = FORMS.filter(function(x){ return x.id===id; })[0];
+  document.getElementById('assignAreaAuto').value = f ? f.area : '';
+  /* Табеле изабраног обрасца — додела иде по табели, јер Правилник именује
+     одговорност испод сваке табеле, не за цео образац. */
+  var st = document.getElementById('assignFormTables');
+  if(st){
+    var lista = TABELE[id] || [];
+    st.innerHTML = lista.map(function(tb){
+      var kratko = tb.t.length>62 ? tb.t.slice(0,60)+'…' : tb.t;
+      return '<option value="'+tb.n+'" title="'+esc(tb.t)+'">Табела '+tb.n+' – '+esc(kratko)+'</option>';
+    }).join('') || '<option disabled>Табеле овог обрасца нису унете у овај wireframe</option>';
+  }
 }
 function saveAssignForm(){
   var inst = currentEditingInst();
   if(!inst){ closeModal('modal-assignform'); return; }
   var sel = document.getElementById('assignFormSel');
+  var id = sel.value;
   var formName = sel.options[sel.selectedIndex].textContent;
   var area = document.getElementById('assignAreaAuto').value;
   var participation = document.getElementById('assignPartSel').value;
-  inst.resp.push({form:formName, area:area, participation:participation});
+  var deo = (document.getElementById('assignFormPart')||{}).value || '';
+  var st = document.getElementById('assignFormTables');
+  var tabele = [];
+  if(st) Array.prototype.forEach.call(st.options, function(o){ if(o.selected && !o.disabled) tabele.push(Number(o.value)); });
+  inst.resp.push({form:formName, area:area, participation:participation, tables:tabele.slice(), deo:deo});
+  /* Демо: за Образац V се одмах види последица — свака изабрана табела добија
+     инстанцу за ову институцију, поред постојећих инстанци истих табела. */
+  if(id==='V'){
+    tabele.forEach(function(n){
+      var tId = 'V/'+n;
+      var vecIma = S.formV.contributions.filter(function(c){ return c.tId===tId && c.institution===inst.name; }).length;
+      if(!vecIma){
+        S.formV.contributions.push({tId:tId, institution:inst.name, deo:deo, status:'Нацрт', pct:0});
+      }
+    });
+  }
+  var opis = 'Додељен образац '+formName+(tabele.length ? ' — табеле: '+tabele.join(', ') : '')+
+             (deo ? ' ('+deo+')' : '')+' → '+inst.name;
+  pushActivity(opis, ACTOR.super);
   renderInstResp(inst);
   closeModal('modal-assignform');
 }
