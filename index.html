@@ -428,6 +428,35 @@ input[disabled],select[disabled],textarea[disabled]{background:var(--surface-1);
           </div>
         </section>
 
+        <!-- CENTRAL CHANGE LOG (Supervisor only) -->
+        <section id="screen-audit-log" class="screen">
+          <h2>Дневник измена</h2>
+          <p class="note">Један списак свега што се у систему изменило: измене поља (из које вредности у коју), кораци тока извештавања и административне радње над институцијама и корисницима. Записи се не могу уредити ни обрисати — само дописати. Измене Супервизора носе обавезно образложење.</p>
+          <div class="card">
+            <div class="card-h" style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+              <span>Записи <span class="badge" id="logCount">0</span></span>
+              <span>
+                <button class="btn sm" onclick="ocistiLogFiltere()">Очисти филтере</button>
+                <button class="btn sm" onclick="izveziLog()">Извоз дневника</button>
+              </span>
+            </div>
+            <div class="card-b">
+              <div class="grid2" style="gap:10px;">
+                <div class="fld"><label>Тип записа</label><select id="logFTip" onchange="renderAuditLog()"></select></div>
+                <div class="fld"><label>Корисник</label><select id="logFKo" onchange="renderAuditLog()"></select></div>
+                <div class="fld"><label>Институција</label><select id="logFInst" onchange="renderAuditLog()"></select></div>
+                <div class="fld"><label>Образац</label><select id="logFObr" onchange="renderAuditLog()"></select></div>
+              </div>
+              <div id="logIzvoz"></div>
+              <div class="scroll" style="margin-top:6px;"><table>
+                <thead><tr><th>Када</th><th>Ко</th><th>Тип</th><th>Шта</th><th>Из → У</th><th>Образложење</th></tr></thead>
+                <tbody id="logBody"></tbody>
+              </table></div>
+              <p class="xs muted" id="logPrazno" class="hidden"></p>
+            </div>
+          </div>
+        </section>
+
         <!-- INSTITUTION DETAIL / ADD-EDIT -->
         <section id="screen-institution-detail" class="screen">
           <h2 id="instDetailTitle">Институција</h2>
@@ -784,6 +813,7 @@ var I18N = {
   nav_profile:{en:'Profile', sr:'Профил'},
   nav_admin:{en:'Administration', sr:'Администрација'},
   nav_institutions:{en:'Institutions', sr:'Институције'},
+  nav_auditlog:{en:'Change log', sr:'Дневник измена'},
   dash_myforms_title:{en:'My Reporting Tasks', sr:'Моји задаци извештавања'},
   dash_recent_title:{en:'Recent notifications / tasks', sr:'Скорашња обавештења / задаци'},
   btn_open:{en:'Open', sr:'Отвори'},
@@ -1473,7 +1503,38 @@ var SR2EN = {
 ,
   "ранији називи":"former names",
   "раније: ":"formerly: ",
-  "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name"
+  "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name",
+  /* Дневник измена */
+  "Дневник измена":"Change log",
+  "Записи":"Records",
+  "Тип записа":"Record type",
+  "Шта":"What",
+  "Из → У":"From → To",
+  "Очисти филтере":"Clear filters",
+  "Извоз дневника":"Export the log",
+  "Дневник припремљен за извоз":"Log prepared for export",
+  "Ток извештавања":"Reporting flow",
+  "Измена поља":"Field change",
+  "Превод":"Translation",
+  "Образац V":"Form V",
+  "Образац VII":"Form VII",
+  "(празно)":"(empty)",
+  "активан":"active",
+  "затворен":"closed",
+  "Захтевана измена":"Change requested",
+  "Финална потврда":"Final confirmation",
+  "Циљ 1 — Назив":"Objective 1 — Name",
+  "Циљ 2 — Циљна година":"Objective 2 — Target year",
+  "Табела 2 — X-3":"Table 2 — X-3",
+  "Показатељ – Резерве нафте — X-2":"Indicator – Oil stocks — X-2",
+  "Допринос предат":"Contribution submitted",
+  "Унос електронски валидиран":"Entry electronically validated",
+  "Затворен приступ кориснику: Марко Илић":"Access closed for user: Marko Ilić",
+  "Додељен корисник: Ана Репац (Водећи известилац)":"User assigned: Ana Repac (Lead Reporter)",
+  "Усклађено са обавезама IEA / Енергетске заједнице.":"Aligned with IEA / Energy Community obligations.",
+  "Циљна вредност недостаје; проверити усклађеност са Енергетским билансом.":"The target value is missing; check alignment with the Energy Balance.",
+  "Прешао на друго радно место — уноси и ревизиони траг остају приписани њему.":"Moved to another post — their entries and audit trail remain attributed to them.",
+  "Један списак свега што се у систему изменило: измене поља (из које вредности у коју), кораци тока извештавања и административне радње над институцијама и корисницима. Записи се не могу уредити ни обрисати — само дописати. Измене Супервизора носе обавезно образложење.":"A single list of everything that has changed in the system: field changes (from which value to which), the steps of the reporting flow, and administrative actions on institutions and users. Records cannot be edited or deleted — only appended. Changes made by the Supervisor carry a mandatory justification."
 };
 /* уз енглески се приказује и српски оригинал — само за термине из Правилника */
 /* Пре је уз енглески термин стајао и српски оригинал у загради. По одлуци наручиоца
@@ -1849,7 +1910,8 @@ var NAV = [
     {id:'all', screen:'reporting', tab:'all', labelKey:'nav_allforms', hideFor:['dp','lead']}
   ]},
   {id:'admin', screen:'institutions', labelKey:'nav_admin', group:true, onlyFor:['super'], children:[
-    {id:'institutions', screen:'institutions', labelKey:'nav_institutions'}
+    {id:'institutions', screen:'institutions', labelKey:'nav_institutions'},
+    {id:'auditlog', screen:'audit-log', labelKey:'nav_auditlog'}
   ]},
   /* Pomoc nije deo toka rada — ide na dno, odvojena crtom od radnih stavki. */
   {id:'help', screen:'help', labelKey:'nav_help', bottom:true}
@@ -1862,7 +1924,7 @@ function renderNav(){
     if(item.hideFor && item.hideFor.indexOf(S.role)>=0) return;
     if(item.group){
       var groupActive = (item.id==='reporting' && (S.screen==='reporting'||S.screen==='formv'||S.screen==='placeholder')) ||
-                         (item.id==='admin' && (S.screen==='institutions'||S.screen==='institution-detail'));
+                         (item.id==='admin' && (S.screen==='institutions'||S.screen==='institution-detail'||S.screen==='audit-log'));
       html += '<div class="nav-h'+(groupActive?' on':'')+'">'+t(item.labelKey)+'</div>';
       item.children.forEach(function(c){
         if(c.hideFor && c.hideFor.indexOf(S.role)>=0) return;
@@ -2340,6 +2402,10 @@ function auditPolje(polje, staro, novo, obrazlozenje){
     ko: ACTOR[S.role], uloga: t(ROLE_KEY[S.role]),
     kada: nextDemoDate(), obrazlozenje: obrazlozenje || ''
   });
+  /* исти запис иде и у централни дневник, да Супервизор има преглед кроз све обрасце */
+  upisiLog({tip: /^Превод/.test(polje) ? 'Превод' : 'Измена поља', sta: polje,
+            iz: (staro===''||staro==null) ? '(празно)' : String(staro),
+            u:  (novo===''||novo==null)  ? '(празно)' : String(novo), obr: obrazlozenje || ''});
   renderAudit();
 }
 var _cekaObrazlozenje = null;
@@ -2374,7 +2440,14 @@ function renderAudit(){
   var br=document.getElementById('auditCount'); if(br) br.textContent=a.length;
 }
 function pushActivity(action, actor){
-  S.formV.activity.push({action:action, actor:actor, date: nextDemoDate()});
+  var kada = nextDemoDate();
+  S.formV.activity.push({action:action, actor:actor, date: kada});
+  /* Измене поља и преводе већ детаљно бележи auditPolje (из чега у шта, уз образложење),
+     па се исти догађај не дуплира кроз историју статуса. */
+  if(!/^(Административна измена|Машински превод предложен|Превод потврђен)/.test(action)){
+    var tip = tipRadnje(action);
+    upisiLog({kada:kada, ko:actor, tip:tip, sta:action, obrazac: (tip==='Администрација' ? '—' : 'Образац V')});
+  }
 }
 var DEMO_DATES = ['3. нов. 2026.','13. нов. 2026.','14. нов. 2026.','15. нов. 2026.','18. нов. 2026.','20. нов. 2026.','25. нов. 2026.','28. нов. 2026.'];
 var dateIdx = 0;
@@ -2816,12 +2889,18 @@ function renderFormvSidePanel(){
         '<button class="btn pri" id="btnValidate" '+(blok?'disabled title="Прво решите блокирана поља"':'')+' onclick="openValidate()">Валидирај унос</button>'+
       '</div></div>';
   } else if(S.role==='dp' && st==='validated'){
+    /* Валидација се дала на празном стању блокада, али поље може после тога поново да
+       постане празно (нпр. измена Супервизора). Зато се и овде предаја држи закључаном
+       док блокада има — иначе би предато било нешто што више не пролази проверу. */
+    var blokV = blokadeUObrascu().length;
     el.innerHTML = '<div class="side-panel"><h3>Валидирано — спремно за предају</h3>'+
-      checklistRow('Сва обавезна поља попуњена или означена', true)+
+      checklistRow('Сва обавезна поља попуњена или означена', blokV===0)+
       checklistRow('Унос валидирало овлашћено лице институције', true)+
+      (blokV ? '<div class="callout strong" style="margin-top:10px;"><div class="callout-h">'+L('Блокира предају: ','Blocks submission: ')+blokV+' '+L(blokV===1?'поље':'поља', blokV===1?'field':'fields')+'</div>'+
+               '<div class="small">'+L('Поље је после валидације остало без вредности или ознаке — вратите образац у нацрт и допуните га.','A field was left without a value or notation key after validation — return the form to draft and complete it.')+'</div></div>' : '')+
       '<p class="small muted" style="margin-top:8px;">Предајом допринос иде Водећем известиоцу. До тада можете вратити образац у нацрт и допунити га.</p>'+
       '<div style="margin-top:14px;">'+
-        '<button class="btn pri" id="btnSubmitContribution" onclick="openModal(\'modal-submit\')">'+t('btn_submit_review')+'</button> '+
+        '<button class="btn pri" id="btnSubmitContribution" '+(blokV?'disabled title="'+L('Прво решите блокирана поља','Resolve the blocked fields first')+'"':'')+' onclick="openModal(\'modal-submit\')">'+t('btn_submit_review')+'</button> '+
         '<button class="btn" onclick="vratiUNacrt()">Врати у нацрт</button>'+
       '</div></div>';
 
@@ -3137,6 +3216,94 @@ function doExport(){
   var el = document.getElementById('formvBanner');
   el.innerHTML = '<div class="banner-ok"><div class="bt">Извоз успешно генерисан</div>Образац V – Енергетска безбедност — Циклус извештавања 2027 — Формат: '+fmt+
     ' — за предају у '+(CILJNI_SISTEM['V']||'—')+'</div>';
+}
+
+/* ===================== Дневник измена (централни ревизиони траг) =====================
+   Пројектни задатак тражи да се зна ко је шта изменио. Ревизиони траг у обрасцу
+   покрива једно поље по обрасцу; овај дневник је исти податак на једном месту, кроз
+   све обрасце, институције и кориснике, и види га само Супервизор. Записи се само
+   дописују — нема измене ни брисања. */
+var LOG = [
+  {kada:'3. нов. 2026.',  ko:'Јелена Ковачевић', uloga:'Достављач података', inst:'Републички завод за статистику', tip:'Ток извештавања', obrazac:'Образац V', sta:'Нацрт креиран', iz:'', u:'', obr:''},
+  {kada:'12. нов. 2026.', ko:'Јелена Ковачевић', uloga:'Достављач података', inst:'Републички завод за статистику', tip:'Измена поља', obrazac:'Образац V', sta:'Показатељ – Резерве нафте — X-2', iz:'(празно)', u:'88', obr:''},
+  {kada:'12. нов. 2026.', ko:'Јелена Ковачевић', uloga:'Достављач података', inst:'Републички завод за статистику', tip:'Превод', obrazac:'Образац V', sta:'Циљ 1 — Назив', iz:'машински превод', u:'потврђено', obr:''},
+  {kada:'13. нов. 2026.', ko:'Јелена Ковачевић', uloga:'Достављач података', inst:'Републички завод за статистику', tip:'Ток извештавања', obrazac:'Образац V', sta:'Унос електронски валидиран', iz:'Нацрт', u:'Валидација достављача', obr:''},
+  {kada:'14. нов. 2026.', ko:'Јелена Ковачевић', uloga:'Достављач података', inst:'Републички завод за статистику', tip:'Ток извештавања', obrazac:'Образац V', sta:'Допринос предат', iz:'Валидација достављача', u:'Предато', obr:''},
+  {kada:'15. нов. 2026.', ko:'Петар Петровић',   uloga:'Водећи известилац', inst:'Агенција за енергетику', tip:'Ток извештавања', obrazac:'Образац V', sta:'Захтевана исправка', iz:'Предато', u:'Захтевана измена', obr:'Циљна вредност недостаје; проверити усклађеност са Енергетским билансом.'},
+  {kada:'18. нов. 2026.', ko:'Ана Репац',        uloga:'Водећи известилац', inst:'Агенција за енергетику', tip:'Измена поља', obrazac:'Образац VII', sta:'Табела 2 — X-3', iz:'41', u:'43', obr:''},
+  {kada:'20. нов. 2026.', ko:'Петар Петровић',   uloga:'Водећи известилац', inst:'Агенција за енергетику', tip:'Ток извештавања', obrazac:'Образац V', sta:'Допринос потврђен', iz:'Предато', u:'Потврђено', obr:''},
+  {kada:'25. нов. 2026.', ko:'Јован Симић',      uloga:'Супервизор', inst:'Министарство рударства и енергетике', tip:'Измена поља', obrazac:'Образац V', sta:'Циљ 2 — Циљна година', iz:'2029', u:'2030', obr:'Усклађено са обавезама IEA / Енергетске заједнице.'},
+  {kada:'25. нов. 2026.', ko:'Јован Симић',      uloga:'Супервизор', inst:'Министарство рударства и енергетике', tip:'Администрација', obrazac:'—', sta:'Додељен корисник: Ана Репац (Водећи известилац)', iz:'', u:'Агенција за енергетику', obr:''},
+  {kada:'28. нов. 2026.', ko:'Јован Симић',      uloga:'Супервизор', inst:'Министарство рударства и енергетике', tip:'Администрација', obrazac:'—', sta:'Затворен приступ кориснику: Марко Илић', iz:'активан', u:'затворен', obr:'Прешао на друго радно место — уноси и ревизиони траг остају приписани њему.'},
+  {kada:'28. нов. 2026.', ko:'Јован Симић',      uloga:'Супервизор', inst:'Министарство рударства и енергетике', tip:'Ток извештавања', obrazac:'Образац V', sta:'Финална потврда', iz:'Консолидовано', u:'Финална потврда', obr:''}
+];
+function institucijaUloge(){ return VEZAN_ZA_INSTITUCIJU[S.role] ? ORG[S.role] : ORG.super; }
+function upisiLog(o){
+  LOG.push({
+    kada: o.kada || nextDemoDate(),
+    ko: o.ko || ACTOR[S.role], uloga: o.uloga || t(ROLE_KEY[S.role]),
+    inst: o.inst || institucijaUloge(),
+    tip: o.tip || 'Ток извештавања', obrazac: o.obrazac || 'Образац V',
+    sta: o.sta || '', iz: o.iz || '', u: o.u || '', obr: o.obr || ''
+  });
+  if(S.screen==='audit-log') renderAuditLog();
+}
+/* Тип административног записа се препознаје по самој радњи, да позивна места остану кратка. */
+function tipRadnje(action){
+  if(/^(Институција|Додељен корисник|Измењен корисник|Затворен приступ|Поново активиран|Додељен образац)/.test(action)) return 'Администрација';
+  if(/^(Машински превод|Превод потврђен)/.test(action)) return 'Превод';
+  if(/^(Административна измена|Примедба)/.test(action)) return 'Измена поља';
+  return 'Ток извештавања';
+}
+function logFilteri(){
+  return {tip: (document.getElementById('logFTip')||{}).value || '',
+          ko:  (document.getElementById('logFKo')||{}).value || '',
+          inst:(document.getElementById('logFInst')||{}).value || '',
+          obr: (document.getElementById('logFObr')||{}).value || ''};
+}
+function napuniLogFilter(id, kljuc, labela){
+  var el = document.getElementById(id); if(!el) return;
+  var izabrano = el.value;
+  var vred = []; LOG.forEach(function(r){ if(r[kljuc] && vred.indexOf(r[kljuc])<0) vred.push(r[kljuc]); });
+  el.innerHTML = '<option value="">'+labela+'</option>' + vred.sort().map(function(v){ return '<option>'+esc(v)+'</option>'; }).join('');
+  if(vred.indexOf(izabrano)>=0) el.value = izabrano;
+}
+function ocistiLogFiltere(){
+  ['logFTip','logFKo','logFInst','logFObr'].forEach(function(id){ var e=document.getElementById(id); if(e) e.value=''; });
+  renderAuditLog();
+}
+function izveziLog(){
+  var el = document.getElementById('logIzvoz'); if(!el) return;
+  el.innerHTML = '<div class="banner-ok" style="margin:8px 0;"><div class="bt">'+L('Дневник припремљен за извоз','Log prepared for export')+'</div>'+
+    L('Приказани записи: ','Records shown: ')+logRedovi().length+
+    L('. Формат и опсег (цео дневник или само филтрирано) биће усаглашени са корисником у РП2.',
+      '. The format and the scope (whole log or the filtered view only) will be agreed with the client in WP2.')+'</div>';
+}
+function logRedovi(){
+  var f = logFilteri();
+  return LOG.slice().reverse().filter(function(r){
+    return (!f.tip || r.tip===f.tip) && (!f.ko || r.ko===f.ko) && (!f.inst || r.inst===f.inst) && (!f.obr || r.obrazac===f.obr);
+  });
+}
+function renderAuditLog(){
+  napuniLogFilter('logFTip','tip', L('сви типови','all types'));
+  napuniLogFilter('logFKo','ko', L('сви корисници','all users'));
+  napuniLogFilter('logFInst','inst', L('све институције','all institutions'));
+  napuniLogFilter('logFObr','obrazac', L('сви обрасци','all forms'));
+  var red = logRedovi();
+  var br = document.getElementById('logCount'); if(br) br.textContent = red.length + (red.length!==LOG.length ? ' / '+LOG.length : '');
+  var b = document.getElementById('logBody'); if(!b) return;
+  b.innerHTML = red.map(function(r){
+    var izu = (r.iz || r.u) ? '<span>'+esc(r.iz||'—')+'</span> → <span>'+esc(r.u||'—')+'</span>' : '—';
+    return '<tr><td class="small">'+esc(r.kada)+'</td>'+
+      '<td>'+esc(r.ko)+'<div class="xs muted"><span>'+esc(r.uloga)+'</span> · <span>'+esc(r.inst)+'</span></div></td>'+
+      '<td><span class="badge">'+esc(r.tip)+'</span><div class="xs muted">'+esc(r.obrazac)+'</div></td>'+
+      '<td class="small">'+esc(r.sta)+'</td>'+
+      '<td class="small">'+izu+'</td>'+
+      '<td class="xs muted">'+(r.obr ? esc(r.obr) : '—')+'</td></tr>';
+  }).join('');
+  var pz = document.getElementById('logPrazno');
+  if(pz){ pz.textContent = red.length ? '' : L('Нема записа за изабране филтере.','No records for the selected filters.'); }
 }
 
 /* ===================== Institutions / Administration ===================== */
@@ -3478,6 +3645,7 @@ function renderAll(){
   if(S.screen==='formv') renderFormV();
   if(S.screen==='notifications') renderNotifFull();
   if(S.screen==='institutions') renderInstitutions();
+  if(S.screen==='audit-log') renderAuditLog();
   prevediUI();
 }
 
@@ -3509,7 +3677,7 @@ function enterApp(role){
   showScreen('dashboard');
 }
 var LICA = ['dp','lead','super'];
-var SAMO_SUPER_EKRANI = ['institutions','institution-detail'];
+var SAMO_SUPER_EKRANI = ['institutions','institution-detail','audit-log'];
 /* Demo-only: switch person in place. The flow itself advances roles automatically
    (see predajUlozi) — this exists to reach a role the flow does not lead to, e.g. the Administrator. */
 function promeniLice(r){
