@@ -283,11 +283,13 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
           <div class="card">
             <div class="card-h">Институционални доприноси</div>
             <div class="card-b">
-              <p class="note" style="margin-top:0;"><strong>Једна табела припада једној институцији.</strong> Подела рада унутар табеле иде по секцијама, а <strong>једна секција има тачно једну особу</strong> — то лице одговара за свој унос. Табела се не дели између институција; ако одговорност пређе на другу институцију, табела се премешта, а стари унос и ревизиони траг остају приписани институцији која га је дала.</p>
-              <p class="note" style="margin-top:0;">Правилник за <strong>37 табела</strong> поред Министарства именује и друге органе (нпр. Табела V/1 — АЕРС и орган за статистику). Ту правило „једна табела — једна институција" значи да једна институција <strong>одговара</strong> за табелу, а остале своје податке достављају кроз њене секције или изван платформе. Биће усаглашено са корисником у РП2.</p>
+              <p class="note" style="margin-top:0;"><strong>Табела из Правилника је шаблон.</strong> Иста табела може да се додели више институција — то нису делови једне заједничке табеле, него <strong>инстанце</strong>: институција А има своју Табелу 1, институција Б своју Табелу 1. Свака инстанца има свој унос, свој статус и свој ревизиони траг; ништа се не дели ни преписује.</p>
+              <p class="note" style="margin-top:0;"><strong>Једна инстанца — једна институција. Једна секција у инстанци — једна особа.</strong> Подела рада унутар инстанце иде по секцијама, а свака секција има тачно једно лице које за њу одговара. Водећи известилац инстанце исте табеле при консолидацији спаја у једну табелу за извештавање; правило спајања по типу табеле биће усаглашено са корисником у РП2.</p>
+              <p class="note" style="margin-top:0;">Ово одговара Правилнику, који за <strong>37 табела</strong> поред Министарства именује и друге органе (нпр. Табела V/1 — АЕРС и орган за статистику): сваки од њих попуњава своју инстанцу те табеле.</p>
               <p class="note" style="margin-top:0;">Свака институција попуњава <strong>своју верзију обрасца и својих табела</strong> — испод су верзије и њихови статуси. Водећи известилац те верзије потврђује и консолидује у један образац, а Супервизор даје финалну потврду. Ниједна верзија се не брише: остаје у систему са својим ревизионим трагом.</p>
+              <p class="note hidden" id="contributionsScopeNote" style="margin-top:0;"></p>
               <div class="scroll"><table class="freeze-1">
-                <thead><tr><th>Табела / секција</th><th>Институција / особа</th><th>Статус</th><th>Попуњеност</th></tr></thead>
+                <thead><tr><th>Табела / институција</th><th>Секције и особе</th><th>Статус</th><th>Попуњеност</th></tr></thead>
                 <tbody id="contributionsBody"></tbody>
               </table></div>
             </div>
@@ -741,7 +743,7 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
       <p class="xs muted" style="margin-top:4px;">Изаберите једну или више табела (држите Ctrl / Cmd за више). Ако не изаберете ниједну, институција је уписана на нивоу обрасца.</p>
     </div>
     <div class="fld"><label>Део табеле (опционо)</label><input id="assignFormPart" placeholder="нпр. редови за природни гас"></div>
-    <p class="note"><strong>Једна табела припада једној институцији.</strong> Ако је изабрана табела већ додељена другој институцији, додела се не извршава — понудиће се премештање одговорности. Претходни унос и ревизиони траг остају приписани институцији која их је дала. Подела рада унутар табеле иде по секцијама, а свака секција има тачно једну особу (додељује се у секцији Корисници).</p>
+    <p class="note"><strong>Табела је шаблон.</strong> Иста табела може да се додели више институција — свака добија своју инстанцу (своју табелу, свој унос, свој статус, свој ревизиони траг), а не део једне заједничке табеле. Унутар инстанце подела рада иде по секцијама, а свака секција има тачно једну особу (додељује се у секцији Корисници).</p>
     <div id="assignFormSukob"></div>
     <div class="fld"><label>Тип учешћа</label>
       <select id="assignPartSel">
@@ -1515,6 +1517,18 @@ var SR2EN = {
   "ранији називи":"former names",
   "раније: ":"formerly: ",
   "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name",
+  /* шаблон → инстанце (исправка по наручиоцу) */
+  "Табела из Правилника је шаблон.":"A table from the Rulebook is a template.",
+  "Иста табела може да се додели више институција — то нису делови једне заједничке табеле, него":"The same table can be assigned to several institutions — these are not parts of one shared table, but",
+  "инстанце":"instances",
+  ": институција А има своју Табелу 1, институција Б своју Табелу 1. Свака инстанца има свој унос, свој статус и свој ревизиони траг; ништа се не дели ни преписује.":": institution A has its own Table 1, institution B has its own Table 1. Every instance has its own entry, its own status and its own audit trail; nothing is shared and nothing is overwritten.",
+  "Једна инстанца — једна институција. Једна секција у инстанци — једна особа.":"One instance — one institution. One section within an instance — one person.",
+  "Подела рада унутар инстанце иде по секцијама, а свака секција има тачно једно лице које за њу одговара. Водећи известилац инстанце исте табеле при консолидацији спаја у једну табелу за извештавање; правило спајања по типу табеле биће усаглашено са корисником у РП2.":"The division of work within an instance goes by sections, and each section has exactly one person responsible for it. On consolidation the Lead Reporter merges the instances of the same table into a single table for reporting; the merge rule per table type will be agreed with the client in WP2.",
+  "Ово одговара Правилнику, који за":"This matches the Rulebook, which for",
+  "поред Министарства именује и друге органе (нпр. Табела V/1 — АЕРС и орган за статистику): сваки од њих попуњава своју инстанцу те табеле.":"names bodies in addition to the Ministry (e.g. Table V/1 — AERS and the statistical authority): each of them fills in its own instance of that table.",
+  "Секције и особе":"Sections and persons",
+  "Табела је шаблон.":"A table is a template.",
+  "Иста табела може да се додели више институција — свака добија своју инстанцу (своју табелу, свој унос, свој статус, свој ревизиони траг), а не део једне заједничке табеле. Унутар инстанце подела рада иде по секцијама, а свака секција има тачно једну особу (додељује се у секцији Корисници).":"The same table can be assigned to several institutions — each gets its own instance (its own table, its own entry, its own status, its own audit trail), not a part of one shared table. Within an instance the division of work goes by sections, and each section has exactly one person (assigned in the Users section).",
   /* правило са табле: 1 табела — 1 институција, 1 секција — 1 особа */
   "Једна табела припада једној институцији.":"One table belongs to one institution.",
   "Подела рада унутар табеле иде по секцијама, а":"The division of work inside a table goes by sections, and",
@@ -1705,16 +1719,20 @@ var S = {
     conflict:false,
     // Институционални доприноси Обрасцу V — један образац, више институција/обима, консолидује Водећи известилац.
     contributions:[
-      /* Правило са табле: ЈЕДНА табела припада ЈЕДНОЈ институцији. Подела рада унутар
-         табеле иде по СЕКЦИЈАМА, а свака секција има ТАЧНО ЈЕДНУ особу. */
+      /* Табела из Правилника је ШАБЛОН. Један ред овде је ИНСТАНЦА тог шаблона код једне
+         институције: своја табела, свој унос, свој статус, свој ревизиони траг. Иста табела
+         може имати инстанце код више институција (в. Табела 1 — РЗС и Србијагас).
+         Правило: једна инстанца — једна институција; једна секција у инстанци — једна особа. */
       {tId:'V/1', institution:'Републички завод за статистику', status:'Предато', pct:100,
         sekcije:[{naziv:'Показатељи снабдевања', osoba:'Јелена Ковачевић'},
                  {naziv:'Резерве нафте', osoba:'Милан Јовић'}]},
+      {tId:'V/1', institution:'Србијагас', status:'Нацрт', pct:35,
+        sekcije:[{naziv:'Цела табела', osoba:'Драган Марић'}]},
       {tId:'V/2', institution:'Агенција за енергетику', status:'На прегледу', pct:80,
         sekcije:[{naziv:'Квантитативни циљеви — електрична енергија', osoba:'Петар Петровић'},
                  {naziv:'Квантитативни циљеви — гас', osoba:'Ана Репац'}]},
       {tId:'V/3', institution:'Србијагас', status:'Нацрт', pct:50,
-        sekcije:[{naziv:'Цела табела', osoba:'Драган Марић'}]}
+        sekcije:[{naziv:'Цела табела', osoba:'Милан Јовић'}]}
     ],
     objectives:[
       {name:'Диверсификација извора и праваца снабдевања природним гасом', desc:'Смањење зависности од једног правца снабдевања развојем интерконекција и алтернативних уговора о снабдевању.', relevance:'Директно подржава сигурност снабдевања гасом у складу са Регулативом (ЕУ) 2017/1938.', year:'2030', status:'На добром путу', responsible:'Министарство рударства и енергетике', sources:'Природни гас, Електрична енергија', reference:'Национални енергетски и климатски план, гл. 4.2', comments:'', classification:'standard'},
@@ -2613,14 +2631,17 @@ function renderCorrectionCallout(){
 }
 
 /* ---- Institutional contributions: one form, multiple institutional contributions, consolidated by the Lead Reporter ---- */
-/* Правило са табле: једна табела припада једној институцији. Ове две функције су
-   једино место где се то проверава, да правило не може да се обиђе на два начина. */
-function institucijaTabele(tId){
-  var c = S.formV.contributions.filter(function(x){ return (x.tId||x.tabela)===tId; })[0];
-  return c ? c.institution : null;
+/* Инстанце једног шаблона табеле. Инстанца = табела код једне институције. */
+function instanceTabele(tId){
+  return S.formV.contributions.filter(function(x){ return (x.tId||x.tabela)===tId; });
 }
-function sekcijeTabele(tId){
-  var c = S.formV.contributions.filter(function(x){ return (x.tId||x.tabela)===tId; })[0];
+function institucijeTabele(tId){
+  return instanceTabele(tId).map(function(c){ return c.institution; });
+}
+/* Секције једне ИНСТАНЦЕ (табела + институција). Ако институција још нема инстанцу,
+   као предлог секција служе стварни редови те табеле из Правилника. */
+function sekcijeInstance(tId, institucija){
+  var c = instanceTabele(tId).filter(function(x){ return !institucija || x.institution===institucija; })[0];
   if(c && c.sekcije && c.sekcije.length) return c.sekcije;
   var p = String(tId).split('/');
   var red = REDOVI_TABELE[p[0]+'|'+p[1]] || [];
@@ -2633,21 +2654,49 @@ function nazivTabele(tId){
   var l = (TABELE[p[0]]||[]).filter(function(x){ return String(x.n)===p[1]; })[0];
   return l ? ('Табела '+p[1]+' – '+l.t) : String(tId);
 }
+/* Достављач података види само инстанце СВОЈЕ институције — унос других институција
+   није његов посао и не приказује му се (ни статус ни попуњеност). Водећи известилац
+   и Супервизор виде све, јер потврђују, консолидују и надгледају. */
+function vidljiviDoprinosi(){
+  if(S.role==='dp'){
+    return S.formV.contributions.filter(function(c){ return c.institution===ORG.dp; });
+  }
+  return S.formV.contributions;
+}
 function renderContributions(){
   var el = document.getElementById('contributionsBody');
   if(!el) return;
-  /* Табела → њена институција → секције, а свака секција има једну особу. */
-  el.innerHTML = S.formV.contributions.map(function(c){
-    var pun = nazivTabele(c.tId || c.tabela || '—');
-    var kratko = pun.length>78 ? pun.slice(0,76)+'…' : pun;
-    var sek = (c.sekcije||[]);
-    var glava = '<tr class="grp"><td title="'+esc(pun)+'"><strong>'+esc(kratko)+'</strong></td>'+
-      '<td><span>'+esc(c.institution)+'</span></td>'+
-      '<td><span class="badge">'+esc(c.status)+'</span></td><td>'+c.pct+'%</td></tr>';
-    return glava + sek.map(function(s){
-      return '<tr><td style="padding-left:22px;" class="small">'+L('Секција: ','Section: ')+'<span>'+esc(s.naziv)+'</span></td>'+
-        '<td class="small"><span>'+esc(s.osoba||'—')+'</span></td>'+
-        '<td class="xs muted" colspan="2">'+L('једна секција — једна особа','one section — one person')+'</td></tr>';
+  var napomena = document.getElementById('contributionsScopeNote');
+  if(napomena){
+    var samoSvoje = (S.role==='dp');
+    napomena.innerHTML = samoSvoje
+      ? L('Приказана је само инстанца ваше институције ('+ORG.dp+'). Унос других институција вам није доступан — ни вредности, ни статус, ни попуњеност.',
+          'Only your institution\'s instance is shown ('+ORG_EN[ORG.dp]+'). The entry of other institutions is not available to you — neither values, nor status, nor completeness.')
+      : '';
+    napomena.classList.toggle('hidden', !samoSvoje);
+  }
+  /* Шаблон табеле → инстанце по институцијама → секције са особама. */
+  var po = {}, red = [];
+  vidljiviDoprinosi().forEach(function(c){
+    var k = c.tId || c.tabela || '—';
+    if(!po[k]){ po[k]=[]; red.push(k); }
+    po[k].push(c);
+  });
+  el.innerHTML = red.map(function(k){
+    var lista = po[k];
+    var pun = nazivTabele(k);
+    var kratko = pun.length>74 ? pun.slice(0,72)+'…' : pun;
+    var glava = '<tr class="grp"><td colspan="3" title="'+esc(pun)+'"><strong>'+esc(kratko)+'</strong></td>'+
+      '<td>'+lista.length+' '+L(lista.length===1?'инстанца':(lista.length<5?'инстанце':'инстанци'), lista.length===1?'instance':'instances')+'</td></tr>';
+    return glava + lista.map(function(c){
+      var sek = (c.sekcije||[]);
+      return '<tr><td style="padding-left:22px;"><span>'+esc(c.institution)+'</span>'+
+          '<div class="xs muted">'+L('своја инстанца табеле — свој унос и ревизиони траг','own instance of the table — own entry and audit trail')+'</div></td>'+
+        '<td class="small">'+ (sek.length
+            ? sek.map(function(s){ return '<span>'+esc(s.naziv)+'</span> → <span>'+esc(s.osoba||'—')+'</span>'; }).join('<br>')
+            : '<span class="xs muted">'+L('секције још нису додељене','sections not assigned yet')+'</span>')+
+          '<div class="xs muted">'+L('једна секција — једна особа','one section — one person')+'</div></td>'+
+        '<td><span class="badge">'+esc(c.status)+'</span></td><td>'+c.pct+'%</td></tr>';
     }).join('');
   }).join('');
 }
@@ -2677,7 +2726,10 @@ function renderSectionResponsibility(){
           : 'У вашој улози образац се прегледа, а не уређује — унос је на институцијама којима су секције додељене.');
   }
 
-  el.innerHTML = FORMV_SECTIONS.map(function(sec){
+  var samoSvoje = (S.role==='dp');
+  el.innerHTML = FORMV_SECTIONS.filter(function(sec){
+    return !samoSvoje || sec.institution===ORG.dp;
+  }).map(function(sec){
     var status;
     if(admin){
       status = '<span class="badge solid">Можете уређивати</span> <span class="badge">административно</span>';
@@ -3567,29 +3619,26 @@ function saveAssignForm(){
   var st = document.getElementById('assignFormTables');
   var tabele = [];
   if(st) Array.prototype.forEach.call(st.options, function(o){ if(o.selected && !o.disabled) tabele.push(Number(o.value)); });
-  /* Провера правила: табела не може да припада двема институцијама. */
-  var sukobi = tabele.map(function(n){
-    var tId = id+'/'+n, vlasnik = institucijaTabele(tId);
-    return (vlasnik && vlasnik!==inst.name) ? {tId:tId, n:n, vlasnik:vlasnik} : null;
-  }).filter(Boolean);
+  /* Иста табела може ићи на више институција — свака добија своју инстанцу. Ако
+     институција већ има инстанцу те табеле, друга се не прави. */
   var box = document.getElementById('assignFormSukob');
-  if(sukobi.length){
-    if(box) box.innerHTML = '<div class="callout strong"><div class="callout-h">'+
-      L('Табела је већ додељена другој институцији','The table is already assigned to another institution')+'</div><div class="small">'+
-      sukobi.map(function(s){ return 'Табела '+s.n+' — <span>'+esc(s.vlasnik)+'</span>'; }).join('<br>')+
-      '<div class="xs muted" style="margin-top:5px;">'+L('Једна табела припада једној институцији. Или изаберите другу табелу, или премести одговорност — премештањем стари унос и ревизиони траг остају приписани претходној институцији.','One table belongs to one institution. Either select a different table, or move the responsibility — after the move the earlier entry and audit trail stay attributed to the previous institution.')+'</div>'+
-      '<div style="margin-top:8px;"><button class="btn sm" onclick="premestiTabele(\''+esc(sukobi.map(function(s){return s.tId;}).join(','))+'\')">'+
-      L('Премести на ову институцију','Move to this institution')+'</button></div></div></div>';
-    return;
+  var vec = tabele.map(function(n){
+    var tId = id+'/'+n, druge = institucijeTabele(tId).filter(function(x){ return x!==inst.name; });
+    return druge.length ? {n:n, druge:druge} : null;
+  }).filter(Boolean);
+  if(box){
+    box.innerHTML = vec.length ? '<div class="callout"><div class="callout-h">'+
+      L('Ову табелу већ попуњавају и друге институције','Other institutions already fill in this table')+'</div><div class="small">'+
+      vec.map(function(v){ return 'Табела '+v.n+' — '+v.druge.map(function(d){ return '<span>'+esc(d)+'</span>'; }).join(', '); }).join('<br>')+
+      '<div class="xs muted" style="margin-top:5px;">'+L('Ова институција добија своју инстанцу те табеле: свој унос, свој статус и свој ревизиони траг. Инстанце се не деле; Водећи известилац их при консолидацији спаја.','This institution gets its own instance of that table: its own entry, its own status and its own audit trail. Instances are not shared; the Lead Reporter merges them on consolidation.')+'</div></div></div>' : '';
   }
-  if(box) box.innerHTML='';
   inst.resp.push({form:formName, area:area, participation:participation, tables:tabele.slice(), deo:deo});
   /* Демо: за Образац V се одмах види последица — свака изабрана табела добија
      инстанцу за ову институцију, поред постојећих инстанци истих табела. */
   if(id==='V'){
     tabele.forEach(function(n){
       var tId = 'V/'+n;
-      var vecIma = S.formV.contributions.filter(function(c){ return c.tId===tId; }).length;
+      var vecIma = S.formV.contributions.filter(function(c){ return c.tId===tId && c.institution===inst.name; }).length;
       if(!vecIma){
         S.formV.contributions.push({tId:tId, institution:inst.name, status:'Нацрт', pct:0,
           sekcije:[{naziv:(deo || 'Цела табела'), osoba:''}]});
@@ -3601,25 +3650,6 @@ function saveAssignForm(){
   pushActivity(opis, ACTOR.super);
   renderInstResp(inst);
   closeModal('modal-assignform');
-}
-/* Премештање одговорности за табелу — институција се мења, историја не. */
-function premestiTabele(lista){
-  var inst = currentEditingInst(); if(!inst) return;
-  String(lista).split(',').forEach(function(tId){
-    S.formV.contributions.forEach(function(c){
-      if((c.tId||c.tabela)===tId){
-        var stara = c.institution;
-        c.institution = inst.name;
-        /* Секције остају као подела рада, али особе се бришу — оне су биле из старе институције. */
-        (c.sekcije||[]).forEach(function(s){ s.osoba=''; });
-        pushActivity('Табела премештена: '+nazivTabele(tId)+' · '+stara+' → '+inst.name, ACTOR.super);
-      }
-    });
-  });
-  var box = document.getElementById('assignFormSukob'); if(box) box.innerHTML='';
-  closeModal('modal-assignform');
-  renderInstResp(inst);
-  renderContributions();
 }
 var _editUserIx = null;
 function openAssignUserNovi(){
@@ -3763,9 +3793,10 @@ function syncTablePartOptions(){
   }
   wrap.classList.remove('hidden');
 
-  /* Секције те табеле: постојеће секције ако их има, иначе стварни редови из Правилника. */
+  /* Секције инстанце ове институције — не туђе. */
   var tIdSel = String(one).replace('|','/');
-  var sekc = sekcijeTabele(tIdSel);
+  var instX = currentEditingInst();
+  var sekc = sekcijeInstance(tIdSel, instX ? instX.name : null);
   var opts = '';
   sekc.forEach(function(s){
     opts += '<option value="'+esc(s.naziv)+'">'+esc(s.naziv)+(s.osoba ? ' — '+esc(s.osoba) : '')+'</option>';
@@ -3775,12 +3806,12 @@ function syncTablePartOptions(){
   }
   part.innerHTML = opts;
 
-  var vlasnikT = institucijaTabele(String(one).replace('|','/'));
-  var zauzeta = sekcijeTabele(String(one).replace('|','/')).filter(function(s){ return s.osoba; });
+  var drugeInst = institucijeTabele(tIdSel).filter(function(x){ return !instX || x!==instX.name; });
+  var zauzeta = sekc.filter(function(s){ return s.osoba; });
   if(zauzeta.length){
-    hint.textContent = 'Заузете секције: ' + zauzeta.map(function(s){ return s.naziv+' → '+s.osoba; }).join(' · ') +
+    hint.textContent = 'Заузете секције у инстанци ове институције: ' + zauzeta.map(function(s){ return s.naziv+' → '+s.osoba; }).join(' · ') +
       '. Једна секција има једну особу — избором заузете секције одговорност прелази на новог корисника, а измена остаје у дневнику.' +
-      (vlasnikT ? ' Табела припада институцији: '+vlasnikT+'.' : '');
+      (drugeInst.length ? ' Исту табелу попуњавају и: '+drugeInst.join(', ')+' — то су њихове инстанце и овде се не виде.' : '');
   } else if(PROPISAN_DEO[one]){
     hint.textContent = 'За ову табелу Правилник изричито наводи један део и ко га попуњава; остале ставке су редови исте табеле.';
   } else if(VISE_INSTITUCIJA_MAP[one]){
@@ -3809,7 +3840,7 @@ function saveAssignUser(){
   if(tabs.length===1 && part){
     var tIdU = tabs[0].replace('Образац ','').replace(', табела ','/');
     S.formV.contributions.forEach(function(c){
-      if((c.tId||c.tabela)===tIdU){
+      if((c.tId||c.tabela)===tIdU && c.institution===inst.name){
         (c.sekcije||[]).forEach(function(s){
           if(s.naziv===part && s.osoba && s.osoba!==name){
             pushActivity('Секција преузета: '+part+' · '+s.osoba+' → '+name, ACTOR.super);
