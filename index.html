@@ -700,6 +700,29 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
   </div>
 </div>
 
+<!-- MODAL: podela tabele na sekcije -->
+<div class="modal-bg" id="modal-sekcije">
+  <div class="modal" style="max-width:760px;">
+    <h3>Подела табеле на секције</h3>
+    <p class="note">Правилник не прописује поделу табела на секције — прописује само редове табеле. Зато поделу овде дефинише Супервизор: изабере редове који идu заједно, да им назив и одреди институцију и лице. Подела се може у сваком циклусу изменити, а свака измена улази у дневник.</p>
+    <div class="fld"><label>Табела</label><select id="sekTabela" onchange="renderSekcijeModal()"></select></div>
+    <div id="sekPostojece"></div>
+    <div class="fld"><label>Редови који улазе у секцију <span class="badge">један ред — једна секција</span></label>
+      <div id="sekRedovi" style="max-height:210px; overflow:auto; border:1px solid var(--border); border-radius:6px; padding:8px;"></div>
+    </div>
+    <div class="grid2" style="gap:10px;">
+      <div class="fld"><label>Назив секције</label><input id="sekNaziv" placeholder="нпр. C3 – Показатељи увоза"></div>
+      <div class="fld"><label>Институција</label><select id="sekInst"></select></div>
+    </div>
+    <div class="fld"><label>Лице (попуњава секцију)</label><input id="sekOsoba" placeholder="име и презиме"></div>
+    <div id="sekNepokriveno"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('modal-sekcije')">Затвори</button>
+      <button class="btn pri" onclick="sacuvajSekciju()">Сачувај секцију</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-bg" id="modal-export">
   <div class="modal">
     <h3>Извоз извештаја</h3>
@@ -1518,6 +1541,26 @@ var SR2EN = {
   "ранији називи":"former names",
   "раније: ":"formerly: ",
   "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name",
+  /* подела табеле на секције */
+  "Подела табеле на секције":"Dividing a table into sections",
+  "Правилник не прописује поделу табела на секције — прописује само редове табеле. Зато поделу овде дефинише Супервизор: изабере редове који идu заједно, да им назив и одреди институцију и лице. Подела се може у сваком циклусу изменити, а свака измена улази у дневник.":"The Rulebook does not prescribe a division of tables into sections — it only prescribes the rows of a table. The division is therefore defined here by the Supervisor: pick the rows that belong together, name them and set the institution and the person. The division can be changed in every cycle, and every change goes into the change log.",
+  "Табела":"Table",
+  "Редови који улазе у секцију":"Rows that go into the section",
+  "један ред — једна секција":"one row — one section",
+  "Назив секције":"Section name",
+  "Лице (попуњава секцију)":"Person (fills in the section)",
+  "Сачувај секцију":"Save section",
+  "Подели на секције":"Divide into sections",
+  "Уклони":"Remove",
+  "редова":"rows",
+  "Национални циљ 1":"National objective 1",
+  "Национални циљ 2":"National objective 2",
+  "Национални циљ 3":"National objective 3",
+  "Диверзификација извора енергије и снабдевања":"Diversification of energy sources and supply",
+  "Смањење енергетске зависности од увоза из трећих земаља":"Reducing energy dependence on imports from third countries",
+  "Развој способности за суочавање са ограничењима или прекидима у снабдевању":"Building the capability to cope with constrained or disrupted supply",
+  "C3 – Способности за ограничења снабдевања":"C3 – Capability for supply constraints",
+  "нпр. C3 – Показатељи увоза":"e.g. C3 – Import indicators",
   /* секције као јединица доделе; извоз по обрасцу */
   "Подела обрасца по секцијама":"How the form is divided into sections",
   "Образац → табеле → секције.":"Form → tables → sections.",
@@ -1769,11 +1812,16 @@ var S = {
          Табела постоји једном у обрасцу; њене секције су подељене институцијама, а свака
          секција има једно лице које је попуњава. Секције исте табеле могу припадати
          различитим институцијама. Извоз је по обрасцу — цео образац као једна целина. */
-      {tId:'V/1', sekcija:'C1 – Показатељи снабдевања', inst:'Републички завод за статистику', osoba:'Јелена Ковачевић', status:'Предато', pct:100},
-      {tId:'V/1', sekcija:'C2 – Резерве нафте', inst:'Србијагас', osoba:'Драган Марић', status:'Нацрт', pct:35},
-      {tId:'V/2', sekcija:'C1 – Квантитативни циљеви (електрична енергија)', inst:'Агенција за енергетику', osoba:'Петар Петровић', status:'На прегледу', pct:80},
-      {tId:'V/2', sekcija:'C2 – Квантитативни циљеви (гас)', inst:'Србијагас', osoba:'Милан Јовић', status:'Нацрт', pct:40},
-      {tId:'V/3', sekcija:'C1 – Неквантификациони циљеви', inst:'Агенција за енергетику', osoba:'Ана Репац', status:'Нацрт', pct:50}
+      {tId:'V/1', sekcija:'C1 – Показатељи снабдевања', inst:'Републички завод за статистику', osoba:'Јелена Ковачевић', status:'Предато', pct:100,
+        redovi:['Национални циљ 1','Национални циљ 2']},
+      {tId:'V/1', sekcija:'C2 – Резерве нафте', inst:'Србијагас', osoba:'Драган Марић', status:'Нацрт', pct:35,
+        redovi:['Национални циљ 3']},
+      {tId:'V/2', sekcija:'C1 – Квантитативни циљеви (електрична енергија)', inst:'Агенција за енергетику', osoba:'Петар Петровић', status:'На прегледу', pct:80,
+        redovi:['Диверзификација извора енергије и снабдевања','Смањење енергетске зависности од увоза из трећих земаља','Национални циљ 1']},
+      {tId:'V/2', sekcija:'C2 – Квантитативни циљеви (гас)', inst:'Србијагас', osoba:'Милан Јовић', status:'Нацрт', pct:40,
+        redovi:['Национални циљ 2']},
+      {tId:'V/3', sekcija:'C1 – Неквантификациони циљеви', inst:'Агенција за енергетику', osoba:'Ана Репац', status:'Нацрт', pct:50,
+        redovi:['Национални циљ 1','Национални циљ 2','Национални циљ 3']}
     ],
     objectives:[
       {name:'Диверсификација извора и праваца снабдевања природним гасом', desc:'Смањење зависности од једног правца снабдевања развојем интерконекција и алтернативних уговора о снабдевању.', relevance:'Директно подржава сигурност снабдевања гасом у складу са Регулативом (ЕУ) 2017/1938.', year:'2030', status:'На добром путу', responsible:'Министарство рударства и енергетике', sources:'Природни гас, Електрична енергија', reference:'Национални енергетски и климатски план, гл. 4.2', comments:'', classification:'standard'},
@@ -2683,6 +2731,118 @@ function sekcijeTabele(tId){
 function sekcijeInstitucije(inst){
   return S.formV.sekcije.filter(function(x){ return x.inst===inst; });
 }
+/* ===== Подела табеле на секције =====
+   Пошто подела не постоји ни у Правилнику ни у Reportnet-у, платформа мора да омогући
+   да се дефинише: Супервизор бира редове табеле, даје секцији назив и одређује
+   институцију и лице. Један ред може бити само у једној секцији. */
+function openSekcije(tId){
+  var sel=document.getElementById('sekTabela'); if(!sel) return;
+  sel.innerHTML = (TABELE['V']||[]).map(function(tb){
+    var id='V/'+tb.n, nz=nazivTabele(id);
+    return '<option value="'+id+'">'+esc(nz.length>70?nz.slice(0,68)+'…':nz)+'</option>';
+  }).join('');
+  if(tId) sel.value=tId;
+  var si=document.getElementById('sekInst');
+  if(si) si.innerHTML = INSTITUTIONS.filter(function(i){ return i.active!==false; })
+      .map(function(i){ return '<option>'+esc(i.name)+'</option>'; }).join('');
+  document.getElementById('sekNaziv').value='';
+  document.getElementById('sekOsoba').value='';
+  renderSekcijeModal();
+  openModal('modal-sekcije');
+}
+function renderSekcijeModal(){
+  var tId=(document.getElementById('sekTabela')||{}).value; if(!tId) return;
+  var post=sekcijeTabele(tId);
+  var box=document.getElementById('sekPostojece');
+  if(box){
+    box.innerHTML = post.length
+      ? '<div class="callout" style="margin-bottom:10px;"><div class="callout-h">'+L('Постојеће секције: ','Existing sections: ')+post.length+'</div><div class="small">'+
+        post.map(function(s,i){ return '<span>'+esc(s.sekcija)+'</span> — <span>'+esc(s.inst)+'</span>'+(s.osoba?' / <span>'+esc(s.osoba)+'</span>':'')+
+          ' <span class="xs muted">('+(s.redovi||[]).length+' '+L('редова','rows')+')</span> '+
+          '<span class="btn sm" onclick="obrisiSekciju(\''+esc(tId)+'\','+i+')">'+L('Уклони','Remove')+'</span>'; }).join('<br>')+'</div></div>'
+      : '<p class="note" style="margin-top:0;">'+L('Ова табела још није подељена — цела припада једној секцији када је сачувате.','This table is not divided yet — it belongs to a single section once you save one.')+'</p>';
+  }
+  var red=redoviTabele(tId);
+  var pripada={};
+  post.forEach(function(s){ (s.redovi||[]).forEach(function(r){ pripada[r]=s.sekcija; }); });
+  var rb=document.getElementById('sekRedovi');
+  if(rb){
+    rb.innerHTML = red.length ? red.map(function(r,i){
+      var u=pripada[r];
+      return '<label class="checkline" style="align-items:flex-start;"><input type="checkbox" class="sekRed" value="'+esc(r)+'" style="width:auto; margin-top:3px;">'+
+        '<span><span>'+esc(r)+'</span>'+(u ? ' <span class="badge">'+esc(u)+'</span>' : '')+'</span></label>';
+    }).join('') : '<p class="xs muted" style="margin:0;">'+L('За ову табелу редови нису издвојени у Правилнику — додељује се у целини.','The rows of this table are not itemised in the Rulebook — it is assigned as a whole.')+'</p>';
+  }
+  var np=nepokriveniRedovi(tId);
+  var nb=document.getElementById('sekNepokriveno');
+  if(nb){
+    nb.innerHTML = np.length
+      ? '<div class="callout strong"><div class="callout-h">'+L('Редови без секције: ','Rows without a section: ')+np.length+'</div><div class="small">'+
+        np.slice(0,6).map(function(r){ return '<span>'+esc(r)+'</span>'; }).join('<br>')+
+        '<div class="xs muted" style="margin-top:4px;">'+L('Док ред није ни у једној секцији, за њега нико није одговоран — образац се извози као целина, па то задржава цео извоз.','While a row is in no section, nobody is responsible for it — the form is exported as a whole, so that holds up the entire export.')+'</div></div></div>'
+      : '<div class="banner-ok" style="margin:8px 0;"><div class="bt">'+L('Сви редови табеле су покривени секцијама','All rows of the table are covered by sections')+'</div></div>';
+  }
+}
+function sacuvajSekciju(){
+  var tId=document.getElementById('sekTabela').value;
+  var naziv=document.getElementById('sekNaziv').value.trim();
+  var inst=document.getElementById('sekInst').value;
+  var osoba=document.getElementById('sekOsoba').value.trim();
+  var red=[];
+  Array.prototype.forEach.call(document.querySelectorAll('#sekRedovi .sekRed'), function(cb){ if(cb.checked) red.push(cb.value); });
+  if(!naziv){ document.getElementById('sekNaziv').focus(); return; }
+  if(!red.length && redoviTabele(tId).length){ document.getElementById('sekRedovi').scrollIntoView(); return; }
+  /* Један ред — једна секција: ред се одузима од секције у којој је до сада био. */
+  red.forEach(function(r){
+    sekcijeTabele(tId).forEach(function(s){
+      if(s.sekcija!==naziv && (s.redovi||[]).indexOf(r)>=0){
+        s.redovi = s.redovi.filter(function(x){ return x!==r; });
+        pushActivity('Ред пребачен: „'+r+'" · '+s.sekcija+' → '+naziv, ACTOR.super);
+      }
+    });
+  });
+  var post=sekcijeTabele(tId).filter(function(s){ return s.sekcija===naziv; })[0];
+  if(post){
+    post.redovi=red; post.inst=inst; post.osoba=osoba;
+    pushActivity('Секција измењена: '+naziv+' ('+nazivTabele(tId)+') → '+inst+(osoba?' / '+osoba:''), ACTOR.super);
+  } else {
+    S.formV.sekcije.push({tId:tId, sekcija:naziv, inst:inst, osoba:osoba, status:'Нацрт', pct:0, redovi:red});
+    pushActivity('Секција направљена: '+naziv+' ('+nazivTabele(tId)+', '+red.length+' редова) → '+inst+(osoba?' / '+osoba:''), ACTOR.super);
+  }
+  document.getElementById('sekNaziv').value=''; document.getElementById('sekOsoba').value='';
+  renderSekcijeModal(); renderContributions();
+}
+function obrisiSekciju(tId, ix){
+  var post=sekcijeTabele(tId); var s=post[ix]; if(!s) return;
+  S.formV.sekcije = S.formV.sekcije.filter(function(x){ return x!==s; });
+  pushActivity('Секција уклоњена: '+s.sekcija+' ('+nazivTabele(tId)+') — редови остају без секције', ACTOR.super);
+  renderSekcijeModal(); renderContributions();
+}
+/* Редови једне табеле — стварни редови извучени из Правилника (не измишљени). */
+function redoviTabele(tId){
+  var p=String(tId).split('/');
+  var red=(REDOVI_TABELE[p[0]+'|'+p[1]] || []).slice();
+  /* У Правилнику се исти назив реда може појавити више пута (нпр. три реда „Развој
+     способности…"). Ред мора да буде јединствено означен, иначе би једна ознака
+     повукла више редова у исту секцију. */
+  var brojac={};
+  return red.map(function(r){
+    brojac[r]=(brojac[r]||0)+1;
+    return brojac[r]>1 ? r+' · '+brojac[r] : r;
+  });
+}
+/* Који редови табеле још нису ни у једној секцији. Празна табела = ништа није подељено. */
+function nepokriveniRedovi(tId){
+  var svi = redoviTabele(tId);
+  if(!svi.length) return [];
+  var pokriveni = {};
+  sekcijeTabele(tId).forEach(function(s){ (s.redovi||[]).forEach(function(r){ pokriveni[r]=true; }); });
+  return svi.filter(function(r){ return !pokriveni[r]; });
+}
+function pokrivenostTabele(tId){
+  var svi = redoviTabele(tId).length;
+  return {uk: svi, nepokriveno: nepokriveniRedovi(tId).length};
+}
 /* Предлог назива секција за табелу која још није подељена — стварни редови из Правилника. */
 function predlogSekcija(tId){
   var post = sekcijeTabele(tId);
@@ -2729,10 +2889,16 @@ function renderContributions(){
     var kratko = pun.length>74 ? pun.slice(0,72)+'…' : pun;
     var ukupno = lista.reduce(function(a,s){ return a + (s.pct||0); }, 0);
     var prosek = lista.length ? Math.round(ukupno/lista.length) : 0;
-    var glava = '<tr class="grp"><td colspan="3" title="'+esc(pun)+'"><strong>'+esc(kratko)+'</strong></td>'+
+    var pk = pokrivenostTabele(k);
+    var dugme = (S.role==='super')
+      ? ' <span class="btn sm" onclick="openSekcije(\''+esc(k)+'\')">'+L('Подели на секције','Divide into sections')+'</span>' : '';
+    var upoz = pk.nepokriveno
+      ? '<div class="xs" style="margin-top:3px;"><span class="badge solid">'+L('редова без секције: ','rows without a section: ')+pk.nepokriveno+'</span></div>' : '';
+    var glava = '<tr class="grp"><td colspan="3" title="'+esc(pun)+'"><strong>'+esc(kratko)+'</strong>'+dugme+upoz+'</td>'+
       '<td>'+lista.length+' '+L(lista.length===1?'секција':(lista.length<5?'секције':'секција'), lista.length===1?'section':'sections')+' · '+prosek+'%</td></tr>';
     return glava + lista.map(function(s){
-      return '<tr><td style="padding-left:22px;" class="small"><span>'+esc(s.sekcija)+'</span></td>'+
+      return '<tr><td style="padding-left:22px;" class="small"><span>'+esc(s.sekcija)+'</span>'+
+        ((s.redovi&&s.redovi.length) ? '<div class="xs muted">'+s.redovi.length+' '+L('редова','rows')+': '+s.redovi.slice(0,2).map(function(r){ return '<span>'+esc(r)+'</span>'; }).join(', ')+(s.redovi.length>2?' …':'')+'</div>' : '')+'</td>'+
         '<td class="small"><span>'+esc(s.inst)+'</span><div class="xs muted"><span>'+esc(s.osoba||'—')+'</span></div></td>'+
         '<td><span class="badge">'+esc(s.status)+'</span></td><td>'+s.pct+'%</td></tr>';
     }).join('');
