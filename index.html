@@ -1539,7 +1539,6 @@ var SR2EN = {
   "раније: ":"formerly: ",
   "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name",
   "Последњи корак: извоз целог обрасца — једна датотека састављена из свих његових табела. Унос у Reportnet Супервизор ради ручно.":"The last step: export of the whole form — one file assembled from all of its tables. The Supervisor enters it into Reportnet manually.",
-  /* без секција: јединица доделе је табела */
   "Додела табела у обрасцу":"Assignment of tables within the form",
   "Јединица доделе је табела.":"The unit of assignment is a table.",
   "Достављачу података се додељују табеле у обрасцу, а Водећем известиоцу цео образац. Табеле се не деле на мање делове.":"A Data Provider is assigned tables within the form, and the Lead Reporter the whole form. Tables are not divided into smaller parts.",
@@ -3963,7 +3962,7 @@ function upisiLog(o){
 }
 /* Тип административног записа се препознаје по самој радњи, да позивна места остану кратка. */
 function tipRadnje(action){
-  if(/^(Институција|Додељен корисник|Измењен корисник|Затворен приступ|Поново активиран|Додељен образац|Додељене секције|Секција)/.test(action)) return 'Администрација';
+  if(/^(Институција|Додељен корисник|Измењен корисник|Затворен приступ|Поново активиран|Додељен образац|Додељене табеле|Табела преузета)/.test(action)) return 'Администрација';
   if(/^(Машински превод|Превод потврђен)/.test(action)) return 'Превод';
   if(/^(Административна измена|Примедба)/.test(action)) return 'Измена поља';
   return 'Ток извештавања';
