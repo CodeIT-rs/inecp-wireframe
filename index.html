@@ -289,7 +289,7 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
               <p class="note" style="margin-top:0;"><strong>Јединица доделе је табела.</strong> Достављачу података се додељују табеле у обрасцу, а Водећем известиоцу цео образац. Табеле се не деле на мање делове.</p>
               <p class="note" style="margin-top:0;"><strong>Иста табела може бити додељена већем броју институција.</strong> Тада свака уноси у своју радну копију табеле, независно од осталих — не мора се унапред знати који део ко уноси. Водећи известилац види све копије одвојено и једну спојену табелу; где су две институције унеле различиту вредност у исто поље, ту ћелију разрешава он.</p>
               <p class="note" style="margin-top:0;"><strong>Извоз је по обрасцу</strong> — цео образац као једна целина, не по институцијама и не по табелама. Недовршена табела зато задржава цео образац. Обим: <strong>23 обрасца → 75 табела</strong> (измерено из Правилника).</p>
-              <p class="note" style="margin-top:0;">Свака институција попуњава <strong>своју верзију обрасца и својих табела</strong> — испод су верзије и њихови статуси. Водећи известилац те верзије потврђује и консолидује у један образац, а Супервизор даје финалну потврду. Ниједна верзија се не брише: остаје у систему са својим ревизионим трагом.</p>
+              <p class="note" id="napVerzije" style="margin-top:0;">Кад једну табелу уносе две или више институција, свака има своју радну копију — испод су њихови статуси. Водећи известилац их спаја у једну табелу и разрешава разлике, а Супервизор даје финалну потврду. Ниједан унос се не брише: остаје у систему са својим ревизионим трагом.</p>
               <p class="note hidden" id="contributionsScopeNote" style="margin-top:0;"></p>
               <div class="scroll"><table class="freeze-1">
                 <thead><tr><th id="thDodela1">Табела / институција</th><th id="thDodela2">Лице</th><th>Статус</th><th>Попуњеност</th></tr></thead>
@@ -1553,6 +1553,8 @@ var SR2EN = {
   "ранији називи":"former names",
   "раније: ":"formerly: ",
   "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name",
+  "Кад једну табелу уносе две или више институција, свака има своју радну копију — испод су њихови статуси. Водећи известилац их спаја у једну табелу и разрешава разлике, а Супервизор даје финалну потврду. Ниједан унос се не брише: остаје у систему са својим ревизионим трагом.":"When one table is entered by two or more institutions, each of them has its own working copy — their statuses are listed below. The Lead Reporter merges them into one table and resolves the differences, and the Supervisor gives the final confirmation. No entry is ever deleted: it stays in the system with its own audit trail.",
+  "Нема табела додељених вашој институцији у овом обрасцу.":"No tables from this form are assigned to your institution.",
   "Водећи известилац се именује":"A Lead Reporter is appointed",
   "за образац":"for a form",
   "и није везан за институцију — зато се не води у списку корисника институције. Достављачи података су везани за своју институцију, а Супервизор је из Министарства рударства и енергетике.":"and is not tied to an institution — which is why they are not kept in an institution’s user list. Data Providers are tied to their institution, and the Supervisor is from the Ministry of Mining and Energy.",
@@ -3401,6 +3403,8 @@ function renderOdgovornosti(){
   if(red) red.classList.toggle('hidden', dp);
   var h1=document.getElementById('cardHDodela');
   if(h1) h1.innerHTML = dp ? L('Моје додељене табеле','My assigned tables') : L('Додела табела у обрасцу','Assignment of tables within the form');
+  var nv=document.getElementById('napVerzije');
+  if(nv) nv.classList.toggle('hidden', dp);
   var h2=document.getElementById('cardHOdgovornosti');
   if(h2) h2.innerHTML = dp ? L('Коме предајем и до када','Whom I submit to and by when') : L('Одговорности у извештавању','Reporting responsibilities');
 }
@@ -3499,6 +3503,17 @@ function renderContributions(){
     if(!po[x.tId]){ po[x.tId]=[]; red.push(x.tId); }
     po[x.tId].push(x);
   });
+  /* Достављачу нема шта да се групише — он има по један ред за сваку своју табелу. */
+  if(S.role==='dp'){
+    el.innerHTML = vidljivaDodela().map(function(x){
+      var pun2=nazivTabele(x.tId);
+      var kr2=pun2.length>74 ? pun2.slice(0,72)+'…' : pun2;
+      return '<tr><td title="'+esc(pun2)+'"><span>'+esc(kr2)+'</span></td>'+
+        '<td class="small"><span>'+esc(x.osoba||'—')+'</span></td>'+
+        '<td><span class="badge">'+esc(x.status)+'</span></td><td>'+x.pct+'%</td></tr>';
+    }).join('') || '<tr><td class="muted" colspan="4">'+L('Нема табела додељених вашој институцији у овом обрасцу.','No tables from this form are assigned to your institution.')+'</td></tr>';
+    return;
+  }
   el.innerHTML = red.map(function(k){
     var lista = po[k];
     var pun = nazivTabele(k);
