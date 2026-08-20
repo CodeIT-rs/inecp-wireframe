@@ -279,7 +279,7 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
           <p class="xs muted" style="margin:-2px 0 8px;">Редослед провере: валидација код достављача → потврђивање → консолидација → финална потврда Супервизора. Нема засебне контроле квалитета као корака у току: по одговору наручиоца, за тачност уноса одговара сам достављач података — унос валидира овлашћено лице његове институције — а Супервизор даје финалну потврду.</p>
           <div class="stage-info" id="formvStageInfo"></div>
 
-          <div class="card">
+          <div class="card" id="cardDodela">
             <div class="card-h" id="cardHDodela">Додела табела у обрасцу</div>
             <div class="card-b">
               <p class="note" style="margin-top:0;"><strong>Јединица доделе је табела.</strong> Достављачу података се додељују табеле у обрасцу, а Водећем известиоцу цео образац. Табеле се не деле на мање делове.</p>
@@ -294,7 +294,7 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" id="cardOdgovornosti">
             <div class="card-h" id="cardHOdgovornosti">Одговорности у извештавању</div>
             <div class="card-b">
               <table style="width:auto;"><tbody>
@@ -308,12 +308,16 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
             </div>
           </div>
 
+          <div id="formvTabs" class="seg" style="margin:14px 0 6px; flex-wrap:wrap;"></div>
+          <p class="xs muted" id="formvTabOpis" style="margin:0 0 12px;"></p>
+          <div id="tabProvera"></div>
+
           <div id="formvCorrectionCallout"></div>
           <div id="blokadeBox" class="callout strong hidden" style="margin-bottom:14px;"></div>
 
           <div class="two-col">
             <div>
-              <div class="sect">
+              <div class="sect" id="sectOdgovornostTabele">
                 <div class="sect-h">
                   <span>Одговорност по табелама</span>
                   <span class="note" style="margin:0;">Табела је најмања јединица доделе — не дели се на мање делове.</span>
@@ -324,7 +328,7 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
 
               <div id="formvMyContribution"></div>
 
-              <div class="sect">
+              <div class="sect" id="sectCiljevi">
                 <div class="sect-h"><span>Национални циљеви</span><span class="badge">обавезна поља означена *</span></div>
                 <p class="muted small" style="margin-top:0;">Правилник (чл. 23) тражи унос на српском и енглеском. Енглеску верзију предлаже машински превод, али је корисник дужан да је провери и потврди — <strong>предаја је блокирана док превод није потврђен</strong>. Одговорност за тачност превода остаје на институцији која уноси.</p>
                 <div id="concurrencyBar" class="small muted" style="margin-bottom:10px;"></div>
@@ -332,7 +336,7 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
                 <div id="objectivesList"></div>
               </div>
 
-              <div class="sect">
+              <div class="sect" id="sectPokazatelji">
                 <div class="sect-h">
                   <span>Показатељи напретка</span>
                   <button class="btn sm" id="btnAddIndicator" onclick="openAddIndicator()">+ Додај показатељ</button>
@@ -358,7 +362,7 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
                 </table></div>
               </div>
 
-              <div class="sect">
+              <div class="sect" id="sectDokumentacija">
                 <div class="sect-h"><span>Пратећа документација</span></div>
                 <div class="dropzone" id="dropzone" onclick="triggerUpload()">Довуците фајл овде, или кликните да изаберете фајл (PDF, XLSX, DOCX — само илустративно)</div>
                 <input type="file" id="fileInput" class="hidden" onchange="handleFileSelected(this)"/>
@@ -368,7 +372,7 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
                 </table></div>
               </div>
 
-              <div class="sect">
+              <div class="sect" id="sectIstorija">
                 <div class="sect-h" style="cursor:pointer;" onclick="toggleActivity()">
                   <span>Активност / историја статуса <span class="muted small" id="activityToggleLabel">(прикажи)</span></span>
                 </div>
@@ -1537,6 +1541,29 @@ var SR2EN = {
   "ранији називи":"former names",
   "раније: ":"formerly: ",
   "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name",
+  "потврђено":"confirmed",
+  "Потврди":"Confirm",
+  "није завршено":"not completed",
+  "Допринос није завршен — потврда није могућа":"The contribution is not complete — confirmation is not possible",
+  "Потврди спремне доприносе":"Confirm the ready contributions",
+  "Нема доприноса који је завршен и чека потврду":"There is no completed contribution awaiting confirmation",
+  "Све институције морају бити потврђене":"All institutions must be confirmed",
+  "Прво разрешите конфликте":"Resolve the conflicts first",
+  "Консолидуј образац":"Consolidate the form",
+  "Образац се извози као целина, па недовршена табела задржава цео образац. Потврда је могућа само за доприносе који су завршени; консолидација чека да све буду потврђене.":"The form is exported as a whole, so an unfinished table holds up the entire form. Confirmation is only possible for contributions that are complete; consolidation waits until all of them are confirmed.",
+  "Допринос потврђен: ":"Contribution confirmed: ",
+  "Образац консолидован.":"The form has been consolidated.",
+  /* језичци на екрану обрасца */
+  "Унос података":"Data entry",
+  "Ко шта радi":"Who does what",
+  "Провера уноса":"Checking the entry",
+  "Документација":"Documents",
+  "Историја":"History",
+  "Поља која попуњавате: национални циљеви и показатељи, уз проверу шта још блокира валидацију.":"The fields you fill in: national objectives and indicators, with a check of what still blocks validation.",
+  "Које табеле су којој институцији и лицу додељене, коме се предаје и до када.":"Which tables are assigned to which institution and person, whom it is submitted to and by when.",
+  "Уноси свих достављача одвојено, спојена табела и конфликти — оно што потврђујете пре консолидације.":"The entries of all data providers separately, the merged table and the conflicts — what you confirm before consolidation.",
+  "Прилози уз образац — фајлови који идu са предајом.":"Attachments to the form — files that go with the submission.",
+  "Ко је шта радio на овом обрасцу и када. Ревизиони траг по пољу види само Супервизор.":"Who did what on this form and when. The per-field audit trail is visible to the Supervisor only.",
   "Превод на енглески није потврђен":"English translation not confirmed",
   "Машински превод је предложен; погледајте енглески текст у обрасцу и потврдите га (или га исправите пре потврде).":"A machine translation has been proposed; look at the English text in the form and confirm it (or correct it before confirming).",
   "Недозвољен унос — мора да се исправи":"Entry not allowed — has to be corrected",
@@ -3286,6 +3313,77 @@ function renderOdgovornosti(){
   var h2=document.getElementById('cardHOdgovornosti');
   if(h2) h2.innerHTML = dp ? L('Коме предајем и до када','Whom I submit to and by when') : L('Одговорности у извештавању','Reporting responsibilities');
 }
+/* ===================== Језичци на екрану обрасца =====================
+   Екран је нарастао: унос, додела, провера туђих уноса, документација, историја. Уместо
+   једног дугог спуста, свака ствар има свој језичак, и уз њега једну линију која каже
+   чему служи. Језичци зависе од улоге — достављач нема шта да тражи у провери туђих
+   уноса, а водећи известилац не уноси податке. */
+var FORMV_TABOVI = [
+  {id:'unos',    sr:'Унос података',       en:'Data entry',
+   opisSr:'Поља која попуњавате: национални циљеви и показатељи, уз проверу шта још блокира валидацију.',
+   opisEn:'The fields you fill in: national objectives and indicators, with a check of what still blocks validation.',
+   blokovi:['formvMyContribution','sectCiljevi','sectPokazatelji','formvBottomActions'], uloge:['dp','super']},
+  {id:'ko',      sr:'Ко шта радi',         en:'Who does what',
+   opisSr:'Које табеле су којој институцији и лицу додељене, коме се предаје и до када.',
+   opisEn:'Which tables are assigned to which institution and person, whom it is submitted to and by when.',
+   blokovi:['cardDodela','cardOdgovornosti','sectOdgovornostTabele'], uloge:['dp','lead','super']},
+  {id:'provera', sr:'Провера уноса',       en:'Checking the entry',
+   opisSr:'Уноси свих достављача одвојено, спојена табела и конфликти — оно што потврђујете пре консолидације.',
+   opisEn:'The entries of all data providers separately, the merged table and the conflicts — what you confirm before consolidation.',
+   blokovi:['tabProvera','sectCiljevi','sectPokazatelji'], uloge:['lead','super']},
+  {id:'dok',     sr:'Документација',       en:'Documents',
+   opisSr:'Прилози уз образац — фајлови који идu са предајом.',
+   opisEn:'Attachments to the form — files that go with the submission.',
+   blokovi:['sectDokumentacija'], uloge:['dp','lead','super']},
+  {id:'istorija',sr:'Историја',            en:'History',
+   opisSr:'Ко је шта радio на овом обрасцу и када. Ревизиони траг по пољу види само Супервизор.',
+   opisEn:'Who did what on this form and when. The per-field audit trail is visible to the Supervisor only.',
+   blokovi:['sectIstorija','auditSect'], uloge:['dp','lead','super']}
+];
+var SVI_BLOKOVI = ['formvMyContribution','sectCiljevi','sectPokazatelji','formvBottomActions',
+  'cardDodela','cardOdgovornosti','sectOdgovornostTabele','tabProvera','sectDokumentacija','sectIstorija','auditSect'];
+function taboviZaUlogu(){ return FORMV_TABOVI.filter(function(x){ return x.uloge.indexOf(S.role)>=0; }); }
+function podrazumevaniTab(){ return (S.role==='dp') ? 'unos' : 'provera'; }
+/* Копије по достављачу и конфликти стоје у језичку „Провера" — премештају се једном. */
+function premestiUProveru(){
+  var cilj=document.getElementById('tabProvera'); if(!cilj) return;
+  ['konfliktiBox','kopijeDP'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el && el.parentNode!==cilj) cilj.appendChild(el);
+  });
+}
+function postaviTab(id){
+  var dostupni=taboviZaUlogu().map(function(x){ return x.id; });
+  if(dostupni.indexOf(id)<0) id=dostupni[0];
+  S.formvTab=id;
+  renderFormV();
+}
+function renderTabove(){
+  var bar=document.getElementById('formvTabs'); if(!bar) return;
+  premestiUProveru();
+  var lista=taboviZaUlogu();
+  if(!S.formvTab || lista.map(function(x){ return x.id; }).indexOf(S.formvTab)<0) S.formvTab=podrazumevaniTab();
+  var aktivan=lista.filter(function(x){ return x.id===S.formvTab; })[0] || lista[0];
+  /* значке: колико нечега чека на том језичку */
+  function znacka(x){
+    if(x.id==='unos'){ var b=blokade().filter(function(y){ return y.tip!=='konflikt'; }).length; return b? ' <span class="badge solid">'+b+'</span>':''; }
+    if(x.id==='provera'){ var k=konflikti().length; return k? ' <span class="badge solid">'+k+'</span>':''; }
+    return '';
+  }
+  bar.innerHTML = lista.map(function(x){
+    return '<span class="'+(x.id===aktivan.id?'on':'')+'" onclick="postaviTab(\''+x.id+'\')">'+
+      L(x.sr, x.en)+znacka(x)+'</span>';
+  }).join('');
+  var op=document.getElementById('formvTabOpis');
+  if(op) op.innerHTML = '<span>'+esc(L(aktivan.opisSr, aktivan.opisEn))+'</span>';
+  /* прикажи само блокове тог језичка */
+  SVI_BLOKOVI.forEach(function(bid){
+    var el=document.getElementById(bid); if(!el) return;
+    var vidljiv = aktivan.blokovi.indexOf(bid)>=0;
+    if(bid==='auditSect' && S.role!=='super') vidljiv=false;
+    el.classList.toggle('hidden', !vidljiv);
+  });
+}
 function renderContributions(){
   renderOdgovornosti();
   var el = document.getElementById('contributionsBody');
@@ -3710,6 +3808,7 @@ function renderIndicators(){
   renderKonflikti();
   renderRazlogVodic();
   renderBlokade();
+  renderTabove();
 }
 /* Копије табеле по достављачу — Водећи известилац и Супервизор виде ко је шта уписао. */
 function renderKopijeDP(){
@@ -3982,9 +4081,13 @@ function renderFormvSidePanel(){
   } else if(S.role==='lead' && st==='submitted'){
     el.innerHTML = '<div class="side-panel"><h3>Предато — чека потврду</h3>'+
       contributionsReadinessHtml()+
-      '<div style="margin-top:14px;">'+
-        '<button class="btn pri" onclick="leadConfirm()">Потврди допринос</button>'+
-      '</div>'+
+      (function(){
+        var spremni=institucijeUObrascu().filter(function(i3){ return !potvrdjena(i3) && spremnostInstitucije(i3).spremna; }).length;
+        return '<div style="margin-top:14px;">'+
+          '<button class="btn pri" '+(spremni?'':'disabled title="'+esc(L('Нема доприноса који је завршен и чека потврду','There is no completed contribution awaiting confirmation'))+'"')+' onclick="leadConfirm()">'+
+            L('Потврди спремне доприносе','Confirm the ready contributions')+(spremni?' ('+spremni+')':'')+'</button>'+
+        '</div>';
+      })()+
       '<div style="margin-top:10px; border-top:1px solid var(--border); padding-top:10px;">'+
         '<button class="btn" onclick="openCorrection()">'+t('btn_request_correction')+'</button>'+
         '<div class="note" style="margin-top:5px;">Враћа образац Достављачу података.</div>'+
@@ -3993,9 +4096,16 @@ function renderFormvSidePanel(){
     el.innerHTML = '<div class="side-panel"><h3>Потврђено — спремно за консолидацију</h3>'+
       contributionsReadinessHtml()+
       '<p class="small muted" style="margin-top:8px;">Консолидацијом се доприноси свих институција спајају у један образац и предају Супервизору.</p>'+
-      '<div style="margin-top:14px;">'+
-        '<button class="btn pri" onclick="leadConsolidate()">Консолидуј образац</button>'+
-      '</div>'+
+      (function(){
+        var sve=sveInstitucijePotvrdjene(), k2=konflikti().length;
+        var zasto = !sve ? L('Све институције морају бити потврђене','All institutions must be confirmed')
+                         : (k2 ? L('Прво разрешите конфликте','Resolve the conflicts first') : '');
+        return '<div style="margin-top:14px;">'+
+          '<button class="btn pri" '+((sve&&!k2)?'':'disabled title="'+esc(zasto)+'"')+' onclick="leadConsolidate()">'+
+            L('Консолидуј образац','Consolidate the form')+'</button>'+
+          (zasto ? '<div class="xs muted" style="margin-top:5px;"><span>'+esc(zasto)+'</span></div>' : '')+
+        '</div>';
+      })()+
       '<div style="margin-top:10px; border-top:1px solid var(--border); padding-top:10px;">'+
         '<button class="btn" onclick="openCorrection()">'+t('btn_request_correction')+'</button>'+
       '</div></div>';
@@ -4060,22 +4170,31 @@ function checklistRow(label, done){
 /* Водећи известилац пре потврде и консолидације: спремност ПО ТАБЕЛАМА, јер је табела
    јединица доделе. Образац је спреман кад су све његове табеле готове. */
 function contributionsReadinessHtml(){
-  var sve = (S.formV.dodela||[]);
-  var gotove = sve.filter(function(s){ return s.pct===100 || s.status==='Предато' || s.status==='Потврђено'; });
-  var poInst = {};
-  sve.forEach(function(s){ poInst[s.inst] = poInst[s.inst] || {uk:0, ok:0}; poInst[s.inst].uk++; if(gotove.indexOf(s)>=0) poInst[s.inst].ok++; });
-  var rows = Object.keys(poInst).map(function(i){
-    var x = poInst[i];
-    return checklistRow('<span>'+esc(i)+'</span> — <span>'+L('табела','tables')+'</span> '+x.ok+'/'+x.uk, x.ok===x.uk);
+  var inst=institucijeUObrascu();
+  var sveTab=(S.formV.dodela||[]);
+  var gotoveTab=sveTab.filter(function(x){ return x.pct===100 || x.status==='Предато' || x.status==='Потврђено'; });
+  var rows=inst.map(function(i2){
+    var s=spremnostInstitucije(i2), pot=potvrdjena(i2);
+    var dug = pot
+      ? '<span class="badge">'+L('потврђено','confirmed')+'</span>'
+      : (s.spremna
+          ? '<button class="btn sm" onclick="potvrdiInstituciju(\''+esc(i2)+'\')">'+L('Потврди','Confirm')+'</button>'
+          : '<span class="xs muted" title="'+esc(L('Допринос није завршен — потврда није могућа','The contribution is not complete — confirmation is not possible'))+'">'+
+            L('није завршено','not completed')+'</span>');
+    return '<div class="checklist-row" style="align-items:flex-start;">'+
+      '<span class="chk-mark'+(pot?' yes':'')+'">'+(pot?'✓':'')+'</span>'+
+      '<div style="flex:1;"><span>'+esc(i2)+'</span> <span class="xs muted">— '+L('табеле','tables')+' '+s.ok+'/'+s.uk+'</span></div>'+
+      '<div style="flex:0 0 auto;">'+dug+'</div></div>';
   }).join('');
-  var nedostaju = sve.filter(function(s){ return gotove.indexOf(s)<0; });
+  var nedostaju=sveTab.filter(function(x){ return gotoveTab.indexOf(x)<0; });
   var lista = nedostaju.length
     ? '<div class="callout" style="margin-top:10px;"><div class="callout-h">'+L('Табеле које нису завршене: ','Tables not completed: ')+nedostaju.length+'</div><div class="small">'+
         nedostaju.slice(0,6).map(function(s){ var nz=nazivTabele(s.tId); return '<span>'+esc(nz.length>52?nz.slice(0,50)+'…':nz)+'</span> — <span>'+esc(s.inst)+'</span> ('+s.pct+'%)'; }).join('<br>')+
-        '<div class="xs muted" style="margin-top:4px;">'+L('Образац се извози као целина, па недовршена табела задржава цео образац.','The form is exported as a whole, so an unfinished table holds up the entire form.')+'</div></div></div>'
+        '<div class="xs muted" style="margin-top:4px;">'+L('Образац се извози као целина, па недовршена табела задржава цео образац. Потврда је могућа само за доприносе који су завршени; консолидација чека да све буду потврђене.','The form is exported as a whole, so an unfinished table holds up the entire form. Confirmation is only possible for contributions that are complete; consolidation waits until all of them are confirmed.')+'</div></div></div>'
     : '';
   return rows + '<p class="small" style="margin-top:8px; font-weight:600;">'+
-    L(gotove.length+' од '+sve.length+' табела завршено', gotove.length+' of '+sve.length+' tables completed')+'</p>' + lista;
+    L(gotoveTab.length+' од '+sveTab.length+' табела завршено', gotoveTab.length+' of '+sveTab.length+' tables completed')+
+    ' · '+L(inst.filter(potvrdjena).length+' од '+inst.length+' доприноса потврђено', inst.filter(potvrdjena).length+' of '+inst.length+' contributions confirmed')+'</p>' + lista;
 }
 function waitingText(role, st){
   if(role==='dp'){
@@ -4207,9 +4326,11 @@ function vratiUNacrt(){
   renderFormV();
 }
 function leadConsolidate(){
+  /* Консолидација није дозвољена док све институције нису потврђене и док има конфликата. */
+  if(!sveInstitucijePotvrdjene() || konflikti().length){ renderFormV(); return; }
   S.formV.status='consolidated';
   pushActivity('Образац консолидован', ACTOR.lead);
-  predajUlozi('super', 'Образац консолидован.');
+  predajUlozi('super', L('Образац консолидован.','The form has been consolidated.'));
 }
 function confirmSubmit(){
   var wasCorrection = S.formV.status==='correction_requested';
@@ -4282,10 +4403,40 @@ function sendCorrection(){
 }
 
 /* ---- actions: Lead Reporter / Coordinator ---- */
-function leadConfirm(){
-  S.formV.status = 'confirmed';
-  pushActivity('Допринос потврђен', ACTOR.lead);
+/* Корак 4 је потврда ПО ДОПРИНОСУ: свака институција се потврђује засебно, и то само
+   кад су њене табеле завршене. Корак 5 (консолидација) чека да све буду потврђене —
+   образац се извози као целина, па недовршена табела задржава цео образац. */
+function spremnostInstitucije(inst){
+  var svoje=(S.formV.dodela||[]).filter(function(x){ return x.inst===inst; });
+  var ok=svoje.filter(function(x){ return x.pct===100 || x.status==='Предато' || x.status==='Потврђено'; });
+  return {uk:svoje.length, ok:ok.length, spremna:(svoje.length>0 && ok.length===svoje.length)};
+}
+function institucijeUObrascu(){
+  var out=[]; (S.formV.dodela||[]).forEach(function(x){ if(out.indexOf(x.inst)<0) out.push(x.inst); });
+  return out;
+}
+function potvrdjena(inst){ return !!((S.formV.potvrde||{})[inst]); }
+function sveInstitucijePotvrdjene(){
+  var sve=institucijeUObrascu();
+  return sve.length>0 && sve.every(potvrdjena);
+}
+function potvrdiInstituciju(inst){
+  var s=spremnostInstitucije(inst);
+  if(!s.spremna) return;                       /* не може потврда недовршеног доприноса */
+  S.formV.potvrde = S.formV.potvrde || {};
+  S.formV.potvrde[inst]=true;
+  (S.formV.dodela||[]).forEach(function(x){ if(x.inst===inst) x.status='Потврђено'; });
+  pushActivity(L('Допринос потврђен: ','Contribution confirmed: ')+inst, ACTOR[S.role]);
+  if(sveInstitucijePotvrdjene()) S.formV.status='confirmed';
   renderFormV();
+}
+function leadConfirm(){
+  /* Групна потврда: потврђује све доприносе који су спремни, остале не дира. */
+  var potvrdjenoSada=0;
+  institucijeUObrascu().forEach(function(inst){
+    if(!potvrdjena(inst) && spremnostInstitucije(inst).spremna){ potvrdiInstituciju(inst); potvrdjenoSada++; }
+  });
+  if(!potvrdjenoSada) renderFormV();
 }
 function openApprove(){
   var c = document.getElementById('approveRestrict');
