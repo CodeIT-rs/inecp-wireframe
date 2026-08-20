@@ -298,7 +298,7 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
             <div class="card-h" id="cardHOdgovornosti">Одговорности у извештавању</div>
             <div class="card-b">
               <table style="width:auto;"><tbody>
-                <tr><td class="muted" style="padding-left:0;">Водећи известилац(и)</td><td>Петар Петровић — Министарство рударства и енергетике</td></tr>
+                <tr><td class="muted" style="padding-left:0;">Водећи известилац(и)</td><td id="formvVodeci"></td></tr>
                 <tr id="rowUcesnice"><td class="muted" style="padding-left:0;">Учеснице / институције-даваоци података</td><td id="formvUcesnice"></td></tr>
                 <tr><td class="muted" style="padding-left:0;">Супервизор (финална потврда)</td><td>Јован Симић — Министарство рударства и енергетике</td></tr>
                 <tr><td class="muted" style="padding-left:0;">Рокови</td><td id="formvDeadlines"></td></tr>
@@ -470,6 +470,17 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
             </div>
           </div>
         </section>
+
+        <div class="card" id="cardIzvestioci">
+            <div class="card-h">Водећи известиоци по обрасцима</div>
+            <div class="card-b">
+              <p class="note" style="margin-top:0;">Водећи известилац се именује <strong>за образац</strong> и није везан за институцију — зато се не води у списку корисника институције. Достављачи података су везани за своју институцију, а Супервизор је из Министарства рударства и енергетике.</p>
+              <div class="scroll"><table>
+                <thead><tr><th>Образац</th><th>Водећи известилац(и)</th></tr></thead>
+                <tbody id="izvestiociBody"></tbody>
+              </table></div>
+            </div>
+          </div>
 
         <!-- INSTITUTION DETAIL / ADD-EDIT -->
         <section id="screen-institution-detail" class="screen">
@@ -1160,7 +1171,7 @@ var SR2EN = {
   "Потврда о предаји":"Submission receipt",
   "Потврда је доказ да је предаја извршена и издаје се поново при свакој новој предаји. Формат потврде биће усаглашен са корисником у РП2.":"The receipt is proof that the submission was made and is issued again with every new submission. The format of the receipt will be agreed with the client in WP2.",
   "Потврђено":"Confirmed",
-  "Потврђује предате доприносе и консолидује образац у целину. Везан је за институцију.":"Confirms the submitted contributions and consolidates the form into a whole. Tied to an institution.",
+  "Потврђује предате доприносе, може и сам да исправи унос уз образложење, и консолидује образац у целину. Именован је за образац — није везан за институцију.":"Confirms the submitted contributions and consolidates the form into a whole. Tied to an institution.",
   "Потврђујем да су достављени подаци прегледани и валидирани од овлашћеног представника институције.":"I confirm that the submitted data have been reviewed and validated by the authorised representative of the institution.",
   "Потврђујем тачност и потпуност унетих података.":"I confirm the accuracy and completeness of the data entered.",
   "Потребна поновна провера усклађености са Енергетским билансом.":"A re-check of alignment with the Energy Balance is required.",
@@ -1542,6 +1553,21 @@ var SR2EN = {
   "ранији називи":"former names",
   "раније: ":"formerly: ",
   "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name",
+  "Водећи известилац се именује":"A Lead Reporter is appointed",
+  "за образац":"for a form",
+  "и није везан за институцију — зато се не води у списку корисника институције. Достављачи података су везани за своју институцију, а Супервизор је из Министарства рударства и енергетике.":"and is not tied to an institution — which is why they are not kept in an institution’s user list. Data Providers are tied to their institution, and the Supervisor is from the Ministry of Mining and Energy.",
+  "Соња Марковић":"Sonja Marković",
+  "Никола Ђорђић":"Nikola Đorđić",
+  "Потврђује предате доприносе, може и сам да исправи унос уз образложење, и консолидује образац у целину. Именован је за образац — није везан за институцију.":"Confirms the submitted contributions, may correct the entry themselves with a justification, and consolidates the form into a whole. Appointed for the form — not tied to an institution.",
+  "Водећи известиоци по обрасцима":"Lead Reporters by form",
+  "Водећи известилац се именује за образац и није везан за институцију — зато се не води у списку корисника институције. Достављачи података су везани за своју институцију, а Супервизор је из Министарства рударства и енергетике.":"A Lead Reporter is appointed for a form and is not tied to an institution — which is why they are not kept in an institution’s user list. Data Providers are tied to their institution, and the Supervisor is from the Ministry of Mining and Energy.",
+  "— именован за Образац V, није везан за институцију":"— appointed for Form V, not tied to an institution",
+  "још није именован":"not appointed yet",
+  "именован за образац":"appointed for the form",
+  "није везан за институцију — именован за образац":"not tied to an institution — appointed for the form",
+  "Именован водећи известилац: ":"Lead Reporter appointed: ",
+  " — Образац ":" — Form ",
+  "Још нема именованих водећих известилаца.":"No Lead Reporters appointed yet.",
   "Демо: означи све доприносе завршеним":"Demo: mark all contributions as complete",
   "Само за приказ — у стварној платформи ово радe саме институције.":"For the demo only — in the real platform the institutions do this themselves.",
   "Демо: сви доприноси означени завршеним":"Demo: all contributions marked as complete",
@@ -1965,7 +1991,16 @@ function prevediUI(){
 var ACTOR = {dp:'Јелена Ковачевић', lead:'Петар Петровић', super:'Јован Симић'};
 var ORG = {dp:'Републички завод за статистику', lead:'Агенција за енергетику', super:'Министарство рударства и енергетике'};
 /* Достављач података и Водећи известилац су везани за институцију; Супервизор није — он је из Министарства. */
-var VEZAN_ZA_INSTITUCIJU = {dp:true, lead:true, super:false};
+/* Наручилац: Водећи известилац НИЈЕ везан за институцију — именује се за образац.
+   Достављач података је везан за своју институцију; Супервизор је из Министарства. */
+var VEZAN_ZA_INSTITUCIJU = {dp:true, lead:false, super:false};
+/* Именовани водећи известиоци — по ОБРАСЦУ, не по институцији. */
+var IZVESTIOCI = [
+  {ime:'Петар Петровић', obrazac:'V'},
+  {ime:'Ана Репац',      obrazac:'V'},
+  {ime:'Соња Марковић',  obrazac:'VI'}
+];
+function izvestiociObrasca(id){ return IZVESTIOCI.filter(function(x){ return x.obrazac===id; }); }
 var ACTOR_EN = {dp:'Jelena Kovačević', lead:'Petar Petrović', super:'Jovan Simić'};
 function actorName(k){ return S.lang==='en' ? (ACTOR_EN[k]||ACTOR[k]) : ACTOR[k]; }
 var ORG_EN = {
@@ -1976,9 +2011,13 @@ var ORG_EN = {
 };
 function orgName(k){ var s = ORG[k]; return (S.lang==='en' && ORG_EN[s]) ? ORG_EN[s] : s; }
 var ROLE_KEY = {dp:'role_dp', lead:'role_lead', super:'role_super'};
+/* Приказ „лице — институција" важи само за улоге које су везане за институцију. */
+function opisLica(r){
+  return actorName(r) + (VEZAN_ZA_INSTITUCIJU[r] ? ', '+orgName(r) : (r==='lead' ? ' — '+L('именован за образац','appointed for the form') : ', '+orgName('super')));
+}
 var ROLE_DESC_SR = {
   dp:'Уноси податке, електронски их валидира и предаје образац. Везан је за своју институцију и види само своје додељене табеле.',
-  lead:'Потврђује предате доприносе и консолидује образац у целину. Везан је за институцију.',
+  lead:'Потврђује предате доприносе, може и сам да исправи унос уз образложење, и консолидује образац у целину. Именован је за образац — није везан за институцију.',
   super:'Даје финалну потврду и уноси податке у Reportnet. Може да затражи измену, али и да је сам унесе уз обавезно образложење. Није везан за институцију — из Министарства рударства и енергетике.'
 };
 var ROLE_DESC_EN = {
@@ -3345,6 +3384,15 @@ function nazivTabele(tId){
    коме предаје (Водећи известилац), ко даје финалну потврду (Супервизор) и рокови. */
 function renderOdgovornosti(){
   var dp=(S.role==='dp');
+  /* Водећи известилац је именован за образац — не приказујемо институцију уз њега. */
+  var vd=document.getElementById('formvVodeci');
+  if(vd){
+    var lista=izvestiociObrasca('V');
+    vd.innerHTML = lista.length
+      ? lista.map(function(x){ return '<span>'+esc(x.ime)+'</span>'; }).join(', ')+
+        ' <span class="xs muted">'+L('— именован за Образац V, није везан за институцију','— appointed for Form V, not tied to an institution')+'</span>'
+      : '<span class="xs muted">'+L('још није именован','not appointed yet')+'</span>';
+  }
   var red=document.getElementById('rowUcesnice');
   var uc=document.getElementById('formvUcesnice');
   if(uc) uc.innerHTML = dp
@@ -4586,7 +4634,11 @@ var LOG = [
   {kada:'28. нов. 2026.', ko:'Јован Симић',      uloga:'Супервизор', inst:'Министарство рударства и енергетике', tip:'Администрација', obrazac:'—', sta:'Затворен приступ кориснику: Марко Илић', iz:'активан', u:'затворен', obr:'Прешао на друго радно место — уноси и ревизиони траг остају приписани њему.'},
   {kada:'28. нов. 2026.', ko:'Јован Симић',      uloga:'Супервизор', inst:'Министарство рударства и енергетике', tip:'Ток извештавања', obrazac:'Образац V', sta:'Финална потврда', iz:'Консолидовано', u:'Финална потврда', obr:''}
 ];
-function institucijaUloge(){ return VEZAN_ZA_INSTITUCIJU[S.role] ? ORG[S.role] : ORG.super; }
+function institucijaUloge(){
+  if(VEZAN_ZA_INSTITUCIJU[S.role]) return ORG[S.role];
+  if(S.role==='lead') return L('није везан за институцију — именован за образац','not tied to an institution — appointed for the form');
+  return ORG.super;
+}
 function upisiLog(o){
   LOG.push({
     kada: o.kada || nextDemoDate(),
@@ -4661,7 +4713,18 @@ function statusInstitucije(inst){
   if(!inst.active)  return '<span class="badge">Неактивна</span>';
   return '<span class="badge solid">Активна</span>';
 }
+function renderIzvestioci(){
+  var el=document.getElementById('izvestiociBody'); if(!el) return;
+  var po={};
+  IZVESTIOCI.forEach(function(x){ po[x.obrazac]=(po[x.obrazac]||[]).concat([x.ime]); });
+  var red=Object.keys(po);
+  el.innerHTML = red.length ? red.map(function(o){
+    var naz=(SVI_OBRASCI.filter(function(f){ return f.id===o; })[0]||{}).name || ('Образац '+o);
+    return '<tr><td><span>'+esc(naz)+'</span></td><td>'+po[o].map(function(nm){ return '<span>'+esc(nm)+'</span>'; }).join(', ')+'</td></tr>';
+  }).join('') : '<tr><td class="muted" colspan="2">'+L('Још нема именованих водећих известилаца.','No Lead Reporters appointed yet.')+'</td></tr>';
+}
 function renderInstitutions(){
+  renderIzvestioci();
   document.getElementById('institutionsBody').innerHTML = INSTITUTIONS.map(function(inst,i){
     var nasl = (inst.nastalaIz && inst.nastalaIz.length)
       ? '<div class="xs muted">'+L('настала од: ','created from: ')+inst.nastalaIz.map(function(x){ return '<span>'+esc(x)+'</span>'; }).join(', ')+'</div>' : '';
@@ -4713,7 +4776,10 @@ function renderInstResp(inst){
   }).join('') || '<tr><td class="muted" colspan="4">Још нема додељених образаца за извештавање.</td></tr>';
 }
 function renderInstUsers(inst){
+  /* Водећи известилац није корисник институције — он је именован за образац, па се у
+     институцији не приказује (в. картицу „Водећи известиоци по обрасцима"). */
   document.getElementById('instUsersBody').innerHTML = inst.users.map(function(u,ix){
+    if(u.role==='Водећи известилац') return '';
     var part = u.part ? '<div class="muted small">Део табеле: '+esc(u.part)+'</div>' : '';
     var zatv = (u.aktivan===false) ? '<div class="xs muted">приступ затворен '+esc(u.zatvoren||'')+' — уноси и ревизиони траг остају приписани</div>' : '';
     return '<tr'+(u.aktivan===false?' style="opacity:.62;"':'')+'><td>'+esc(u.name)+part+zatv+'</td><td>'+esc(u.role)+'</td><td class="small">'+
@@ -5020,6 +5086,18 @@ function saveAssignUser(){
     });
   }
   var zapis = {name:name, role:role, tables: tabs};
+  /* Водећи известилац се именује за ОБРАЗАЦ — не улази у списак корисника институције. */
+  if(role==='Водећи известилац'){
+    var fid=(document.getElementById('assignUserForm')||{}).value||'V';
+    var post=IZVESTIOCI.filter(function(x){ return x.ime===name && x.obrazac===fid; })[0];
+    if(!post) IZVESTIOCI.push({ime:name, obrazac:fid});
+    pushActivity(L('Именован водећи известилац: ','Lead Reporter appointed: ')+name+L(' — Образац ',' — Form ')+fid, ACTOR.super);
+    _editUserIx=null;
+    var h2=document.querySelector('#modal-assignuser h3'); if(h2) h2.textContent=L('Додели корисника','Assign user');
+    closeModal('modal-assignuser');
+    renderFormV(); renderInstitutions();
+    return;
+  }
   if(_editUserIx!==null && inst.users[_editUserIx]){
     zapis.aktivan = inst.users[_editUserIx].aktivan;
     inst.users[_editUserIx] = zapis;
@@ -5041,7 +5119,7 @@ function renderRoleBanner(){
   el.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">'+
     '<div>'+
       '<div style="font-size:9.5px; text-transform:uppercase; letter-spacing:.06em; opacity:.7;">'+t('banner_signed_in')+'</div>'+
-      '<div style="font-size:16px; font-weight:600; margin-top:2px;">'+t(ROLE_KEY[S.role])+' <span style="opacity:.75; font-weight:400; font-size:12px;">— '+actorName(S.role)+', '+orgName(S.role)+'</span></div>'+
+      '<div style="font-size:16px; font-weight:600; margin-top:2px;">'+t(ROLE_KEY[S.role])+' <span style="opacity:.75; font-weight:400; font-size:12px;">— '+esc(opisLica(S.role))+'</span></div>'+
       '<div class="small" style="margin-top:4px; opacity:.85;">'+roleDesc(S.role)+'</div>'+
     '</div>'+
     '<div style="flex:0 0 auto; text-align:right;">'+
