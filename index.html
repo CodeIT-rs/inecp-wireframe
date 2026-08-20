@@ -280,7 +280,7 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
           <div class="stage-info" id="formvStageInfo"></div>
 
           <div class="card">
-            <div class="card-h">Додела табела у обрасцу</div>
+            <div class="card-h" id="cardHDodela">Додела табела у обрасцу</div>
             <div class="card-b">
               <p class="note" style="margin-top:0;"><strong>Јединица доделе је табела.</strong> Достављачу података се додељују табеле у обрасцу, а Водећем известиоцу цео образац. Табеле се не деле на мање делове.</p>
               <p class="note" style="margin-top:0;"><strong>Иста табела може бити додељена већем броју институција.</strong> Тада свака уноси у своју радну копију табеле, независно од осталих — не мора се унапред знати који део ко уноси. Водећи известилац види све копије одвојено и једну спојену табелу; где су две институције унеле различиту вредност у исто поље, ту ћелију разрешава он.</p>
@@ -295,11 +295,11 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
           </div>
 
           <div class="card">
-            <div class="card-h">Одговорности у извештавању</div>
+            <div class="card-h" id="cardHOdgovornosti">Одговорности у извештавању</div>
             <div class="card-b">
               <table style="width:auto;"><tbody>
                 <tr><td class="muted" style="padding-left:0;">Водећи известилац(и)</td><td>Петар Петровић — Министарство рударства и енергетике</td></tr>
-                                <tr><td class="muted" style="padding-left:0;">Учеснице / институције-даваоци података</td><td>Републички завод за статистику; Агенција за енергетику; Србијагас; Министарство рударства и енергетике, ако је релевантно</td></tr>
+                <tr id="rowUcesnice"><td class="muted" style="padding-left:0;">Учеснице / институције-даваоци података</td><td id="formvUcesnice"></td></tr>
                 <tr><td class="muted" style="padding-left:0;">Супервизор (финална потврда)</td><td>Јован Симић — Министарство рударства и енергетике</td></tr>
                 <tr><td class="muted" style="padding-left:0;">Рокови</td><td id="formvDeadlines"></td></tr>
                 <tr><td class="muted" style="padding-left:0;">Попуњеност</td><td id="formvCompletion">—</td></tr>
@@ -2429,10 +2429,21 @@ var NOTIFICATIONS = [
   {text:'Образац V одобрен за извештавање', go:function(){ showScreen('formv'); }}
 ];
 function toggleBell(){ S.bellOpen = !S.bellOpen; renderBell(); }
+/* Иста граница и за обавештења: достављач не види административне вести ни оне које
+   помињу другу институцију. */
+function obavestenjaZaUlogu(){
+  if(S.role!=='dp') return NOTIFICATIONS;
+  var tudje=INSTITUTIONS.map(function(i){ return i.name; }).filter(function(n){ return n!==ORG.dp; });
+  return NOTIFICATIONS.filter(function(x){
+    var txt=String(x.text||x.title||x||'');
+    if(/Институција|Додељен образац|Додељен корисник|Ана Репац/.test(txt)) return false;
+    return !tudje.some(function(n){ return txt.indexOf(n)>=0; });
+  });
+}
 function renderBell(){
   document.getElementById('bellMenu').classList.toggle('open', S.bellOpen);
   document.getElementById('bellList').innerHTML =
-    NOTIFICATIONS.map(function(n,i){
+    obavestenjaZaUlogu().map(function(n,i){
       return '<div class="bell-item" onclick="clickNotification('+i+')"><div class="bi-t">'+n.text+'</div></div>';
     }).join('') +
     /* Ceo spisak obavestenja se otvara odavde — nije potrebna stavka u levoj navigaciji. */
@@ -2445,18 +2456,19 @@ function openAllNotifications(){
 }
 function clickNotification(i){
   S.bellOpen=false;
-  NOTIFICATIONS[i].go();
+  var lista=obavestenjaZaUlogu(); if(lista[i]) lista[i].go();
 }
 var NOTIF_KORAK = 10;
 function renderNotifFull(){
   var el = document.getElementById('notifFullList');
   if(!el) return;
   var n = S.notifShow || NOTIF_KORAK;
-  var html = NOTIFICATIONS.slice(0,n).map(function(x,i){
-    return '<div class="bell-item" style="cursor:pointer;" onclick="clickNotification('+i+')">'+x.text+'</div>';
+  var lista = obavestenjaZaUlogu();
+  var html = lista.slice(0,n).map(function(x,i){
+    return '<div class="bell-item" style="cursor:pointer;" onclick="clickNotification('+i+')"><span>'+esc(x.text)+'</span></div>';
   }).join('');
-  if(NOTIFICATIONS.length > n){
-    html += '<div style="padding:10px;"><button class="btn sm" onclick="showMoreNotif()">'+L('Прикажи још (','Show more (')+(NOTIFICATIONS.length-n)+')</button></div>';
+  if(lista.length > n){
+    html += '<div style="padding:10px;"><button class="btn sm" onclick="showMoreNotif()">'+L('Прикажи још (','Show more (')+(lista.length-n)+')</button></div>';
   }
   el.innerHTML = html;
 }
@@ -3260,7 +3272,24 @@ function nazivTabele(tId){
    није његов посао и не приказује му се (ни вредности, ни статус, ни попуњеност).
    Водећи известилац и Супервизор виде цео образац, јер потврђују и извозе целину. */
 
+/* Достављач података не сме да зна ко су остали достављачи ни коју табелу они попуњавају.
+   Њему се приказују само његове табеле, а у „Одговорностима" само оно што му треба:
+   коме предаје (Водећи известилац), ко даје финалну потврду (Супервизор) и рокови. */
+function renderOdgovornosti(){
+  var dp=(S.role==='dp');
+  var red=document.getElementById('rowUcesnice');
+  var uc=document.getElementById('formvUcesnice');
+  if(uc) uc.innerHTML = dp
+    ? ''
+    : INSTITUTIONS.filter(function(i){ return i.active!==false; }).map(function(i){ return '<span>'+esc(i.name)+'</span>'; }).join('; ');
+  if(red) red.classList.toggle('hidden', dp);
+  var h1=document.getElementById('cardHDodela');
+  if(h1) h1.innerHTML = dp ? L('Моје додељене табеле','My assigned tables') : L('Додела табела у обрасцу','Assignment of tables within the form');
+  var h2=document.getElementById('cardHOdgovornosti');
+  if(h2) h2.innerHTML = dp ? L('Коме предајем и до када','Whom I submit to and by when') : L('Одговорности у извештавању','Reporting responsibilities');
+}
 function renderContributions(){
+  renderOdgovornosti();
   var el = document.getElementById('contributionsBody');
   if(!el) return;
   var napomena = document.getElementById('contributionsScopeNote');
@@ -3889,19 +3918,30 @@ function toggleActivity(){
 }
 /* Istorija raste kroz cikluse i cuva se godinama — prikazuje se zadnjih N, ostatak na zahtev. */
 var ACT_KORAK = 8;
+/* Записи који помињу другу институцију нису за достављача — он не сме да зна ни да
+   постоје други достављачи, а камоли шта они радe. */
+function aktivnostZaUlogu(){
+  var sve=S.formV.activity||[];
+  if(S.role!=='dp') return sve;
+  var tudje=INSTITUTIONS.map(function(i){ return i.name; }).filter(function(n){ return n!==ORG.dp; });
+  return sve.filter(function(a){
+    var txt=String(a.action||'')+' '+String(a.actor||'');
+    return !tudje.some(function(n){ return txt.indexOf(n)>=0; });
+  });
+}
 function renderActivity(){
   var el = document.getElementById('activityList');
   if(!el) return;
-  var svi = S.formV.activity.slice().reverse();     /* najnovije prvo */
+  var svi = aktivnostZaUlogu().slice().reverse();   /* najnovije prvo; DP ne vidi tuđe */
   var n = S.activityShow || ACT_KORAK;
   var prikaz = svi.slice(0, n);
   var html = prikaz.map(function(a){
-    return '<div class="activity-row"><div class="a-date">'+a.date+'</div><div><strong>'+a.action+'</strong> — '+a.actor+'</div></div>';
+    return '<div class="activity-row"><div class="a-date"><span>'+esc(a.date)+'</span></div><div><strong><span>'+esc(a.action)+'</span></strong> — <span>'+esc(a.actor)+'</span></div></div>';
   }).join('');
   if(svi.length > n){
     html += '<div style="padding-top:8px;"><button class="btn sm" onclick="showMoreActivity()">'+L('Прикажи још (','Show more (')+(svi.length-n)+')</button></div>';
   } else if(svi.length > ACT_KORAK){
-    html += '<div class="xs muted" style="padding-top:8px;">Приказано свих '+svi.length+' записа.</div>';
+    html += '<div class="xs muted" style="padding-top:8px;">'+L('Приказано свих ','Showing all ')+svi.length+L(' записа.',' records.')+'</div>';
   }
   el.innerHTML = html;
 }
@@ -4058,7 +4098,8 @@ function waitingText(role, st){
    da onaj ko trazi izmenu moze da kaze NA STA se odnosi, a ne samo da nesto nije u redu. */
 function mestaUObrascu(){
   var m = [];
-  formvTabeleZaPrikaz().forEach(function(s){ m.push(s.tabela); });
+  formvTabeleZaPrikaz().filter(function(s){ return S.role!=='dp' || s.institution===ORG.dp; })
+    .forEach(function(s){ m.push(s.tabela); });
   S.formV.objectives.forEach(function(o,i){
     m.push('Национални циљ '+(i+1)+(o.name ? ' – '+o.name.slice(0,34) : ''));
   });
