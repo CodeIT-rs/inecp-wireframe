@@ -1541,6 +1541,7 @@ var SR2EN = {
   "ранији називи":"former names",
   "раније: ":"formerly: ",
   "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name",
+  "Образац враћен у фазу потврде — исправка код: ":"The form returned to the confirmation stage — correction at: ",
   "потврђено":"confirmed",
   "Потврди":"Confirm",
   "није завршено":"not completed",
@@ -2380,6 +2381,9 @@ function navGo(screen, tab){
 
 /* ===================== screen routing ===================== */
 function showScreen(id){
+  /* Екрани резервисани за Супервизора се не отварају другим улогама ни директним позивом —
+     брана не сме да живи само у менију. */
+  if(SAMO_SUPER_EKRANI.indexOf(id)>=0 && S.role!=='super') id='dashboard';
   S.screen = id;
   S.bellOpen = false;
   document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('on'); });
@@ -3751,6 +3755,16 @@ function updUnosDP(i, f, val){
 }
 /* Враћање на исправку САМО оном достављачу који треба да исправи. */
 function vratiDostavljacu(inst){
+  /* Враћање поништава потврду тог доприноса и врaћа образац у фазу чекања потврде —
+     иначе би недовршен допринос остао означен као потврђен. Остали доприноси се не дирају. */
+  if(S.formV.potvrde) delete S.formV.potvrde[inst];
+  (S.formV.dodela||[]).forEach(function(x){ if(x.inst===inst) x.status='Захтевана исправка'; });
+  if(['confirmed','consolidated','approved'].indexOf(S.formV.status)>=0){
+    S.formV.status='submitted';
+    pushActivity(L('Образац враћен у фазу потврде — исправка код: ','The form returned to the confirmation stage — correction at: ')+inst, ACTOR[S.role]);
+  }
+  S.formV.unosDP = S.formV.unosDP || {};
+  S.formV.unosDP[inst] = S.formV.unosDP[inst] || {status:'Нацрт', redovi:[]};
   S.formV.unosDP[inst].status='Захтевана исправка';
   pushActivity(L('Враћено на исправку: ','Returned for correction: ')+inst+L(' — вратио ',' — returned by ')+t(ROLE_KEY[S.role])+L(' (остали достављачи нису дирани)',' (other data providers untouched)'), ACTOR[S.role]);
   renderFormV();
@@ -4314,6 +4328,11 @@ function openValidate(){ openModal('modal-validate'); }
 function confirmValidate(){
   var ime = document.getElementById('valPerson').value.trim();
   if(!ime){ document.getElementById('valPerson').focus(); return; }
+  /* Брана мора да стоји и у самој радњи, не само на дугмету: валидација није могућа док
+     има блокада, ни без потврде овлашћеног лица. */
+  var ck = document.getElementById('valCheck');
+  if(ck && !ck.checked){ ck.focus(); return; }
+  if(blokadeUObrascu().length){ closeModal('modal-validate'); renderFormV(); return; }
   S.formV.status='validated';
   S.formV.validacija = {by:ime, org:ORG[S.role], date:nextDemoDate()};
   pushActivity(L('Унос електронски валидиран (','Entry electronically validated (')+ime+')', ACTOR.dp);
@@ -4444,6 +4463,8 @@ function openApprove(){
   openModal('modal-approve');
 }
 function coordApprove(){
+  /* Финална потврда је корак 6 — могућа само над консолидованим обрасцем. */
+  if(S.formV.status!=='consolidated'){ closeModal('modal-approve'); renderFormV(); return; }
   var c = document.getElementById('approveRestrict');
   S.formV.restrictPublic = !!(c && c.checked);
   S.formV.status = 'approved';
@@ -4681,7 +4702,6 @@ function ranijiNazivi(inst){
 function openAssignForm(){
   var sel = document.getElementById('assignFormSel');
   sel.innerHTML = SVI_OBRASCI.map(function(f){ return '<option value="'+f.id+'">'+f.name+'</option>'; }).join('');
-  var dp = document.getElementById('assignFormPart'); if(dp) dp.value='';
   syncAssignArea();
   openModal('modal-assignform');
 }
