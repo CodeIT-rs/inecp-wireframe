@@ -1553,6 +1553,11 @@ var SR2EN = {
   "ранији називи":"former names",
   "раније: ":"formerly: ",
   "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name",
+  "Расподела и рокови":"Distribution and deadlines",
+  "Моје табеле и рокови":"My tables and deadlines",
+  "Провера и спајање":"Checking and merging",
+  "Унос и исправке":"Entry and corrections",
+  "Табеле које су додељене вама, коме предајете и до којих рокова.":"The tables assigned to you, whom you submit to and by which deadlines.",
   "Кад једну табелу уносе две или више институција, свака има своју радну копију — испод су њихови статуси. Водећи известилац их спаја у једну табелу и разрешава разлике, а Супервизор даје финалну потврду. Ниједан унос се не брише: остаје у систему са својим ревизионим трагом.":"When one table is entered by two or more institutions, each of them has its own working copy — their statuses are listed below. The Lead Reporter merges them into one table and resolves the differences, and the Supervisor gives the final confirmation. No entry is ever deleted: it stays in the system with its own audit trail.",
   "Нема табела додељених вашој институцији у овом обрасцу.":"No tables from this form are assigned to your institution.",
   "Водећи известилац се именује":"A Lead Reporter is appointed",
@@ -3415,17 +3420,21 @@ function renderOdgovornosti(){
    уноса, а водећи известилац не уноси податке. */
 var FORMV_TABOVI = [
   {id:'unos',    sr:'Унос података',       en:'Data entry',
+   srPoUlozi:{super:'Унос и исправке'}, enPoUlozi:{super:'Entry and corrections'},
    opisSr:'Поља која попуњавате: национални циљеви и показатељи, уз проверу шта још блокира валидацију.',
    opisEn:'The fields you fill in: national objectives and indicators, with a check of what still blocks validation.',
    blokovi:['formvMyContribution','sectCiljevi','sectPokazatelji','formvBottomActions'], uloge:['dp','super']},
-  {id:'ko',      sr:'Ко шта радi',         en:'Who does what',
+  {id:'ko',      sr:'Расподела и рокови',   en:'Distribution and deadlines',
+   srPoUlozi:{dp:'Моје табеле и рокови'}, enPoUlozi:{dp:'My tables and deadlines'},
    opisSr:'Које табеле су којој институцији и лицу додељене, коме се предаје и до када.',
    opisEn:'Which tables are assigned to which institution and person, whom it is submitted to and by when.',
+   opisSrPoUlozi:{dp:'Табеле које су додељене вама, коме предајете и до којих рокова.'},
+   opisEnPoUlozi:{dp:'The tables assigned to you, whom you submit to and by which deadlines.'},
    blokovi:['cardDodela','cardOdgovornosti','sectOdgovornostTabele'], uloge:['dp','lead','super'],
    /* достављачу не приказујемо „Одговорност по табелама" — то је исти податак као у
       картици „Моје додељене табеле", само други пут */
    sakrij:{dp:['sectOdgovornostTabele']}},
-  {id:'provera', sr:'Провера уноса',       en:'Checking the entry',
+  {id:'provera', sr:'Провера и спајање',    en:'Checking and merging',
    opisSr:'Уноси свих достављача одвојено, спојена табела и конфликти — оно што потврђујете пре консолидације.',
    opisEn:'The entries of all data providers separately, the merged table and the conflicts — what you confirm before consolidation.',
    blokovi:['tabProvera','sectCiljevi','sectPokazatelji'], uloge:['lead','super']},
@@ -3468,12 +3477,22 @@ function renderTabove(){
     if(x.id==='provera'){ var k=konflikti().length; return k? ' <span class="badge solid">'+k+'</span>':''; }
     return '';
   }
+  function naziv(x){
+    var sr=(x.srPoUlozi && x.srPoUlozi[S.role]) || x.sr;
+    var en=(x.enPoUlozi && x.enPoUlozi[S.role]) || x.en;
+    return L(sr, en);
+  }
+  function opis(x){
+    var sr=(x.opisSrPoUlozi && x.opisSrPoUlozi[S.role]) || x.opisSr;
+    var en=(x.opisEnPoUlozi && x.opisEnPoUlozi[S.role]) || x.opisEn;
+    return L(sr, en);
+  }
   bar.innerHTML = lista.map(function(x){
     return '<span class="'+(x.id===aktivan.id?'on':'')+'" onclick="postaviTab(\''+x.id+'\')">'+
-      L(x.sr, x.en)+znacka(x)+'</span>';
+      naziv(x)+znacka(x)+'</span>';
   }).join('');
   var op=document.getElementById('formvTabOpis');
-  if(op) op.innerHTML = '<span>'+esc(L(aktivan.opisSr, aktivan.opisEn))+'</span>';
+  if(op) op.innerHTML = '<span>'+esc(opis(aktivan))+'</span>';
   /* прикажи само блокове тог језичка */
   SVI_BLOKOVI.forEach(function(bid){
     var el=document.getElementById(bid); if(!el) return;
