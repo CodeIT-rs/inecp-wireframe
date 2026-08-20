@@ -279,6 +279,10 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
           <p class="xs muted" style="margin:-2px 0 8px;">Редослед провере: валидација код достављача → потврђивање → консолидација → финална потврда Супервизора. Нема засебне контроле квалитета као корака у току: по одговору наручиоца, за тачност уноса одговара сам достављач података — унос валидира овлашћено лице његове институције — а Супервизор даје финалну потврду.</p>
           <div class="stage-info" id="formvStageInfo"></div>
 
+          <div id="formvTabs" class="seg" style="margin:14px 0 6px; flex-wrap:wrap;"></div>
+          <p class="xs muted" id="formvTabOpis" style="margin:0 0 12px;"></p>
+          <div id="tabProvera"></div>
+
           <div class="card" id="cardDodela">
             <div class="card-h" id="cardHDodela">Додела табела у обрасцу</div>
             <div class="card-b">
@@ -307,10 +311,6 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
               <p class="note hidden" id="napAutoritet" style="margin-top:10px; margin-bottom:0;">Тачан број водећих известилаца по обрасцу и коначни ауторитет потврђивања биће усаглашени са корисником у РП2.</p>
             </div>
           </div>
-
-          <div id="formvTabs" class="seg" style="margin:14px 0 6px; flex-wrap:wrap;"></div>
-          <p class="xs muted" id="formvTabOpis" style="margin:0 0 12px;"></p>
-          <div id="tabProvera"></div>
 
           <div id="formvCorrectionCallout"></div>
           <!-- Стара кутија блокада уклоњена: бочни панел је има разврстану по врсти, са
