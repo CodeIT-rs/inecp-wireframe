@@ -1540,6 +1540,18 @@ var SR2EN = {
   "ранији називи":"former names",
   "раније: ":"formerly: ",
   "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name",
+  "Превод на енглески није потврђен":"English translation not confirmed",
+  "Машински превод је предложен; погледајте енглески текст у обрасцу и потврдите га (или га исправите пре потврде).":"A machine translation has been proposed; look at the English text in the form and confirm it (or correct it before confirming).",
+  "Недозвољен унос — мора да се исправи":"Entry not allowed — has to be corrected",
+  "Ово разлог не решава: у ћелију иде број, или ознака NA / NAv / C.":"A reason does not resolve this: the cell takes a number, or the notation key NA / NAv / C.",
+  "Конфликти између достављача":"Conflicts between data providers",
+  "Поље сме да остане празно, али мора да се зна зашто. Разлог остаје уз податак и види га Водећи известилац.":"A field may stay empty, but it must be known why. The reason stays with the data and the Lead Reporter sees it.",
+  "Празна поља — упишите разлог овде":"Empty fields — enter the reason here",
+  "Поље може остати празно, али мора да се зна зашто. Разлог остаје уз податак и види га Водећи известилац.":"A field may stay empty, but it must be known why. The reason stays with the data and the Lead Reporter sees it.",
+  "разлог зашто је празно":"reason why it is empty",
+  "Сачувај све уписане":"Save all entered",
+  "Мора да се исправи":"Has to be corrected",
+  "Ово разлог не решава — вредност мора да се унесе или се упише ознака NA / NAv / C.":"A reason does not resolve this — a value must be entered, or the notation key NA / NAv / C.",
   "Све завршено":"All steps completed",
   "Сада: корак ":"Now: step ",
   "завршено: корак ":"completed: step ",
@@ -2633,14 +2645,14 @@ function masinskiPrevod(txt){
   if(DEMO_PREVOD[txt]) return DEMO_PREVOD[txt];
   return '[EN] '+txt;   /* у платформи: одговор Text Translation API-ја */
 }
-function prevediPolje(kind, i, field){
+function prevediPolje(kind, i, field){ /* после превода се освежава и панел, да се појави „Потврди превод" */
   var obj = (kind==='obj') ? S.formV.objectives[i] : S.formV.indicators[i];
   if(!obj) return;
   obj._en = obj._en || {}; obj._st = obj._st || {};
   obj._en[field] = masinskiPrevod(obj[field]);
   obj._st[field] = PREVOD_STATUS.MASINSKI;
   pushActivity('Машински превод предложен за поље: '+field, ACTOR[S.role]);
-  renderObjectives(); renderIndicators(); renderBlokade();
+  renderObjectives(); renderIndicators(); renderBlokade(); renderFormvSidePanel();
 }
 function potvrdiPrevod(kind, i, field){
   var obj = (kind==='obj') ? S.formV.objectives[i] : S.formV.indicators[i];
@@ -2649,7 +2661,7 @@ function potvrdiPrevod(kind, i, field){
   obj._st[field] = PREVOD_STATUS.POTVRDJEN;
   auditPolje(L('Превод: ','Translation: ')+field+(kind==='obj'?' ('+L('Циљ ','Objective ')+(i+1)+')':''), PREVOD_STATUS.MASINSKI, PREVOD_STATUS.POTVRDJEN);
   pushActivity('Превод потврђен за поље: '+field, ACTOR[S.role]);
-  renderObjectives(); renderIndicators(); renderBlokade();
+  renderObjectives(); renderIndicators(); renderBlokade(); renderFormvSidePanel();
 }
 function updEn(kind, i, field, val){
   var obj = (kind==='obj') ? S.formV.objectives[i] : S.formV.indicators[i];
@@ -2666,8 +2678,11 @@ function nepotvrdjeniPrevodi(){
   S.formV.objectives.forEach(function(o,i){
     DVOJEZICNA_POLJA.forEach(function(f){
       if(!o[f]) return;
-      var st = (o._st||{})[f];
-      if(st!==PREVOD_STATUS.POTVRDJEN) out.push(L('Циљ ','Objective ')+(i+1)+' — '+(f==='name'?L('Назив','Name'):L('Опис','Description')));
+      var st=(o._st||{})[f];
+      if(st!==PREVOD_STATUS.POTVRDJEN){
+        out.push({kind:'obj', i:i, field:f,
+                  naziv:L('Циљ ','Objective ')+(i+1)+' — '+(f==='name'?L('Назив','Name'):L('Опис','Description'))});
+      }
     });
   });
   return out;
@@ -2725,6 +2740,84 @@ function praznaBezRazloga(){
   });
   return out;
 }
+/* Разлози се уписују ОДМАХ у панелу: за свако празно поље стоји ред са пољем за разлог,
+   да корисник не мора да тражи поља кроз форму. Недозвољени уноси не могу разлогом —
+   њих треба исправити, па су само излистани, а клик води на саму ћелију. */
+function kutijaBlokada(){
+  var sve = blokade();
+  var prazna = sve.filter(function(x){ return x.tip==='prazno'; });
+  var prevodi = sve.filter(function(x){ return x.tip==='prevod'; });
+  var greske = sve.filter(function(x){ return x.tip==='nedozvoljeno'; });
+  var konf = sve.filter(function(x){ return x.tip==='konflikt'; });
+  var html = '<div class="callout strong" style="margin-top:10px;"><div class="callout-h">'+
+    L('Блокира валидацију: ','Blocks validation: ')+sve.length+' '+L(sve.length===1?'поље':'поља', sve.length===1?'field':'fields')+'</div>';
+
+  if(prazna.length){
+    html += '<div class="small" style="font-weight:600; margin-top:6px;">'+L('Празна поља — упишите разлог овде','Empty fields — enter the reason here')+' ('+prazna.length+')</div>'+
+      '<div class="xs muted" style="margin-bottom:6px;">'+L('Поље сме да остане празно, али мора да се зна зашто. Разлог остаје уз податак и види га Водећи известилац.','A field may stay empty, but it must be known why. The reason stays with the data and the Lead Reporter sees it.')+'</div>'+
+      prazna.map(function(x,k2){
+        var id='razlogInline'+k2;
+        return '<div style="margin-bottom:7px;"><div class="xs"><span>'+esc(x.naziv)+'</span></div>'+
+          '<div style="display:flex; gap:6px; align-items:center;">'+
+            '<input id="'+id+'" placeholder="'+esc(L('разлог зашто је празно','reason why it is empty'))+'" style="flex:1;">'+
+            '<button class="btn sm" onclick="sacuvajRazlogUPanelu(\''+x.kind+'\','+x.i+',\''+x.field+'\',\''+id+'\')">'+L('Сачувај','Save')+'</button>'+
+          '</div></div>';
+      }).join('')+
+      (prazna.length>1 ? '<div style="margin-top:2px;"><button class="btn sm" onclick="sacuvajSveRazlogeUPanelu()">'+L('Сачувај све уписане','Save all entered')+'</button></div>' : '');
+  }
+
+  if(prevodi.length){
+    html += '<div class="small" style="font-weight:600; margin-top:10px;">'+L('Превод на енглески није потврђен','English translation not confirmed')+' ('+prevodi.length+')</div>'+
+      '<div class="xs muted" style="margin-bottom:5px;">'+L('Машински превод је предложен; погледајте енглески текст у обрасцу и потврдите га (или га исправите пре потврде).','A machine translation has been proposed; look at the English text in the form and confirm it (or correct it before confirming).')+'</div>'+
+      prevodi.map(function(x){
+        var o=(x.kind==='obj') ? S.formV.objectives[x.i] : S.formV.indicators[x.i];
+        var imaEn = !!((o._en||{})[x.field]);
+        return '<div class="xs" style="margin-bottom:4px; display:flex; gap:6px; align-items:center; justify-content:space-between;">'+
+          '<span>'+esc(x.naziv)+(imaEn ? '' : ' <span class="badge">'+L('нема превода','no translation')+'</span>')+'</span>'+
+          '<span>'+(imaEn
+            ? '<button class="btn sm" onclick="potvrdiPrevod(\''+x.kind+'\','+x.i+',\''+x.field+'\')">'+L('Потврди превод','Confirm translation')+'</button>'
+            : '<button class="btn sm" onclick="prevediPolje(\''+x.kind+'\','+x.i+',\''+x.field+'\')">'+L('Преведи','Translate')+'</button>')+'</span></div>';
+      }).join('');
+  }
+
+  if(greske.length){
+    html += '<div class="small" style="font-weight:600; margin-top:10px;">'+L('Недозвољен унос — мора да се исправи','Entry not allowed — has to be corrected')+' ('+greske.length+')</div>'+
+      '<div class="xs muted">'+greske.slice(0,6).map(function(x){ return '<span>'+esc(x.tekst)+'</span>'; }).join('<br>')+
+      (greske.length>6 ? '<br>…' : '')+'</div>'+
+      '<div class="xs muted" style="margin-top:3px;">'+L('Ово разлог не решава: у ћелију иде број, или ознака NA / NAv / C.','A reason does not resolve this: the cell takes a number, or the notation key NA / NAv / C.')+'</div>';
+  }
+
+  if(konf.length){
+    html += '<div class="small" style="font-weight:600; margin-top:10px;">'+L('Конфликти између достављача','Conflicts between data providers')+' ('+konf.length+')</div>'+
+      '<div class="xs muted">'+konf.map(function(x){ return '<span>'+esc(x.naziv)+'</span>'; }).join('<br>')+'</div>';
+  }
+  return html+'</div>';
+}
+function sacuvajRazlogUPanelu(kind, i, field, id){
+  var el=document.getElementById(id); if(!el) return;
+  var v=(el.value||'').trim();
+  if(!v){ el.focus(); return; }
+  S.formV.razlozi = S.formV.razlozi || {};
+  var k=razlogKljuc(kind,i,field), staro=S.formV.razlozi[k]||'';
+  S.formV.razlozi[k]=v;
+  auditPolje(L('Разлог за празно поље: ','Reason for an empty field: ')+k, staro, v, '');
+  renderFormV();
+}
+function sacuvajSveRazlogeUPanelu(){
+  var prazna=praznaBezRazloga(), upisano=0;
+  prazna.forEach(function(x,k){
+    var el=document.getElementById('razlogInline'+k);
+    var v=el ? (el.value||'').trim() : '';
+    if(v){
+      S.formV.razlozi = S.formV.razlozi || {};
+      var kk=razlogKljuc(x.kind,x.i,x.field), staro=S.formV.razlozi[kk]||'';
+      S.formV.razlozi[kk]=v;
+      auditPolje(L('Разлог за празно поље: ','Reason for an empty field: ')+kk, staro, v, '');
+      upisano++;
+    }
+  });
+  if(upisano) renderFormV();
+}
 /* Водич: корисник не мора сам да лови празна поља — платформа га води кроз њих једно по
    једно. Кад упише разлог, одмах се отвара следеће празно поље. */
 var _vodicRazloga=false;
@@ -2770,33 +2863,50 @@ function problemCelije(v){
   if(jeBroj(v) || jeOznaka(v)) return '';
   return L('недозвољен унос','not an allowed entry');
 }
-function blokadeUObrascu(){
+/* Три врсте блокада, јер сваку решава друга радња:
+     · prazno      — поље је празно и нема разлога  → упиши разлог
+     · prevod      — енглески превод није потврђен  → прегледај и потврди превод
+     · nedozvoljeno— вредност није ни број ни ознака → исправи вредност
+     · konflikt    — два достављача, различите вредности → разрешава Водећи известилац */
+function blokade(){
   var out=[];
-  nepotvrdjeniPrevodi().forEach(function(x){ out.push(x+L(' — превод на енглески није потврђен',' — English translation not confirmed')); });
-  /* Празно поље само по себи не блокира — блокира празно поље БЕЗ разлога. */
+  nepotvrdjeniPrevodi().forEach(function(x){
+    out.push({tip:'prevod', naziv:x.naziv, kind:x.kind, i:x.i, field:x.field,
+              tekst:x.naziv+L(' — превод на енглески није потврђен',' — English translation not confirmed')});
+  });
   praznaBezRazloga().forEach(function(x){
-    out.push(x.naziv+L(' — празно, потребан разлог',' — empty, a reason is required'));
+    out.push({tip:'prazno', naziv:x.naziv, kind:x.kind, i:x.i, field:x.field,
+              tekst:x.naziv+L(' — празно, потребан разлог',' — empty, a reason is required')});
   });
   S.formV.objectives.forEach(function(o,i){
     var p = problemCelije(o.year);
-    if(p && p!==L('празно','empty')) out.push(L('Циљ ','Objective ')+(i+1)+L(' — Циљна година (',' — Target year (')+p+')');
+    if(p && p!==L('празно','empty')){
+      var nz=L('Циљ ','Objective ')+(i+1)+' — '+L('Циљна година','Target year');
+      out.push({tip:'nedozvoljeno', naziv:nz, kind:'obj', i:i, field:'year', tekst:nz+' ('+p+')'});
+    }
   });
-  /* Конфликт између достављача није проблем достављача — њега разрешава Водећи известилац.
-     Зато конфликт блокира консолидацију, а не предају појединачног достављача. */
   if(S.role==='lead' || S.role==='super'){
     konflikti().forEach(function(x){
-      out.push(x.naziv+L(' — конфликт: два достављача су уписала различите вредности',' — conflict: two data providers entered different values'));
+      out.push({tip:'konflikt', naziv:x.naziv, i:x.i, field:x.f,
+                tekst:x.naziv+L(' — конфликт: два достављача су уписала различите вредности',' — conflict: two data providers entered different values')});
     });
   }
   S.formV.indicators.forEach(function(r,i){
     var ime = r.name || (L('Показатељ ','Indicator ')+(i+1));
-    [['prev','X-3'],['curr','X-2'],['target',L('Циљна вредност','Target value')]].forEach(function(par){
-      var p = problemCelije(r[par[0]]);
-      if(p && p!==L('празно','empty')) out.push(ime+' — '+par[1]+' ('+p+')');
+    POLJA_POK.forEach(function(f){
+      var v = (S.role==='dp' && viseDostavljaca())
+        ? ((((S.formV.unosDP||{})[ORG.dp]||{}).redovi||[])[i]||{})[f]
+        : r[f];
+      var p = problemCelije(v);
+      if(p && p!==L('празно','empty')){
+        var nz=ime+' — '+nazivPolja(f);
+        out.push({tip:'nedozvoljeno', naziv:nz, kind:'ind', i:i, field:f, tekst:nz+' ('+p+')'});
+      }
     });
   });
   return out;
 }
+function blokadeUObrascu(){ return blokade().map(function(x){ return x.tekst; }); }
 /* Which European system each form is submitted through. Source: Serbia's own official
    assignment "Lead and CoLead Reporters for Serbia 20 03 2025.xlsx", published through
    Reportnet (dataflow 1400) — it names the platform per annex. Not our assumption. */
@@ -3335,6 +3445,8 @@ function dvoPolje(kind, i, field, labela, vrednost, tip, editable){
 }
 function renderObjectives(){
   var editable = canEdit();
+  /* исти принцип као у табели показатеља */
+  var dog = traziObrazlozenjeZaIzmenu() ? 'onchange' : 'oninput';
   var html = S.formV.objectives.map(function(o,i){
     var d = editable ? '' : 'disabled';
     var sourcesOpts = ENERGY_SOURCES.map(function(s){ return '<option'+(o.sources.indexOf(s)>=0?' selected':'')+'>'+s+'</option>'; }).join('');
@@ -3359,18 +3471,18 @@ function renderObjectives(){
       dvoPolje('obj', i, 'name', 'Назив националног циља', o.name, 'input', editable)+
       dvoPolje('obj', i, 'desc', 'Опис', o.desc, 'textarea', editable)+
       '<div class="grid2">'+
-        '<div class="fld"><label>Релевантност '+znakObaveznosti('obj|relevance')+'</label><input '+d+' value="'+esc(o.relevance)+'" oninput="updObj('+i+',\'relevance\',this.value)">'+
+        '<div class="fld"><label>Релевантност '+znakObaveznosti('obj|relevance')+'</label><input '+d+' value="'+esc(o.relevance)+'" '+dog+'="updObj('+i+',\'relevance\',this.value)">'+
           (jePrazno(o.relevance)&&editable ? dugmeRazlog('obj', i, 'relevance', L('Циљ ','Objective ')+(i+1)+' — '+L('Релевантност','Relevance')) : '')+'</div>'+
         '<div class="fld"><label>Циљна година '+znakObaveznosti('obj|year')+'</label>'+
-          '<input '+d+' value="'+esc(o.year)+'" oninput="updObj('+i+',\'year\',this.value)" title="Број, или ознака NA / NAv / C">'+
+          '<input '+d+' value="'+esc(o.year)+'" '+dog+'="updObj('+i+',\'year\',this.value)" title="Број, или ознака NA / NAv / C">'+
           (jePrazno(o.year)&&editable ? dugmeRazlog('obj', i, 'year', L('Циљ ','Objective ')+(i+1)+' — '+L('Циљна година','Target year')) : '')+'</div>'+
         '<div class="fld"><label>Статус '+znakObaveznosti('obj|status')+'</label><select '+d+' onchange="updObj('+i+',\'status\',this.value)">'+statusOpts+'</select></div>'+
-        '<div class="fld"><label>Одговорни субјект '+znakObaveznosti('obj|responsible')+'</label><input '+d+' value="'+esc(o.responsible)+'" oninput="updObj('+i+',\'responsible\',this.value)"></div>'+
+        '<div class="fld"><label>Одговорни субјект '+znakObaveznosti('obj|responsible')+'</label><input '+d+' value="'+esc(o.responsible)+'" '+dog+'="updObj('+i+',\'responsible\',this.value)"></div>'+
       '</div>'+
       '<div class="fld"><label>Обухваћени енергетски извори / горива '+znakObaveznosti('obj|sources')+'</label><select '+d+' multiple style="height:76px;" onchange="updObjMulti('+i+',this)">'+sourcesOpts+'</select></div>'+
-      '<div class="fld"><label>Референца / извор '+znakObaveznosti('obj|reference')+'</label><input '+d+' value="'+esc(o.reference)+'" oninput="updObj('+i+',\'reference\',this.value)"></div>'+
+      '<div class="fld"><label>Референца / извор '+znakObaveznosti('obj|reference')+'</label><input '+d+' value="'+esc(o.reference)+'" '+dog+'="updObj('+i+',\'reference\',this.value)"></div>'+
       classBlock+
-      '<div class="fld"><label>Опште напомене '+znakObaveznosti('obj|comments')+'</label><textarea '+d+' rows="2" oninput="updObj('+i+',\'comments\',this.value)">'+esc(o.comments)+'</textarea></div>'+
+      '<div class="fld"><label>Опште напомене '+znakObaveznosti('obj|comments')+'</label><textarea '+d+' '+dog+'="updObj('+i+',\'comments\',this.value)">'+esc(o.comments)+'</textarea></div>'+
       '</div>';
   }).join('');
   document.getElementById('objectivesList').innerHTML = html;
@@ -3508,7 +3620,10 @@ function updUnosDP(i, f, val){
   S.formV.unosDP[inst].redovi[i][f]=val;
   var naziv=(S.formV.indicators[i].name||('Показатељ '+(i+1)))+' — '+nazivPolja(f)+' ('+inst+')';
   auditPolje(naziv, staro, val);
-  spojiUnose(); renderIndicators(); renderBlokade();
+  spojiUnose();
+  renderCellState(i, f);          /* само та ћелија — да поље не изгуби фокус */
+  renderBlokade();
+  renderRazlogVodic();
 }
 /* Враћање на исправку САМО оном достављачу који треба да исправи. */
 function vratiDostavljacu(inst){
@@ -3535,7 +3650,7 @@ function renderIndicators(){
         var pm=problemCelije(mv);
         var sm=pm ? ' style="background:var(--surface-1); box-shadow:inset 0 0 0 1px var(--text-primary);"' : '';
         var nazivM=(r.name||(L('Показатељ ','Indicator ')+(i+1)))+' — '+nazivPolja(polje);
-        var razlM = (jePrazno(mv) && ed) ? dugmeRazlog('ind', i, polje, nazivM) : '';
+        var razlM = (jePrazno(mv) && ed) ? '<div class="razlog-slot">'+dugmeRazlog('ind', i, polje, nazivM)+'</div>' : '';
         return '<td'+sm+'>'+(ed
           ? '<input value="'+esc(mv)+'" oninput="updUnosDP('+i+',\''+polje+'\',this.value)" style="min-width:96px;" title="Број, или ознака NA / NAv / C">'
           : (jeOznaka(mv) ? '<span class="badge">'+esc(mv)+'</span>' : esc(mv)))+razlM+'</td>';
@@ -3552,9 +3667,12 @@ function renderIndicators(){
       var poreklo = (!konf && s.od && vise)
         ? '<div class="xs muted" title="'+esc(String(s.od).split(', ').map(function(x){ return (S.lang==='en' && ORG_EN[x]) ? ORG_EN[x] : x; }).join(', '))+'">'+String(s.od).split(', ').map(function(x){ return '<span>'+esc(kratkoInst(x))+'</span>'; }).join(' + ')+'</div>' : '';
       var nazivC=(r.name||(L('Показатељ ','Indicator ')+(i+1)))+' — '+nazivPolja(polje);
-      var razlC = (jePrazno(v) && !konf && ed) ? dugmeRazlog('ind', i, polje, nazivC) : '';
+      var razlC = (jePrazno(v) && !konf && ed) ? '<div class="razlog-slot">'+dugmeRazlog('ind', i, polje, nazivC)+'</div>' : '';
+      /* Ако улога мора да упише образложење, измена се преузима на ИЗЛАСКУ из поља
+         (onchange), не при сваком знаку — иначе би се модал отворио после првог слова. */
+      var dogadjaj = traziObrazlozenjeZaIzmenu() ? 'onchange' : 'oninput';
       return '<td'+stil+'>'+(ed && !konf
-        ? '<input value="'+esc(v)+'" oninput="updInd('+i+',\''+polje+'\',this.value)" style="min-width:96px;" title="Број, или ознака NA / NAv / C">'
+        ? '<input value="'+esc(v)+'" '+dogadjaj+'="updInd('+i+',\''+polje+'\',this.value)" style="min-width:96px;" title="Број, или ознака NA / NAv / C">'
         : (konf ? oznaka : (jeOznaka(v) ? '<span class="badge">'+esc(v)+'</span>' : esc(v))))+poreklo+razlC+'</td>';
     }
     var ime = r.name || '';
@@ -3648,7 +3766,10 @@ function updInd(i, field, val){
       /* Кад измена иде кроз образложење, запис у трагу прави potvrdiObrazlozenje —
          овде се не бележи, да исти догађај не уђе двапут. */
       if(beleziTrag) auditPolje(naziv0, st0, val, '');
-      spojiUnose(); renderIndicators(); renderBlokade();
+      spojiUnose();
+      renderCellState(i, field);
+      renderBlokade();
+      renderRazlogVodic();
     };
     if(traziObrazlozenjeZaIzmenu() && String(st0||'')!==String(val||'')){
       traziObrazlozenje(naziv0, st0, val, function(){ upisi(false); });
@@ -3678,9 +3799,26 @@ function renderCellState(i, field){
   var tr = document.querySelectorAll('#indicatorsBody tr')[i];
   if(!tr || kol===undefined) return;
   var td = tr.children[kol]; if(!td) return;
-  var p = problemCelije(S.formV.indicators[i][field]);
+  /* Вредност се чита из оног што корисник заиста уређује: достављач своју радну копију,
+     остали спојену табелу. */
+  var v = (S.role==='dp' && viseDostavljaca())
+    ? ((((S.formV.unosDP||{})[ORG.dp]||{}).redovi||[])[i]||{})[field]
+    : S.formV.indicators[i][field];
+  var p = problemCelije(v);
   td.style.background = p ? 'var(--surface-1)' : '';
   td.style.boxShadow  = p ? 'inset 0 0 0 1px var(--text-primary)' : '';
+  /* Дугме „Зашто празно?" стоји у истој ћелији, али се дописује ИСПОД поља за унос —
+     мења се само оно, да поље у ком корисник пише остане исто (иначе губи фокус). */
+  var stari = td.querySelector('.razlog-slot');
+  var naziv = (S.formV.indicators[i].name||(L('Показатељ ','Indicator ')+(i+1)))+' — '+nazivPolja(field);
+  var treba = jePrazno(v) && canEdit();
+  if(stari) stari.parentNode.removeChild(stari);
+  if(treba){
+    var d = document.createElement('div');
+    d.className = 'razlog-slot';
+    d.innerHTML = dugmeRazlog('ind', i, field, naziv);
+    td.appendChild(d);
+  }
 }
 /* Live blocker count above the form — the same gate Reportnet applies before a release. */
 function renderBlokade(){
@@ -3783,19 +3921,7 @@ function renderFormvSidePanel(){
     var blok = blokadeUObrascu().length;
     el.innerHTML = '<div class="side-panel"><h3>'+(st==='draft' ? 'Унос у току' : 'Захтевана измена')+'</h3>'+
       '<p class="small muted">Када завршите унос, овлашћено лице ваше институције електронски валидира податке — то Правилник и пројектни задатак изричито траже — а затим се образац предаје.</p>'+
-      (blok ? (function(){
-          var bezRazloga = praznaBezRazloga().length;
-          var nedozvoljeni = Math.max(0, blok - bezRazloga);
-          return '<div class="callout strong" style="margin-top:10px;"><div class="callout-h">'+
-            L('Блокира валидацију: ','Blocks validation: ')+blok+' '+L(blok===1?'поље':'поља', blok===1?'field':'fields')+'</div>'+
-            '<div class="small">'+
-              (bezRazloga ? '· '+bezRazloga+' '+L(bezRazloga===1?'празно поље без разлога':'празних поља без разлога', bezRazloga===1?'empty field without a reason':'empty fields without a reason')+'<br>' : '')+
-              (nedozvoljeni ? '· '+nedozvoljeni+' '+L(nedozvoljeni===1?'недозвољен унос':'недозвољених уноса', nedozvoljeni===1?'entry that is not allowed':'entries that are not allowed')+'<br>' : '')+
-            '</div>'+
-            '<div class="xs muted" style="margin-top:4px;">'+L('Празно поље је дозвољено — али мора да има уписан разлог. Недозвољен унос (нпр. текст где се очекује број) мора да се исправи.','An empty field is allowed — but it must have a reason entered. An entry that is not allowed (e.g. text where a number is expected) has to be corrected.')+'</div>'+
-            (bezRazloga ? '<div style="margin-top:9px;"><button class="btn" onclick="pokreniVodicRazloga()">'+L('Унеси разлоге — води ме кроз њих','Enter the reasons — guide me through them')+'</button></div>' : '')+
-            '</div>';
-        })() : '')+
+      (blok ? kutijaBlokada() : '')+
       '<div style="margin-top:14px;">'+
         '<button class="btn pri" id="btnValidate" '+(blok?'disabled title="Прво решите блокирана поља"':'')+' onclick="openValidate()">Валидирај унос</button>'+
       '</div></div>';
