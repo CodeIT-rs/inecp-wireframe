@@ -339,11 +339,15 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
                   <button class="btn sm" id="btnAddIndicator" onclick="openAddIndicator()">+ Додај показатељ</button>
                 </div>
                 <p class="muted small" style="margin-top:0;" id="godineNapomena"></p>
+                <p class="xs muted" style="margin-top:-4px;">Ознаке уз поља (<span class="badge">обавезно</span> <span class="req">*</span>, <span class="badge">ако је применљиво</span>, <span class="badge">ако је доступно</span>, <span class="badge">добровољно</span>) пресликане су из Правилника и <strong>само су информативне — ништа не блокирају</strong>. Права провера је: свако празно поље мора да има уписан разлог.</p>
                 <p class="muted small" style="margin-top:-6px;">У ћелију се уписује број, а ако вредности нема — ознака <strong>NA</strong> (није применљиво), <strong>NAv</strong> (није доступно) или <strong>C</strong> (поверљиво). Празна ћелија блокира предају. <span class="note" style="display:inline; margin:0;">Правилник наводи да се у првом и другом циклусу извештавања ове ћелије остављају празне — што се разликује од правила да празна ћелија блокира предају. Биће усаглашено са корисником у РП2.</span></p>
                 <div class="scroll"><table class="freeze-1">
-                  <thead><tr><th>Показатељ</th><th>Јединица</th><th id="thX3">X-3</th><th id="thX2">X-2</th><th>Циљна вредност</th></tr></thead>
+                  <thead><tr><th>Показатељ</th><th>Јединица</th><th id="thX3">X-3</th><th id="thX2">X-2</th><th id="thTarget">Циљна вредност</th></tr></thead>
                   <tbody id="indicatorsBody"></tbody>
                 </table></div>
+                <div id="razlogVodic" class="hidden" style="margin-top:10px;"></div>
+                <div id="konfliktiBox" class="hidden" style="margin-top:10px;"></div>
+                <div id="kopijeDP" class="hidden" style="margin-top:14px;"></div>
               </div>
 
               <div class="sect">
@@ -723,6 +727,19 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
   </div>
 </div>
 
+<div class="modal-bg" id="modal-razlog">
+  <div class="modal">
+    <h3>Разлог зашто поље није попуњено</h3>
+    <p class="note">Ознака обавезности је информативна и не блокира унос. Али на следећи корак се не може док свако празно поље не добије разлог. Разлог остаје уз податак: види га Водећи известилац, улази у ревизиони траг и у извоз. Ако вредност постоји али је непозната или поверљива, уместо разлога упишите ознаку у саму ћелију: <strong>NA</strong> (није применљиво), <strong>NAv</strong> (није доступно), <strong>C</strong> (поверљиво).</p>
+    <div class="fld"><label>Поље</label><div id="razlogPolje" class="small"></div></div>
+    <div class="fld"><label>Разлог *</label><textarea id="razlogTekst" rows="3" placeholder="нпр. податак стиже од оператора дистрибутивног система, очекује се до 15. децембра"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('modal-razlog')">Откажи</button>
+      <button class="btn pri" onclick="sacuvajRazlog()">Сачувај разлог</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-bg" id="modal-export">
   <div class="modal">
     <h3>Извоз извештаја</h3>
@@ -795,7 +812,7 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
     <h3>Додели корисника</h3>
     <div class="fld"><label>Име корисника</label><input id="assignUserName" placeholder="нпр. Јелена Ковачевић"></div>
     <div class="fld"><label>Улога</label>
-      <select id="assignUserRole"><option>Достављач података</option><option>Водећи известилац</option></select>
+      <select id="assignUserRole" onchange="syncUlogaDodela()"><option>Достављач података</option><option>Водећи известилац</option></select>
       <div class="fld-h xs muted" style="margin-top:4px;">Супервизор се не додељује институцији — он је из Министарства рударства и енергетике и надгледа све обрасце.</div>
     </div>
     <div class="fld"><label>Табеле <span class="badge">одговорност се додељује по табели</span></label>
@@ -803,6 +820,11 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
       <select id="assignUserTables" multiple style="height:190px;" onchange="syncTablePartOptions()"></select>
       <div class="fld-h xs muted" id="assignTableCount" style="margin-top:3px;"></div>
       <div class="fld-h xs muted" style="margin-top:4px;">Правилник именује водећег известиоца испод сваке табеле, не за цео образац — у истом обрасцу могу бити различите институције. Изаберите једну или више табела (држите Ctrl / Cmd за више).</div>
+    </div>
+    <div id="assignUlogaNapomena" style="margin-bottom:10px;"></div>
+    <div class="fld hidden" id="assignFormWrap"><label>Образац (цео)</label>
+      <select id="assignUserForm"></select>
+      <div class="fld-h xs muted" style="margin-top:4px;">Водећи известилац одговара за цео образац — табела се не бира.</div>
     </div>
     <div class="fld" id="assignPartWrap"><label>Секција у табели <span class="badge">једна секција — једна особа</span></label>
       <select id="assignUserPart"></select>
@@ -1541,6 +1563,41 @@ var SR2EN = {
   "ранији називи":"former names",
   "раније: ":"formerly: ",
   "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name",
+  "Извези цео образац":"Export the whole form",
+  "Врати исправку појединачном достављачу":"Return a correction to an individual provider",
+  "Последњи корак: извоз целог обрасца — једна датотека састављена из свих табела и секција. Унос у Reportnet Супервизор ради ручно.":"The last step: export of the whole form — one file assembled from all tables and sections. The Supervisor enters it into Reportnet manually.",
+  "(није доступно),":"(not available),",
+  "(поверљиво).":"(confidential).",
+  /* ознаке обавезности и разлог за празно поље */
+  "Ознаке уз поља (":"The markings next to the fields (",
+  "ако је применљиво":"if applicable",
+  "ако је доступно":"if available",
+  "добровољно":"voluntary",
+  "обавезно":"mandatory",
+  ") пресликане су из Правилника и":") are taken from the Rulebook and are",
+  "само су информативне — ништа не блокирају":"informative only — they block nothing",
+  ". Права провера је: свако празно поље мора да има уписан разлог.":". The real check is: every empty field must have a reason entered.",
+  "Разлог зашто поље није попуњено":"Reason why the field is not filled in",
+  "Ознака обавезности је информативна и не блокира унос. Али на следећи корак се не може док свако празно поље не добије разлог. Разлог остаје уз податак: види га Водећи известилац, улази у ревизиони траг и у извоз. Ако вредност постоји али је непозната или поверљива, уместо разлога упишите ознаку у саму ћелију:":"The obligation marking is informative and does not block entry. But you cannot move to the next step until every empty field has a reason. The reason stays with the data: the Lead Reporter sees it, and it goes into the audit trail and into the export. If a value exists but is unknown or confidential, enter a notation key in the cell itself instead of a reason:",
+  "Разлог *":"Reason *",
+  "Сачувај разлог":"Save reason",
+  "нпр. податак стиже од оператора дистрибутивног система, очекује се до 15. децембра":"e.g. the data comes from the distribution system operator, expected by 15 December",
+  "Образац (цео)":"Form (whole)",
+  "Водећи известилац одговара за цео образац — табела се не бира.":"The Lead Reporter is responsible for the whole form — no table is selected.",
+  "Зашто празно?":"Why empty?",
+  "разлог ✓":"reason ✓",
+  "Поље":"Field",
+  "Достављач: ":"Data provider: ",
+  "своја радна копија табеле":"own working copy of the table",
+  "за унос у Reportnet":"for entry into Reportnet",
+  /* паралелни унос: скраћенице институција */
+  "РЗС":"SORS",
+  "СГ":"SG",
+  "АЕ":"EA",
+  "МРЕ":"MME",
+  "ручно — ":"manually — ",
+  "Уноси по достављачу":"Entries per data provider",
+  "Врати овом достављачу":"Return to this provider",
   /* подела табеле на секције */
   "Подела табеле на секције":"Dividing a table into sections",
   "Правилник не прописује поделу табела на секције — прописује само редове табеле. Зато поделу овде дефинише Супервизор: изабере редове који идu заједно, да им назив и одреди институцију и лице. Подела се може у сваком циклусу изменити, а свака измена улази у дневник.":"The Rulebook does not prescribe a division of tables into sections — it only prescribes the rows of a table. The division is therefore defined here by the Supervisor: pick the rows that belong together, name them and set the institution and the person. The division can be changed in every cycle, and every change goes into the change log.",
@@ -1699,6 +1756,11 @@ function trUI(s, dubina){
   if(menjano){ var r = trUI(alt, dubina+1); if(r!==null) return r; }
   /* састављени низови типа „Табела 1 – … · C1 – …" (нпр. у падајућем списку, где
      не могу да се раздвоје у елементе) — преведи део по део. */
+  if(s.indexOf(' — ')>0){
+    var d2=s.split(' — '), m2=false;
+    var p2=d2.map(function(d){ var r=trUI(d, dubina+1); if(r!==null){ m2=true; return r; } return d; });
+    if(m2) return p2.join(' — ');
+  }
   if(s.indexOf(' · ')>0){
     var delovi = s.split(' · '), menjano = false;
     var prevedeni = delovi.map(function(d){
@@ -1827,10 +1889,29 @@ var S = {
       {name:'Диверсификација извора и праваца снабдевања природним гасом', desc:'Смањење зависности од једног правца снабдевања развојем интерконекција и алтернативних уговора о снабдевању.', relevance:'Директно подржава сигурност снабдевања гасом у складу са Регулативом (ЕУ) 2017/1938.', year:'2030', status:'На добром путу', responsible:'Министарство рударства и енергетике', sources:'Природни гас, Електрична енергија', reference:'Национални енергетски и климатски план, гл. 4.2', comments:'', classification:'standard'},
       {name:'Одржавање стратешких резерви нафте изнад 90 дана нето увоза', desc:'Обезбеђивање обавезних резерви нафте у складу са обавезама IEA / Енергетске заједнице.', relevance:'Кључни показатељ сигурности снабдевања енергијом.', year:'2027', status:'Ризично', responsible:'Србијагас', sources:'Нафта', reference:'—', comments:'Потребна поновна провера усклађености са Енергетским билансом.'}
     ],
+    /* Спојена (финална) табела — оно што види Водећи известилац и што иде у извоз. */
     indicators:[
       {name:'Диверсификација извора снабдевања гасом', unit:'број', prev:3, curr:4, target:5},
       {name:'Резерве нафте', unit:'дана', prev:78, curr:82, target:90}
     ],
+    /* Више достављача може уносити у ИСТУ табелу, а не знамо унапред који део ко уноси.
+       Зато свакi достављач има своју радну копију табеле и уноси независно; Водећи
+       известилац затим види све копије одвојено и једну спојену. */
+    tabelaVise: true,
+    dodeljeniDP: ['Републички завод за статистику','Србијагас'],
+    unosDP: {
+      'Републички завод за статистику': {
+        status:'Предато',
+        /* ред 1: исти X-3 као код Србијагаса (78) → није конфликт; X-2 различит (82 : 85) → конфликт */
+        redovi:[{prev:3, curr:4, target:5}, {prev:78, curr:82, target:''}]
+      },
+      'Србијагас': {
+        status:'Предато',
+        redovi:[{prev:'', curr:'', target:''}, {prev:78, curr:85, target:90}]
+      }
+    },
+    /* Ручне одлуке Водећег известиоца при разрешењу конфликта: ред|поље → {vrednost, od} */
+    razresenja:{},
     attachments:[
       {name:'Podaci_Sigurnost_Snabdevanja_2026.xlsx', by:'Јелена Ковачевић', date:'12. нов. 2026.'}
     ],
@@ -2458,6 +2539,95 @@ function nepotvrdjeniPrevodi(){
   });
   return out;
 }
+/* ===== Разлог за празно поље — ОВО је брана =====
+   Наручилац: ознака обавезности је информативна, али се на следећи корак не може док за
+   свако празно поље не постоји уписан разлог. Разлог остаје уз податак — види га Водећи
+   известилац, улази у ревизиони траг и у извоз. Ознака NA / NAv / C у самој ћелији је
+   други, дозвољени начин: тада поље није празно. */
+function razlogKljuc(kind, i, field){ return kind+'|'+i+'|'+field; }
+function razlogZa(kind, i, field){ return (S.formV.razlozi||{})[razlogKljuc(kind,i,field)] || ''; }
+var _cekaRazlog=null;
+function upisiRazlog(kind, i, field, naziv){
+  _cekaRazlog={kind:kind, i:i, field:field, naziv:naziv||''};
+  var el=document.getElementById('razlogPolje'); if(el) el.textContent=naziv||'';
+  var tx=document.getElementById('razlogTekst'); if(tx) tx.value=razlogZa(kind,i,field);
+  openModal('modal-razlog');
+}
+function sacuvajRazlog(){
+  var tx=document.getElementById('razlogTekst'); if(!tx || !_cekaRazlog) return;
+  var v=tx.value.trim();
+  if(!v){ tx.focus(); return; }
+  S.formV.razlozi = S.formV.razlozi || {};
+  var k=razlogKljuc(_cekaRazlog.kind,_cekaRazlog.i,_cekaRazlog.field);
+  var staro=S.formV.razlozi[k]||'';
+  S.formV.razlozi[k]=v;
+  auditPolje((_cekaRazlog.naziv||k)+L(' — разлог за празно поље',' — reason for an empty field'), staro, v, '');
+  _cekaRazlog=null;
+  closeModal('modal-razlog');
+  renderFormV();
+  /* Ако је покренут водич, одмах отвори следеће празно поље. */
+  if(_vodicRazloga){
+    var ostalo=praznaBezRazloga();
+    if(ostalo.length){ var x=ostalo[0]; upisiRazlog(x.kind, x.i, x.field, x.naziv); }
+    else _vodicRazloga=false;
+  }
+}
+/* Списак празних поља без разлога — то је оно што стварно блокира прелазак. */
+function praznaBezRazloga(){
+  var out=[];
+  S.formV.objectives.forEach(function(o,i){
+    ['year'].forEach(function(f){
+      if(jePrazno(o[f]) && !razlogZa('obj',i,f))
+        out.push({kind:'obj', i:i, field:f, naziv:L('Циљ ','Objective ')+(i+1)+' — '+L('Циљна година','Target year')});
+    });
+  });
+  S.formV.indicators.forEach(function(r,i){
+    POLJA_POK.forEach(function(f){
+      var v = (S.role==='dp' && S.formV.tabelaVise)
+        ? (((S.formV.unosDP||{})[ORG.dp]||{}).redovi||[])[i] && (((S.formV.unosDP||{})[ORG.dp]||{}).redovi||[])[i][f]
+        : r[f];
+      if(jePrazno(v) && !razlogZa('ind',i,f))
+        out.push({kind:'ind', i:i, field:f, naziv:(r.name||(L('Показатељ ','Indicator ')+(i+1)))+' — '+nazivPolja(f)});
+    });
+  });
+  return out;
+}
+/* Водич: корисник не мора сам да лови празна поља — платформа га води кроз њих једно по
+   једно. Кад упише разлог, одмах се отвара следеће празно поље. */
+var _vodicRazloga=false;
+function pokreniVodicRazloga(){
+  var lista=praznaBezRazloga();
+  if(!lista.length) return;
+  _vodicRazloga=true;
+  var x=lista[0];
+  upisiRazlog(x.kind, x.i, x.field, x.naziv);
+}
+function renderRazlogVodic(){
+  var el=document.getElementById('razlogVodic'); if(!el) return;
+  var ed = canEdit();
+  var lista = ed ? praznaBezRazloga() : [];
+  if(!ed || !lista.length){
+    el.innerHTML = (ed && !lista.length)
+      ? '<div class="banner-ok"><div class="bt">'+L('Свако празно поље има разлог','Every empty field has a reason')+'</div>'+
+        L('Ознаке обавезности су информативне; ово је оно што се проверава пред прелазак на следећи корак.','The obligation markings are informative; this is what is checked before moving to the next step.')+'</div>'
+      : '';
+    el.classList.toggle('hidden', !ed);
+    return;
+  }
+  el.classList.remove('hidden');
+  el.innerHTML = '<div class="callout strong"><div class="callout-h">'+
+    L('Празних поља без разлога: ','Empty fields without a reason: ')+lista.length+'</div>'+
+    '<div class="small">'+L('Поље може остати празно, али мора да се упише зашто. Без тога се не иде на следећи корак.','A field may stay empty, but the reason must be entered. Without it you cannot move to the next step.')+'</div>'+
+    '<div class="xs muted" style="margin-top:4px;">'+lista.slice(0,3).map(function(x){ return '<span>'+esc(x.naziv)+'</span>'; }).join(' · ')+(lista.length>3?' …':'')+'</div>'+
+    '<div style="margin-top:9px;"><button class="btn pri" onclick="pokreniVodicRazloga()">'+L('Унеси разлоге — води ме кроз њих','Enter the reasons — guide me through them')+'</button></div></div>';
+}
+/* Мало дугме у ћелији: „Зашто празно?" ако разлога нема, „разлог ✓" ако постоји. */
+function dugmeRazlog(kind, i, field, naziv){
+  var r=razlogZa(kind,i,field);
+  return r
+    ? '<div class="xs muted" style="margin-top:2px;" title="'+esc(r)+'"><span class="btn sm" onclick="upisiRazlog(\''+kind+'\','+i+',\''+field+'\',\''+esc(naziv).replace(/'/g,"") +'\')">'+L('разлог ✓','reason ✓')+'</span></div>'
+    : '<div class="xs" style="margin-top:2px;"><span class="btn sm" onclick="upisiRazlog(\''+kind+'\','+i+',\''+field+'\',\''+esc(naziv).replace(/'/g,"")+'\')">'+L('Зашто празно?','Why empty?')+'</span></div>';
+}
 function jePrazno(v){ return v===undefined || v===null || String(v).trim()===''; }
 function jeOznaka(v){ return OZNAKE.indexOf(String(v).trim()) >= 0; }
 function jeBroj(v){ return String(v).trim()!=='' && isFinite(Number(String(v).trim().replace(',', '.'))); }
@@ -2470,15 +2640,26 @@ function problemCelije(v){
 function blokadeUObrascu(){
   var out=[];
   nepotvrdjeniPrevodi().forEach(function(x){ out.push(x+L(' — превод на енглески није потврђен',' — English translation not confirmed')); });
+  /* Празно поље само по себи не блокира — блокира празно поље БЕЗ разлога. */
+  praznaBezRazloga().forEach(function(x){
+    out.push(x.naziv+L(' — празно, потребан разлог',' — empty, a reason is required'));
+  });
   S.formV.objectives.forEach(function(o,i){
     var p = problemCelije(o.year);
-    if(p) out.push(L('Циљ ','Objective ')+(i+1)+L(' — Циљна година (',' — Target year (')+p+')');
+    if(p && p!==L('празно','empty')) out.push(L('Циљ ','Objective ')+(i+1)+L(' — Циљна година (',' — Target year (')+p+')');
   });
+  /* Конфликт између достављача није проблем достављача — њега разрешава Водећи известилац.
+     Зато конфликт блокира консолидацију, а не предају појединачног достављача. */
+  if(S.role==='lead' || S.role==='super'){
+    konflikti().forEach(function(x){
+      out.push(x.naziv+L(' — конфликт: два достављача су уписала различите вредности',' — conflict: two data providers entered different values'));
+    });
+  }
   S.formV.indicators.forEach(function(r,i){
     var ime = r.name || (L('Показатељ ','Indicator ')+(i+1));
     [['prev','X-3'],['curr','X-2'],['target',L('Циљна вредност','Target value')]].forEach(function(par){
       var p = problemCelije(r[par[0]]);
-      if(p) out.push(ime+' — '+par[1]+' ('+p+')');
+      if(p && p!==L('празно','empty')) out.push(ime+' — '+par[1]+' ('+p+')');
     });
   });
   return out;
@@ -2529,8 +2710,10 @@ var CIKLUS = 2027;
 function godinaX(offset){ return CIKLUS + offset; }
 function renderGodine(){
   var x3 = document.getElementById('thX3'), x2 = document.getElementById('thX2');
-  if(x3) x3.textContent = 'X-3 (' + godinaX(-3) + ')';
-  if(x2) x2.textContent = 'X-2 (' + godinaX(-2) + ')';
+  if(x3) x3.innerHTML = 'X-3 (' + godinaX(-3) + ') ' + znakObaveznosti('ind|prev');
+  if(x2) x2.innerHTML = 'X-2 (' + godinaX(-2) + ') ' + znakObaveznosti('ind|curr');
+  var xt = document.getElementById('thTarget');
+  if(xt) xt.innerHTML = L('Циљна вредност','Target value') + ' ' + znakObaveznosti('ind|target');
   var n = document.getElementById('godineNapomena');
   if(n) n.innerHTML = 'X је година извештавања — за циклус <strong>'+CIKLUS+'</strong> то значи да се пријављују календарске године <strong>'+
     godinaX(-3)+'</strong> (X-3) и <strong>'+godinaX(-2)+'</strong> (X-2). Не пријављује се '+godinaX(-1)+
@@ -2609,7 +2792,7 @@ function potvrdiObrazlozenje(){
   if(!z) return;
   if(typeof z.primeni==='function') z.primeni();
   auditPolje(z.polje, z.staro, z.novo, tx.value.trim());
-  pushActivity('Административна измена поља: '+z.polje, ACTOR.super);
+  pushActivity('Административна измена поља: '+z.polje, ACTOR[S.role]);
   renderAll();
 }
 function renderAudit(){
@@ -2896,7 +3079,19 @@ function renderContributions(){
       ? '<div class="xs" style="margin-top:3px;"><span class="badge solid">'+L('редова без секције: ','rows without a section: ')+pk.nepokriveno+'</span></div>' : '';
     var glava = '<tr class="grp"><td colspan="3" title="'+esc(pun)+'"><strong>'+esc(kratko)+'</strong>'+dugme+upoz+'</td>'+
       '<td>'+lista.length+' '+L(lista.length===1?'секција':(lista.length<5?'секције':'секција'), lista.length===1?'section':'sections')+' · '+prosek+'%</td></tr>';
-    return glava + lista.map(function(s){
+    /* Ако је табела додељена већем броју достављача, они се приказују и без поделе на
+       секције — јер подела не мора да буде позната унапред. */
+    var dpRedovi = '';
+    if(k==='V/2' || (S.formV.tabelaVise && S.role!=='dp')){
+      var dodeljeni = (k==='V/1' || k==='V/2') ? (S.formV.dodeljeniDP||[]) : [];
+      dpRedovi = dodeljeni.map(function(inst){
+        var u=(S.formV.unosDP||{})[inst]||{status:'Нацрт'};
+        return '<tr><td style="padding-left:22px;" class="small">'+L('Достављач: ','Data provider: ')+'<span>'+esc(inst)+'</span></td>'+
+          '<td class="xs muted">'+L('своја радна копија табеле','own working copy of the table')+'</td>'+
+          '<td><span class="badge">'+esc(u.status)+'</span></td><td>—</td></tr>';
+      }).join('');
+    }
+    return glava + dpRedovi + lista.map(function(s){
       return '<tr><td style="padding-left:22px;" class="small"><span>'+esc(s.sekcija)+'</span>'+
         ((s.redovi&&s.redovi.length) ? '<div class="xs muted">'+s.redovi.length+' '+L('редова','rows')+': '+s.redovi.slice(0,2).map(function(r){ return '<span>'+esc(r)+'</span>'; }).join(', ')+(s.redovi.length>2?' …':'')+'</div>' : '')+'</td>'+
         '<td class="small"><span>'+esc(s.inst)+'</span><div class="xs muted"><span>'+esc(s.osoba||'—')+'</span></div></td>'+
@@ -3074,16 +3269,18 @@ function renderObjectives(){
       dvoPolje('obj', i, 'name', 'Назив националног циља', o.name, 'input', editable)+
       dvoPolje('obj', i, 'desc', 'Опис', o.desc, 'textarea', editable)+
       '<div class="grid2">'+
-        '<div class="fld"><label>Релевантност</label><input '+d+' value="'+esc(o.relevance)+'" oninput="updObj('+i+',\'relevance\',this.value)"></div>'+
-        '<div class="fld"><label>Циљна година'+(problemCelije(o.year)?' <span class="badge solid">блокира предају</span>':'')+'</label>'+
-          '<input '+d+' value="'+esc(o.year)+'" oninput="updObj('+i+',\'year\',this.value)" title="Број, или ознака NA / NAv / C"></div>'+
-        '<div class="fld"><label>Статус</label><select '+d+' onchange="updObj('+i+',\'status\',this.value)">'+statusOpts+'</select></div>'+
-        '<div class="fld"><label>Одговорни субјект</label><input '+d+' value="'+esc(o.responsible)+'" oninput="updObj('+i+',\'responsible\',this.value)"></div>'+
+        '<div class="fld"><label>Релевантност '+znakObaveznosti('obj|relevance')+'</label><input '+d+' value="'+esc(o.relevance)+'" oninput="updObj('+i+',\'relevance\',this.value)">'+
+          (jePrazno(o.relevance)&&editable ? dugmeRazlog('obj', i, 'relevance', L('Циљ ','Objective ')+(i+1)+' — '+L('Релевантност','Relevance')) : '')+'</div>'+
+        '<div class="fld"><label>Циљна година '+znakObaveznosti('obj|year')+'</label>'+
+          '<input '+d+' value="'+esc(o.year)+'" oninput="updObj('+i+',\'year\',this.value)" title="Број, или ознака NA / NAv / C">'+
+          (jePrazno(o.year)&&editable ? dugmeRazlog('obj', i, 'year', L('Циљ ','Objective ')+(i+1)+' — '+L('Циљна година','Target year')) : '')+'</div>'+
+        '<div class="fld"><label>Статус '+znakObaveznosti('obj|status')+'</label><select '+d+' onchange="updObj('+i+',\'status\',this.value)">'+statusOpts+'</select></div>'+
+        '<div class="fld"><label>Одговорни субјект '+znakObaveznosti('obj|responsible')+'</label><input '+d+' value="'+esc(o.responsible)+'" oninput="updObj('+i+',\'responsible\',this.value)"></div>'+
       '</div>'+
-      '<div class="fld"><label>Обухваћени енергетски извори / горива</label><select '+d+' multiple style="height:76px;" onchange="updObjMulti('+i+',this)">'+sourcesOpts+'</select></div>'+
-      '<div class="fld"><label>Референца / извор</label><input '+d+' value="'+esc(o.reference)+'" oninput="updObj('+i+',\'reference\',this.value)"></div>'+
+      '<div class="fld"><label>Обухваћени енергетски извори / горива '+znakObaveznosti('obj|sources')+'</label><select '+d+' multiple style="height:76px;" onchange="updObjMulti('+i+',this)">'+sourcesOpts+'</select></div>'+
+      '<div class="fld"><label>Референца / извор '+znakObaveznosti('obj|reference')+'</label><input '+d+' value="'+esc(o.reference)+'" oninput="updObj('+i+',\'reference\',this.value)"></div>'+
       classBlock+
-      '<div class="fld"><label>Опште напомене</label><textarea '+d+' rows="2" oninput="updObj('+i+',\'comments\',this.value)">'+esc(o.comments)+'</textarea></div>'+
+      '<div class="fld"><label>Опште напомене '+znakObaveznosti('obj|comments')+'</label><textarea '+d+' rows="2" oninput="updObj('+i+',\'comments\',this.value)">'+esc(o.comments)+'</textarea></div>'+
       '</div>';
   }).join('');
   document.getElementById('objectivesList').innerHTML = html;
@@ -3115,25 +3312,249 @@ function updObjMulti(i, sel){
   S.formV.objectives[i].sources = vals.join(', ');
 }
 
+/* ===================== Паралелни унос више достављача у исту табелу =====================
+   Проблем: не знамо унапред који део табеле уноси који достављач. Решење: свакi достављач
+   уноси у СВОЈУ радну копију табеле; Водећи известилац види све копије одвојено и једну
+   спојену. Правила спајања су намерно конзервативна:
+     · само један уписао вредност            → узима се та вредност
+     · више њих уписало ИСТУ вредност        → узима се (то није конфликт)
+     · више њих уписало РАЗЛИЧИТЕ вредности  → конфликт: ћелија се означава, не пуни се
+       сама, и излистава се шта је ко уписао; Водећи известилац бира вредност једним
+       кликом (или упише своју) — одлука се памти уз име онога од кога је узета.
+   Празно поље није тврдња: ако један остави празно а други упише, узима се уписано. */
+var POLJA_POK = ['prev','curr','target'];
+/* ===== Ознаке обавезности из Правилника — САМО информативно =====
+   Ознака не блокира ништа: она кориснику каже шта се очекује. Права брана је друга —
+   за свако празно поље мора да се упише разлог (в. modal-razlog). Извор ознака: наш
+   попис поља по табелама, где су пресликане из Правилника (ДА → M, ако је применљиво →
+   Miap, ако је доступно → Miav, добровољно → V). */
+var OBAVEZNOST = {
+  M:    {kratko:'обавезно',        en:'mandatory'},
+  Miap: {kratko:'ако је применљиво', en:'if applicable'},
+  Miav: {kratko:'ако је доступно',   en:'if available'},
+  V:    {kratko:'добровољно',      en:'voluntary'},
+  NO:   {kratko:'није одређено',   en:'not specified'}
+};
+var OBAVEZNOST_POLJA = {
+  'obj|name':'M', 'obj|desc':'M', 'obj|relevance':'Miap', 'obj|year':'Miap', 'obj|status':'M',
+  'obj|responsible':'M', 'obj|sources':'M', 'obj|reference':'V', 'obj|comments':'V',
+  'ind|name':'M', 'ind|unit':'NO', 'ind|prev':'Miap', 'ind|curr':'Miap', 'ind|target':'Miap'
+};
+function kodObaveznosti(kljuc){ return OBAVEZNOST_POLJA[kljuc] || 'NO'; }
+function znakObaveznosti(kljuc){
+  var k=kodObaveznosti(kljuc), o=OBAVEZNOST[k];
+  var txt = (S.lang==='en' ? o.en : o.kratko);
+  return '<span class="badge" title="'+esc(L('Ознака обавезности из Правилника — информативно, не блокира унос','Obligation marking from the Rulebook — informative, it does not block entry'))+'">'+esc(txt)+'</span>'+
+         (k==='M' ? ' <span class="req" title="'+esc(L('обавезно','mandatory'))+'">*</span>' : '');
+}
+/* У ћелији нема места за пун назив институције — иде скраћеница, пуно име у tooltip. */
+function kratkoInst(naziv){
+  var i=INSTITUTIONS.filter(function(x){ return x.name===naziv; })[0];
+  if(i && i.short) return i.short;
+  return String(naziv||'').split(' ').map(function(w){ return w.charAt(0); }).join('').toUpperCase().slice(0,4);
+}
+function nazivPolja(f){ return ({prev:'X-3', curr:'X-2', target:L('Циљна вредност','Target value')})[f] || f; }
+function unosiZaCeliju(i, f){
+  var out=[];
+  (S.formV.dodeljeniDP||[]).forEach(function(inst){
+    var u=(S.formV.unosDP||{})[inst];
+    var v=u && u.redovi && u.redovi[i] ? u.redovi[i][f] : '';
+    if(!jePrazno(v)) out.push({inst:inst, v:String(v).trim()});
+  });
+  return out;
+}
+/* Стање једне ћелије спојене табеле: празно / једна вредност / конфликт / разрешено. */
+function stanjeCelije(i, f){
+  var kljuc=i+'|'+f;
+  var r=(S.formV.razresenja||{})[kljuc];
+  var u=unosiZaCeliju(i,f);
+  var razne={}; u.forEach(function(x){ razne[x.v]=(razne[x.v]||[]).concat([x.inst]); });
+  var kljucevi=Object.keys(razne);
+  if(r) return {tip:'разрешено', v:r.vrednost, od:r.od, unosi:u, razne:razne};
+  if(kljucevi.length===0) return {tip:'празно', v:'', unosi:u, razne:razne};
+  if(kljucevi.length===1) return {tip:(razne[kljucevi[0]].length>1 ? 'исто' : 'једна'), v:kljucevi[0], od:razne[kljucevi[0]].join(', '), unosi:u, razne:razne};
+  return {tip:'конфликт', v:'', unosi:u, razne:razne};
+}
+/* Спајање се не чува као стање него се рачуна — да се не разиђе са уносима достављача. */
+function spojiUnose(){
+  if(!S.formV.tabelaVise) return;
+  S.formV.indicators.forEach(function(r,i){
+    POLJA_POK.forEach(function(f){
+      var s=stanjeCelije(i,f);
+      r[f] = (s.tip==='конфликт') ? '' : s.v;
+    });
+  });
+}
+function konflikti(){
+  var out=[];
+  if(!S.formV.tabelaVise) return out;
+  S.formV.indicators.forEach(function(r,i){
+    POLJA_POK.forEach(function(f){
+      var s=stanjeCelije(i,f);
+      if(s.tip==='конфликт') out.push({i:i, f:f, naziv:(r.name||('Показатељ '+(i+1)))+' — '+nazivPolja(f), razne:s.razne});
+    });
+  });
+  return out;
+}
+/* Водећи известилац бира једну од понуђених вредности — памти се и од кога је. */
+function razresiKonflikt(i, f, vrednost, od){
+  S.formV.razresenja = S.formV.razresenja || {};
+  S.formV.razresenja[i+'|'+f] = {vrednost:String(vrednost), od:od||''};
+  var naziv=(S.formV.indicators[i].name||('Показатељ '+(i+1)))+' — '+nazivPolja(f);
+  auditPolje('Разрешен конфликт: '+naziv, '(више вредности)', String(vrednost)+(od?' — узето од: '+od:''), '');
+  spojiUnose(); renderFormV();
+}
+function ocistiRazresenje(i, f){
+  if(S.formV.razresenja) delete S.formV.razresenja[i+'|'+f];
+  spojiUnose(); renderFormV();
+}
+/* Унос достављача иде у ЊЕГОВУ копију табеле, не у спојену. */
+function updUnosDP(i, f, val){
+  var inst=ORG.dp;
+  S.formV.unosDP = S.formV.unosDP || {};
+  S.formV.unosDP[inst] = S.formV.unosDP[inst] || {status:'Нацрт', redovi:[]};
+  S.formV.unosDP[inst].redovi[i] = S.formV.unosDP[inst].redovi[i] || {};
+  var staro=S.formV.unosDP[inst].redovi[i][f];
+  S.formV.unosDP[inst].redovi[i][f]=val;
+  var naziv=(S.formV.indicators[i].name||('Показатељ '+(i+1)))+' — '+nazivPolja(f)+' ('+inst+')';
+  auditPolje(naziv, staro, val);
+  spojiUnose(); renderIndicators(); renderBlokade();
+}
+/* Враћање на исправку САМО оном достављачу који треба да исправи. */
+function vratiDostavljacu(inst){
+  S.formV.unosDP[inst].status='Захтевана исправка';
+  pushActivity('Враћено на исправку: '+inst+' — вратио '+t(ROLE_KEY[S.role])+' (остали достављачи нису дирани)', ACTOR[S.role]);
+  renderFormV();
+}
+function ponovoPredajDP(inst){
+  S.formV.unosDP[inst].status='Предато';
+  pushActivity('Поново предато: '+inst, ACTOR.dp);
+  renderFormV();
+}
 function renderIndicators(){
   var ed = canEdit();
+  var vise = !!S.formV.tabelaVise;
+  var mojUnos = (S.role==='dp' && vise);
+  if(vise) spojiUnose();
   document.getElementById('indicatorsBody').innerHTML = S.formV.indicators.map(function(r,i){
     function celija(polje){
-      var v = (r[polje]===undefined||r[polje]===null) ? '' : r[polje];
+      /* Достављач види и мења САМО своју радну копију; остали виде спојену вредност. */
+      if(mojUnos){
+        var u=((S.formV.unosDP||{})[ORG.dp]||{}).redovi||[];
+        var mv=(u[i]||{})[polje]; mv=(mv===undefined||mv===null)?'':mv;
+        var pm=problemCelije(mv);
+        var sm=pm ? ' style="background:var(--surface-1); box-shadow:inset 0 0 0 1px var(--text-primary);"' : '';
+        var nazivM=(r.name||(L('Показатељ ','Indicator ')+(i+1)))+' — '+nazivPolja(polje);
+        var razlM = (jePrazno(mv) && ed) ? dugmeRazlog('ind', i, polje, nazivM) : '';
+        return '<td'+sm+'>'+(ed
+          ? '<input value="'+esc(mv)+'" oninput="updUnosDP('+i+',\''+polje+'\',this.value)" style="min-width:96px;" title="Број, или ознака NA / NAv / C">'
+          : (jeOznaka(mv) ? '<span class="badge">'+esc(mv)+'</span>' : esc(mv)))+razlM+'</td>';
+      }
+      var s = vise ? stanjeCelije(i, polje) : {tip:'једна', v:(r[polje]==null?'':r[polje]), od:''};
+      var v = (s.tip==='конфликт') ? '' : s.v;
       var p = problemCelije(v);
-      var stil = p ? ' style="background:var(--surface-1); box-shadow:inset 0 0 0 1px var(--text-primary);"' : '';
-      return '<td'+stil+'>'+(ed
+      var konf = (s.tip==='конфликт');
+      var stil = (p||konf) ? ' style="background:var(--surface-1); box-shadow:inset 0 0 0 1px var(--text-primary);"' : '';
+      var oznaka = konf
+        ? '<span class="badge solid" title="'+esc(Object.keys(s.razne).map(function(k){ return k+' — '+s.razne[k].join(', '); }).join(' · '))+'">'+
+            L('конфликт: ','conflict: ')+Object.keys(s.razne).length+' '+L('вредности','values')+'</span>'
+        : '';
+      var poreklo = (!konf && s.od && vise)
+        ? '<div class="xs muted" title="'+esc(s.od)+'">'+String(s.od).split(', ').map(function(x){ return '<span>'+esc(kratkoInst(x))+'</span>'; }).join(' + ')+'</div>' : '';
+      var nazivC=(r.name||(L('Показатељ ','Indicator ')+(i+1)))+' — '+nazivPolja(polje);
+      var razlC = (jePrazno(v) && !konf && ed) ? dugmeRazlog('ind', i, polje, nazivC) : '';
+      return '<td'+stil+'>'+(ed && !konf
         ? '<input value="'+esc(v)+'" oninput="updInd('+i+',\''+polje+'\',this.value)" style="min-width:96px;" title="Број, или ознака NA / NAv / C">'
-        : (jeOznaka(v) ? '<span class="badge">'+esc(v)+'</span>' : esc(v)))+'</td>';
+        : (konf ? oznaka : (jeOznaka(v) ? '<span class="badge">'+esc(v)+'</span>' : esc(v))))+poreklo+razlC+'</td>';
     }
     var ime = r.name || '';
     return '<tr><td title="'+esc(ime)+'" style="max-width:280px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">'+esc(ime)+'</td>'+
       '<td>'+esc(r.unit)+'</td>'+celija('prev')+celija('curr')+celija('target')+'</tr>';
   }).join('');
   document.getElementById('btnAddIndicator').classList.toggle('hidden', !ed);
+  renderKopijeDP();
+  renderKonflikti();
+  renderRazlogVodic();
   renderBlokade();
 }
+/* Копије табеле по достављачу — Водећи известилац и Супервизор виде ко је шта уписао. */
+function renderKopijeDP(){
+  var el=document.getElementById('kopijeDP'); if(!el) return;
+  if(!S.formV.tabelaVise || S.role==='dp'){ el.innerHTML=''; el.classList.add('hidden'); return; }
+  el.classList.remove('hidden');
+  el.innerHTML = '<div class="sect-h"><span>'+L('Уноси по достављачу','Entries per data provider')+'</span><span class="badge">'+
+      (S.formV.dodeljeniDP||[]).length+' '+L('достављача','data providers')+'</span></div>'+
+    '<p class="note" style="margin-top:0;">'+L('Иста табела је додељена већим бројем достављача, а није унапред познато који део ко уноси. Свакi уноси у своју радну копију; испод су копије онако како су предате, да се види ко је шта попунио. Спојена табела горе настаје из ових уноса.','The same table is assigned to several data providers, and it is not known in advance which part each of them fills in. Each enters into their own working copy; below are the copies as submitted, so it is visible who filled in what. The merged table above is produced from these entries.')+'</p>'+
+    (S.formV.dodeljeniDP||[]).map(function(inst){
+      var u=(S.formV.unosDP||{})[inst]||{status:'Нацрт', redovi:[]};
+      var vrati = (S.role==='lead' || S.role==='super')
+        ? '<span class="btn sm" onclick="vratiDostavljacu(\''+esc(inst)+'\')">'+L('Врати овом достављачу','Return to this provider')+'</span>' : '';
+      var ponovo = (u.status==='Захтевана исправка')
+        ? ' <span class="xs muted">'+L('чека исправку','awaiting correction')+'</span>' : '';
+      return '<div class="card" style="margin:10px 0;"><div class="card-h" style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;">'+
+          '<span><span>'+esc(inst)+'</span> <span class="badge">'+esc(u.status)+'</span>'+ponovo+'</span>'+vrati+'</div>'+
+        '<div class="card-b scroll"><table><thead><tr><th>'+L('Показатељ','Indicator')+'</th><th>X-3</th><th>X-2</th><th>'+L('Циљна вредност','Target value')+'</th></tr></thead><tbody>'+
+        S.formV.indicators.map(function(r,i){
+          var red=(u.redovi||[])[i]||{};
+          return '<tr><td class="small"><span>'+esc(r.name||'')+'</span></td>'+POLJA_POK.map(function(f){
+            var v=red[f]; v=(v==null?'':v);
+            return '<td class="small">'+(jePrazno(v) ? '<span class="xs muted">—</span>' : esc(v))+'</td>';
+          }).join('')+'</tr>';
+        }).join('')+'</tbody></table></div></div>';
+    }).join('');
+}
+/* Секција „Конфликти" — само оно што је двоструко уписано, и то различито. */
+function renderKonflikti(){
+  var el=document.getElementById('konfliktiBox'); if(!el) return;
+  if(!S.formV.tabelaVise || S.role==='dp'){ el.innerHTML=''; el.classList.add('hidden'); return; }
+  var k=konflikti();
+  var razr=Object.keys(S.formV.razresenja||{});
+  if(!k.length && !razr.length){ el.innerHTML=''; el.classList.add('hidden'); return; }
+  el.classList.remove('hidden');
+  el.innerHTML = '<div class="callout'+(k.length?' strong':'')+'">'+
+    '<div class="callout-h">'+(k.length ? L('Конфликти: ','Conflicts: ')+k.length : L('Сви конфликти су разрешени','All conflicts resolved'))+'</div>'+
+    (k.length ? '<div class="small">'+L('Исто поље су попунила два или више достављача, и то различитим вредностима. Спојена табела ту ћелију не пуни сама — изаберите вредност или упишите своју.','The same field was filled in by two or more data providers, with different values. The merged table does not fill that cell by itself — choose a value or enter your own.')+'</div>' : '')+
+    k.map(function(x){
+      return '<div style="margin-top:9px; padding-top:8px; border-top:1px solid var(--border);">'+
+        '<div class="small"><strong><span>'+esc(x.naziv)+'</span></strong></div>'+
+        Object.keys(x.razne).map(function(v){
+          return '<div class="xs" style="margin-top:3px;">'+esc(v)+' — <span>'+esc(x.razne[v].join(', '))+'</span> '+
+            ((S.role==='lead'||S.role==='super') ? '<span class="btn sm" onclick="razresiKonflikt('+x.i+',\''+x.f+'\',\''+esc(v)+'\',\''+esc(x.razne[v].join(', '))+'\')">'+L('Узми ову вредност','Take this value')+'</span>' : '')+
+            '</div>';
+        }).join('')+'</div>';
+    }).join('')+
+    (razr.length ? '<div style="margin-top:10px; border-top:1px solid var(--border); padding-top:8px;"><div class="small">'+
+        L('Разрешено ручно: ','Resolved manually: ')+razr.length+'</div>'+
+        razr.map(function(kk){
+          var p=kk.split('|'), i=Number(p[0]), f=p[1], r=S.formV.razresenja[kk];
+          var nz=(S.formV.indicators[i]||{}).name||('Показатељ '+(i+1));
+          return '<div class="xs muted" style="margin-top:3px;"><span>'+esc(nz)+'</span> — '+esc(nazivPolja(f))+': '+esc(r.vrednost)+
+            (r.od ? ' ('+L('узето од: ','taken from: ')+'<span>'+esc(r.od)+'</span>)' : '')+
+            ' <span class="btn sm" onclick="ocistiRazresenje('+i+',\''+f+'\')">'+L('Врати на конфликт','Back to conflict')+'</span></div>';
+        }).join('')+'</div>' : '')+
+    '</div>';
+}
 function updInd(i, field, val){
+  /* Спојена табела се рачуна из уноса достављача. Ручна измена Водећег известиоца или
+     Супервизора зато мора да се сачува као одлука (уз име онога који је донео), иначе би
+     је следеће спајање прегазило. */
+  if(S.formV.tabelaVise && (S.role==='lead' || S.role==='super')){
+    var st0 = S.formV.indicators[i][field];
+    var naziv0 = (S.formV.indicators[i].name||('Показатељ '+(i+1)))+' — '+nazivPolja(field);
+    var upisi = function(beleziTrag){
+      S.formV.razresenja = S.formV.razresenja || {};
+      S.formV.razresenja[i+'|'+field] = {vrednost:String(val), od:L('ручно — ','manually — ')+t(ROLE_KEY[S.role])};
+      /* Кад измена иде кроз образложење, запис у трагу прави potvrdiObrazlozenje —
+         овде се не бележи, да исти догађај не уђе двапут. */
+      if(beleziTrag) auditPolje(naziv0, st0, val, '');
+      spojiUnose(); renderIndicators(); renderBlokade();
+    };
+    if(traziObrazlozenjeZaIzmenu() && String(st0||'')!==String(val||'')){
+      traziObrazlozenje(naziv0, st0, val, function(){ upisi(false); });
+      return;
+    }
+    upisi(true); return;
+  }
   var staro = S.formV.indicators[i][field];
   var naziv = (S.formV.indicators[i].name||('Показатељ '+(i+1)))+' — '+({prev:'X-3',curr:'X-2',target:'Циљна вредност'}[field] || field);
   if(traziObrazlozenjeZaIzmenu() && String(staro||'')!==String(val||'')){
@@ -3261,7 +3682,7 @@ function renderFormvSidePanel(){
     var blok = blokadeUObrascu().length;
     el.innerHTML = '<div class="side-panel"><h3>'+(st==='draft' ? 'Унос у току' : 'Захтевана измена')+'</h3>'+
       '<p class="small muted">Када завршите унос, овлашћено лице ваше институције електронски валидира податке — то Правилник и пројектни задатак изричито траже — а затим се образац предаје.</p>'+
-      (blok ? '<div class="callout strong" style="margin-top:10px;"><div class="callout-h">Блокира валидацију: '+blok+' поља</div><div class="small">Свако поље мора имати вредност или ознаку NA / NAv / C.</div></div>' : '')+
+      (blok ? '<div class="callout strong" style="margin-top:10px;"><div class="callout-h">'+L('Блокира валидацију: ','Blocks validation: ')+blok+' '+L(blok===1?'поље':'поља', blok===1?'field':'fields')+'</div><div class="small">'+L('Свако поље мора имати вредност или ознаку NA / NAv / C.','Every field must have either a value or the notation key NA / NAv / C.')+'</div></div>' : '')+
       '<div style="margin-top:14px;">'+
         '<button class="btn pri" id="btnValidate" '+(blok?'disabled title="Прво решите блокирана поља"':'')+' onclick="openValidate()">Валидирај унос</button>'+
       '</div></div>';
@@ -3318,8 +3739,21 @@ function renderFormvSidePanel(){
         '<div class="note" style="margin-top:5px;">Или измените поље сами — свака измена Супервизора захтева образложење и остаје у ревизионом трагу.</div>'+
       '</div></div>';
   } else if(S.role==='super'){
+    /* Супервизор ради последњи корак: финална потврда и извоз целог обрасца. Може и да
+       врати исправку — и Водећем известиоцу и појединачном достављачу, без дирања осталих. */
+    var dpVrati = (S.formV.dodeljeniDP||[]).map(function(inst){
+      var u=(S.formV.unosDP||{})[inst]||{status:'—'};
+      return '<div class="xs" style="margin-top:4px;"><span>'+esc(inst)+'</span> <span class="badge">'+esc(u.status)+'</span> '+
+        '<span class="btn sm" onclick="vratiDostavljacu(\''+esc(inst)+'\')">'+L('Врати овом достављачу','Return to this provider')+'</span></div>';
+    }).join('');
+    var izvoz = (st==='approved')
+      ? '<div style="margin-top:12px;"><button class="btn pri" onclick="openModal(\'modal-export\')">'+L('Извези цео образац','Export the whole form')+'</button>'+
+        '<div class="note" style="margin-top:5px;">'+L('Последњи корак: извоз целог обрасца — једна датотека састављена из свих табела и секција. Унос у Reportnet Супервизор ради ручно.','The last step: export of the whole form — one file assembled from all tables and sections. The Supervisor enters it into Reportnet manually.')+'</div></div>'
+      : '';
     el.innerHTML = '<div class="side-panel"><h3>Супервизорски приступ</h3>'+
       '<p class="small muted">Тренутна фаза: '+statusLabel(st)+'. Супервизор може да измени било које поље у било којој фази, уз обавезно образложење које остаје у ревизионом трагу.</p>'+
+      izvoz+
+      (dpVrati ? '<div style="margin-top:12px; border-top:1px solid var(--border); padding-top:10px;"><div class="small" style="font-weight:600;">'+L('Врати исправку појединачном достављачу','Return a correction to an individual provider')+'</div>'+dpVrati+'</div>' : '')+
       (FAZA_ULOGE.super!==st ? '<div style="margin-top:12px;"><button class="btn pri" onclick="setDemoFazu(\'consolidated\')">Пређи на фазу финалне потврде</button>'+
         '<p class="note" style="margin-top:8px; margin-bottom:0;">Демо пречица — у стварној платформи фазу помера радња претходне улоге.</p></div>' : '')+
       '<div style="margin-top:12px; border-top:1px solid var(--border); padding-top:12px;">'+
@@ -3947,8 +4381,30 @@ function closeUser(ix){
   pushActivity((u.aktivan===false ? 'Затворен приступ кориснику: ' : 'Поново активиран корисник: ')+u.name, ACTOR.super);
   renderInstUsers(inst);
 }
+/* Достављачу података се додељују ТАБЕЛЕ у обрасцу; Водећем известиоцу ЦЕО образац —
+   он контролише и спаја све што достављачи унесу, па му подела по табелама нема смисла. */
+function syncUlogaDodela(){
+  var uloga=(document.getElementById('assignUserRole')||{}).value;
+  var lead=(uloga==='Водећи известилац');
+  var wrapT=document.getElementById('assignUserTables');
+  var fldT=wrapT ? wrapT.closest('.fld') : null;
+  var fldP=document.getElementById('assignPartWrap');
+  var fldF=document.getElementById('assignFormWrap');
+  var nap=document.getElementById('assignUlogaNapomena');
+  if(fldT) fldT.classList.toggle('hidden', lead);
+  if(fldP) fldP.classList.toggle('hidden', lead);
+  if(fldF) fldF.classList.toggle('hidden', !lead);
+  if(nap){
+    nap.innerHTML = lead
+      ? '<div class="callout"><div class="callout-h">'+L('Водећем известиоцу се додељује цео образац','The Lead Reporter is assigned the whole form')+'</div><div class="small">'+
+        L('Он не уноси део табеле: види уносе свих достављача, спаја их у једну табелу, разрешава конфликте и по потреби враћа исправку појединачном достављачу.','They do not fill in a part of a table: they see the entries of all data providers, merge them into one table, resolve conflicts and, where needed, return a correction to an individual provider.')+'</div></div>'
+      : '<p class="xs muted" style="margin:0;">'+L('Достављачу података се додељују табеле у обрасцу. Ако је иста табела додељена већем броју достављача, свакi уноси у своју радну копију — подела унутар табеле не мора да се зна унапред.','A Data Provider is assigned tables within the form. If the same table is assigned to several providers, each enters into their own working copy — the division within a table does not have to be known in advance.')+'</p>';
+  }
+}
 function openAssignUser(){
   document.getElementById('assignUserName').value='';
+  var fs=document.getElementById('assignUserForm');
+  if(fs) fs.innerHTML = FORMS.map(function(f){ return '<option value="'+f.id+'">'+esc(f.name)+'</option>'; }).join('');
   /* tabele grupisane po obrascu — dodela ide po tabeli, ne po obrascu */
   var sel = document.getElementById('assignUserTables');
   var html='';
@@ -3964,6 +4420,7 @@ function openAssignUser(){
   var s = document.getElementById('assignTableSearch');
   if(s) s.value='';
   filterAssignTables();
+  syncUlogaDodela();
   openModal('modal-assignuser');
 }
 /* Pretraga kroz 72 tabele — spisak je predug da se pretrazuje ocima. */
@@ -4045,10 +4502,15 @@ function saveAssignUser(){
   var role = document.getElementById('assignUserRole').value;
   var sel = document.getElementById('assignUserTables');
   var tabs=[];
-  Array.prototype.forEach.call(sel.options, function(o){
-    if(o.selected){ var p=o.value.split('|'); tabs.push('Образац '+p[0]+', табела '+p[1]); }
-  });
-  var part = document.getElementById('assignUserPart').value;
+  if(role==='Водећи известилац'){
+    var fid=(document.getElementById('assignUserForm')||{}).value||'';
+    if(fid) tabs.push('Образац '+fid+' — цео образац');
+  } else {
+    Array.prototype.forEach.call(sel.options, function(o){
+      if(o.selected){ var p=o.value.split('|'); tabs.push('Образац '+p[0]+', табела '+p[1]); }
+    });
+  }
+  var part = (role==='Водећи известилац') ? '' : document.getElementById('assignUserPart').value;
   /* Једна секција — једна особа: ако секцију већ неко држи, одговорност прелази на
      новог корисника, а промена се бележи. Стари унос остаје приписан претходном лицу. */
   /* Једна секција — једно лице. Ако секцију већ неко држи, одговорност прелази на новог
