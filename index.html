@@ -350,7 +350,7 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
                 <div id="kopijeDP" class="hidden" style="margin-top:14px;"></div>
               </div>
 
-              <div class="sect">
+              <div class="sect" id="auditSect">
                 <div class="sect-h"><span>Ревизиони траг по пољу <span class="badge" id="auditCount">0</span></span></div>
                 <p class="muted small" style="margin-top:0;">Свака измена сваког поља: из које вредности у коју, ко је изменио и када. Измене Супервизора носе и образложење.</p>
                 <div class="scroll"><table>
@@ -553,8 +553,9 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
   <div class="modal">
     <h3>Предаја вашег доприноса Обрасцу V?</h3>
     <p>Након предаје, допринос ваше институције иде Водећем известиоцу на потврду. Доприноси других институција за Образац V могу и даље бити у изради.</p>
-    <label class="checkline"><input type="checkbox" id="submitCheck" onchange="toggleSubmitBtn()"> Потврђујем да су достављени подаци прегледани и валидирани од овлашћеног представника институције.</label>
-    <p class="note">Биће усаглашено са корисником у РП2. (Тачна процедура овлашћене валидације.)</p>
+    <div id="submitValidInfo"></div>
+    <div id="submitBlokade"></div>
+    <label class="checkline"><input type="checkbox" id="submitCheck" onchange="toggleSubmitBtn()"> Предајем допринос Водећем известиоцу и потврђујем да је унос завршен.</label>
     <div class="modal-actions">
       <button class="btn" onclick="closeModal('modal-submit')">Откажи</button>
       <button class="btn pri" id="btnConfirmSubmit" disabled onclick="confirmSubmit()">Предај допринос на преглед</button>
@@ -795,8 +796,9 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
     </div>
     <div class="fld"><label>Табеле <span class="badge">одговорност се додељује по табели</span></label>
       <input id="assignTableSearch" placeholder="Претрага табела…" oninput="filterAssignTables()" style="margin-bottom:6px;">
-      <select id="assignUserTables" multiple style="height:190px;"></select>
+      <div id="assignUserTables" style="max-height:210px; overflow:auto; border:1px solid var(--border); border-radius:6px; padding:6px;"></div>
       <div class="fld-h xs muted" id="assignTableCount" style="margin-top:3px;"></div>
+      <div id="assignTableChips" class="xs" style="margin-top:6px;"></div>
       <div class="fld-h xs muted" style="margin-top:4px;">Правилник именује водећег известиоца испод сваке табеле, не за цео образац — у истом обрасцу могу бити различите институције. Изаберите једну или више табела (држите Ctrl / Cmd за више).</div>
     </div>
     <div id="assignUlogaNapomena" style="margin-bottom:10px;"></div>
@@ -1538,6 +1540,70 @@ var SR2EN = {
   "ранији називи":"former names",
   "раније: ":"formerly: ",
   "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name",
+  "Све завршено":"All steps completed",
+  "Сада: корак ":"Now: step ",
+  "завршено: корак ":"completed: step ",
+  "нема даље радње":"no further action",
+  "сада":"now",
+  "ваш корак":"your step",
+  "чекате — ради ":"waiting — being done by ",
+  "ради: ":"done by: ",
+  "Корак ":"Step ",
+  " од 6":" of 6",
+  "Следећа радња: ":"Next action: ",
+  "предаја је могућа после валидације":"submission is possible after validation",
+  "Предајем допринос Водећем известиоцу и потврђујем да је унос завршен.":"I am submitting the contribution to the Lead Reporter and confirm that the entry is complete.",
+  "Унос је електронски валидиран":"The entry has been electronically validated",
+  "Унос још није валидиран":"The entry has not been validated yet",
+  "Прво корак 2 — валидација уноса код достављача, па затим предаја.":"First step 2 — validation of the entry at the data provider, and only then submission.",
+  "1. јан. 2025.":"1 Jan 2025",
+  "1. јан. 2027.":"1 Jan 2027",
+  "Циљ 1":"Objective 1",
+  "Циљ 2":"Objective 2",
+  "Душан Павловић":"Dušan Pavlović",
+  "Образац V, табела 1":"Form V, table 1",
+  "Образац V, табела 2":"Form V, table 2",
+  "Образац V, табела 3":"Form V, table 3",
+  "Образац VII, табела 1":"Form VII, table 1",
+  /* називи свих 23 обрасца и области */
+  "Образац I – Декарбонизација — емисије GHG":"Form I – Decarbonisation — GHG emissions",
+  "Декарбонизација":"Decarbonisation",
+  "Образац II – Декарбонизација — обновљива енергија":"Form II – Decarbonisation — renewable energy",
+  "Образац III – Декарбонизација — адаптација":"Form III – Decarbonisation — adaptation",
+  "Образац IV – Енергетска ефикасност":"Form IV – Energy efficiency",
+  "Енергетска ефикасност":"Energy efficiency",
+  "Образац V – Енергетска безбедност":"Form V – Energy security",
+  "Енергетска безбедност":"Energy security",
+  "Образац VI – Унутрашње енергетско тржиште":"Form VI – Internal energy market",
+  "Унутрашње енергетско тржиште":"Internal energy market",
+  "Образац VII – Истраживање, иновације и конкурентност":"Form VII – Research, innovation and competitiveness",
+  "Истраживање, иновације и конкурентност":"Research, innovation and competitiveness",
+  "Образац VIII – Постепено укидање субвенција за енергију":"Form VIII – Phasing out energy subsidies",
+  "Постепено укидање субвенција":"Phasing out subsidies",
+  "Образац IX – Спровођење политика и мера":"Form IX – Implementation of policies and measures",
+  "Политике и мере":"Policies and measures",
+  "Образац X – Нове ПиМ по члану 21(б)(3)":"Form X – New PaMs under Article 21(b)(3)",
+  "Образац XI – Уштеде енергије по члану 7":"Form XI – Energy savings under Article 7",
+  "Образац XII – Реновирање зграда централне власти":"Form XII – Renovation of central government buildings",
+  "Образац XIII – Финансирање мера и политика":"Form XIII – Financing of measures and policies",
+  "Финансирање":"Financing",
+  "Образац XIV – Утицаји на квалитет ваздуха":"Form XIV – Impacts on air quality",
+  "Квалитет ваздуха":"Air quality",
+  "Образац XV – ПиМ за укидање субвенција":"Form XV – PaMs for phasing out subsidies",
+  "Образац XVI – Додатне обавезе — обновљива енергија":"Form XVI – Additional obligations — renewable energy",
+  "Обновљива енергија":"Renewable energy",
+  "Образац XVII – Додатне обавезе — енергетска ефикасност":"Form XVII – Additional obligations — energy efficiency",
+  "Образац XVIII – Информације о енергетском сиромаштву":"Form XVIII – Information on energy poverty",
+  "Енергетско сиромаштво":"Energy poverty",
+  "Образац XIX – Извештавање о енергетском сиромаштву":"Form XIX – Reporting on energy poverty",
+  "Образац XX – Допринос правичној транзицији":"Form XX – Contribution to a just transition",
+  "Правична транзиција":"Just transition",
+  "Образац XXI – Регионална сарадња":"Form XXI – Regional cooperation",
+  "Регионална сарадња":"Regional cooperation",
+  "Образац XXII – Спровођење препорука":"Form XXII – Implementation of recommendations",
+  "Препоруке":"Recommendations",
+  "Образац XXIII – Вишеслојни дијалог о клими и енергији":"Form XXIII – Multilevel climate and energy dialogue",
+  "Дијалог о клими и енергији":"Climate and energy dialogue",
   "Ову табелу уноси једна институција":"This table is entered by one institution",
   "нема радних копија, нема спајања и нема конфликата. Табела коју видите је баш оно што је достављач предао.":"there are no working copies, no merging and no conflicts. The table you see is exactly what the data provider submitted.",
   "Последњи корак: извоз целог обрасца — једна датотека састављена из свих његових табела. Унос у Reportnet Супервизор ради ручно.":"The last step: export of the whole form — one file assembled from all of its tables. The Supervisor enters it into Reportnet manually.",
@@ -1758,6 +1824,32 @@ function trUI(s, dubina){
   if(menjano){ var r = trUI(alt, dubina+1); if(r!==null) return r; }
   /* састављени низови типа „Табела 1 – … · C1 – …" (нпр. у падајућем списку, где
      не могу да се раздвоје у елементе) — преведи део по део. */
+  /* Називи институција унутар склопљеног текста (нпр. записа у дневнику) — замени их
+     енглеским називом, па настави да преводиш остатак. */
+  var zam=s, promenjeno=false;
+  for(var org in ORG_EN){ if(zam.indexOf(org)>=0){ zam=zam.split(org).join(ORG_EN[org]); promenjeno=true; } }
+  /* исто и за називе улога, јер и они улазе у склопљене записе */
+  ['role_dp','role_lead','role_super'].forEach(function(k){
+    var sr=I18N[k].sr, en=I18N[k].en;
+    if(zam.indexOf(sr)>=0){ zam=zam.split(sr).join(en); promenjeno=true; }
+  });
+  if(promenjeno){ var r0=trUI(zam, dubina+1); return r0!==null ? r0 : zam; }
+  /* „Наслов: садржај" — преведи део по део */
+  if(s.indexOf(': ')>0){
+    var d3=s.split(': '), m3=false;
+    var p3=d3.map(function(d){ var r=trUI(d, dubina+1); if(r!==null){ m3=true; return r; } return d; });
+    if(m3) return p3.join(': ');
+  }
+  /* „текст (нешто)" — преведи и оно у загради */
+  var mp=s.match(/^([\s\S]+?)\s\(([^()]+)\)$/);
+  if(mp){
+    var a1=trUI(mp[1], dubina+1), a2=trUI(mp[2], dubina+1);
+    if(a1!==null || a2!==null) return (a1!==null?a1:mp[1])+' ('+(a2!==null?a2:mp[2])+')';
+  }
+  var mo=s.match(/^Образац\s+([IVXLC]+),\s*табела\s*(\d+)$/);
+  if(mo) return 'Form '+mo[1]+', table '+mo[2];
+  var mc=s.match(/^Образац\s+([IVXLC]+)\s+—\s+цео образац$/);
+  if(mc) return 'Form '+mc[1]+' — whole form';
   if(s.indexOf(' — ')>0){
     var d2=s.split(' — '), m2=false;
     var p2=d2.map(function(d){ var r=trUI(d, dubina+1); if(r!==null){ m2=true; return r; } return d; });
@@ -1925,10 +2017,38 @@ var OBJ_STATUS = ['На добром путу','Ризично','Није зап
 var LOCK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 
 /* ===================== forms dataset ===================== */
+/* Сва 23 обрасца из Правилника (Прилози 3–25). FORMS испод је демо-подскуп са статусима
+   за екран Извештавање; додела Водећем известиоцу и списак табела иду одавде, да се види
+   цео обим. */
+var SVI_OBRASCI = [
+  {id:'I', name:'Образац I – Декарбонизација — емисије GHG', area:'Декарбонизација'},
+  {id:'II', name:'Образац II – Декарбонизација — обновљива енергија', area:'Декарбонизација'},
+  {id:'III', name:'Образац III – Декарбонизација — адаптација', area:'Декарбонизација'},
+  {id:'IV', name:'Образац IV – Енергетска ефикасност', area:'Енергетска ефикасност'},
+  {id:'V', name:'Образац V – Енергетска безбедност', area:'Енергетска безбедност'},
+  {id:'VI', name:'Образац VI – Унутрашње енергетско тржиште', area:'Унутрашње енергетско тржиште'},
+  {id:'VII', name:'Образац VII – Истраживање, иновације и конкурентност', area:'Истраживање, иновације и конкурентност'},
+  {id:'VIII', name:'Образац VIII – Постепено укидање субвенција за енергију', area:'Постепено укидање субвенција'},
+  {id:'IX', name:'Образац IX – Спровођење политика и мера', area:'Политике и мере'},
+  {id:'X', name:'Образац X – Нове ПиМ по члану 21(б)(3)', area:'Политике и мере'},
+  {id:'XI', name:'Образац XI – Уштеде енергије по члану 7', area:'Енергетска ефикасност'},
+  {id:'XII', name:'Образац XII – Реновирање зграда централне власти', area:'Енергетска ефикасност'},
+  {id:'XIII', name:'Образац XIII – Финансирање мера и политика', area:'Финансирање'},
+  {id:'XIV', name:'Образац XIV – Утицаји на квалитет ваздуха', area:'Квалитет ваздуха'},
+  {id:'XV', name:'Образац XV – ПиМ за укидање субвенција', area:'Постепено укидање субвенција'},
+  {id:'XVI', name:'Образац XVI – Додатне обавезе — обновљива енергија', area:'Обновљива енергија'},
+  {id:'XVII', name:'Образац XVII – Додатне обавезе — енергетска ефикасност', area:'Енергетска ефикасност'},
+  {id:'XVIII', name:'Образац XVIII – Информације о енергетском сиромаштву', area:'Енергетско сиромаштво'},
+  {id:'XIX', name:'Образац XIX – Извештавање о енергетском сиромаштву', area:'Енергетско сиромаштво'},
+  {id:'XX', name:'Образац XX – Допринос правичној транзицији', area:'Правична транзиција'},
+  {id:'XXI', name:'Образац XXI – Регионална сарадња', area:'Регионална сарадња'},
+  {id:'XXII', name:'Образац XXII – Спровођење препорука', area:'Препоруке'},
+  {id:'XXIII', name:'Образац XXIII – Вишеслојни дијалог о клими и енергији', area:'Дијалог о клими и енергији'}
+];
 var FORMS = [
-  {id:'I', name:'Образац I – Декарбонизација: емисије GHG', area:'Декарбонизација', inst:'Министарство рударства и енергетике', deadline:'30. нов. 2026.', status:'У изради', pct:40},
-  {id:'II', name:'Образац II – Декарбонизација: обновљива енергија', area:'Декарбонизација', inst:'Министарство рударства и енергетике', deadline:'30. нов. 2026.', status:'Нацрт', pct:10},
-  {id:'III', name:'Образац III – Декарбонизација: адаптација', area:'Декарбонизација', inst:'Министарство рударства и енергетике', deadline:'30. нов. 2026.', status:'Није започето', pct:0},
+  {id:'I', name:'Образац I – Декарбонизација — емисије GHG', area:'Декарбонизација', inst:'Министарство рударства и енергетике', deadline:'30. нов. 2026.', status:'У изради', pct:40},
+  {id:'II', name:'Образац II – Декарбонизација — обновљива енергија', area:'Декарбонизација', inst:'Министарство рударства и енергетике', deadline:'30. нов. 2026.', status:'Нацрт', pct:10},
+  {id:'III', name:'Образац III – Декарбонизација — адаптација', area:'Декарбонизација', inst:'Министарство рударства и енергетике', deadline:'30. нов. 2026.', status:'Није започето', pct:0},
   {id:'V', name:'Образац V – Енергетска безбедност', area:'Енергетска безбедност', inst:'Министарство рударства и енергетике', deadline:'30. нов. 2026.', status:'LIVE', pct:null},
   {id:'VI', name:'Образац VI – Унутрашње енергетско тржиште', area:'Унутрашње енергетско тржиште', inst:'Агенција за енергетику', deadline:'15. дец. 2026.', status:'Предато', pct:100},
   {id:'VII', name:'Образац VII – Истраживање, иновације и конкурентност', area:'Истраживање, иновације и конкурентност', inst:'Републички завод за статистику', deadline:'15. дец. 2026.', status:'Није започето', pct:0},
@@ -2092,9 +2212,9 @@ var PROPISAN_DEO = { 'II|6': 'Опис усклађености за шумск�
 var INSTITUTIONS = [
   {name:'Министарство рударства и енергетике', short:'МРЕ', type:'Министарство', active:true, od:'1. јан. 2025.', do:null, nastalaIz:[], preslaU:null, nazivi:[{naziv:'Министарство рударства и енергетике', od:'1. јан. 2025.', do:null}],
     resp:[
-      {form:'Образац I – Декарбонизација: емисије GHG', area:'Декарбонизација', participation:'Институција-давалац података'},
-      {form:'Образац II – Декарбонизација: обновљива енергија', area:'Декарбонизација', participation:'Координирајућа / водећа институција'},
-      {form:'Образац III – Декарбонизација: адаптација', area:'Енергетска ефикасност', participation:'Учесница институција'},
+      {form:'Образац I – Декарбонизација — емисије GHG', area:'Декарбонизација', participation:'Институција-давалац података'},
+      {form:'Образац II – Декарбонизација — обновљива енергија', area:'Декарбонизација', participation:'Координирајућа / водећа институција'},
+      {form:'Образац III – Декарбонизација — адаптација', area:'Енергетска ефикасност', participation:'Учесница институција'},
       {form:'Образац V – Енергетска безбедност', area:'Енергетска безбедност', participation:'Координирајућа / водећа институција'},
       {form:'Образац VI – Унутрашње енергетско тржиште', area:'Унутрашње енергетско тржиште', participation:'Институција-давалац података'}
     ],
@@ -2108,12 +2228,12 @@ var INSTITUTIONS = [
       {form:'Образац V – Енергетска безбедност', area:'Енергетска безбедност', participation:'Институција-давалац података'},
       {form:'Образац VII – Истраживање, иновације и конкурентност', area:'Истраживање, иновације и конкурентност', participation:'Координирајућа / водећа институција'}
     ],
-    users:[{name:'Јелена Ковачевић', role:'Достављач података', tables:['Образац V, табела 1'], part:'Подаци о енергетској безбедности'}]},
+    users:[{name:'Јелена Ковачевић', role:'Достављач података', tables:['Образац V, табела 1']}]},
   {name:'Агенција за енергетику', short:'АЕ', type:'Агенција', active:true, od:'1. јан. 2025.', do:null, nastalaIz:[], preslaU:null, nazivi:[{naziv:'Агенција за енергетику', od:'1. јан. 2025.', do:null}],
     resp:[
       {form:'Образац V – Енергетска безбедност', area:'Енергетска безбедност', participation:'Институција-давалац података'},
       {form:'Образац VI – Унутрашње енергетско тржиште', area:'Унутрашње енергетско тржиште', participation:'Координирајућа / водећа институција'},
-      {form:'Образац III – Декарбонизација: адаптација', area:'Енергетска ефикасност', participation:'Учесница институција'}
+      {form:'Образац III – Декарбонизација — адаптација', area:'Енергетска ефикасност', participation:'Учесница институција'}
     ],
     users:[
       {name:'Никола Ђорђић', role:'Достављач података', tables:['Образац V, табела 2']},
@@ -2132,9 +2252,23 @@ function upisiCiljniSistem(){
   var a = document.getElementById('approveSystem'); if(a) a.textContent = s;
 }
 function openModal(id){
+  if(id==='modal-submit') pripremiPredaju();
   if(id==='modal-export' || id==='modal-approve') upisiCiljniSistem();
   document.getElementById(id).classList.add('open');
   prevediUI(); /* модали се пуне мимо renderAll, па и они пролазе кроз слој превода */ }
+/* У модалу предаје се не потврђује поново валидација — она је корак 2 и већ се догодила;
+   овде се само види ко ју је извршио и када. */
+function pripremiPredaju(){
+  var el=document.getElementById('submitValidInfo'); if(!el) return;
+  var v=S.formV.validacija;
+  el.innerHTML = v
+    ? '<div class="banner-ok" style="margin:6px 0;"><div class="bt">'+L('Унос је електронски валидиран','The entry has been electronically validated')+'</div>'+
+      '<span>'+esc(v.by||actorName('dp'))+'</span> · <span>'+esc(v.org||orgName('dp'))+'</span> · <span>'+esc(v.date||'')+'</span></div>'
+    : '<div class="callout strong" style="margin:6px 0;"><div class="callout-h">'+L('Унос још није валидиран','The entry has not been validated yet')+'</div><div class="small">'+
+      L('Прво корак 2 — валидација уноса код достављача, па затим предаја.','First step 2 — validation of the entry at the data provider, and only then submission.')+'</div></div>';
+  var ck=document.getElementById('submitCheck'); if(ck) ck.checked=false;
+  toggleSubmitBtn();
+}
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('.modal-bg').forEach(function(bg){
@@ -2513,7 +2647,7 @@ function potvrdiPrevod(kind, i, field){
   if(!obj || !obj._en || !obj._en[field]) return;
   obj._st = obj._st || {};
   obj._st[field] = PREVOD_STATUS.POTVRDJEN;
-  auditPolje('Превод: '+field+(kind==='obj'?' (Циљ '+(i+1)+')':''), PREVOD_STATUS.MASINSKI, PREVOD_STATUS.POTVRDJEN);
+  auditPolje(L('Превод: ','Translation: ')+field+(kind==='obj'?' ('+L('Циљ ','Objective ')+(i+1)+')':''), PREVOD_STATUS.MASINSKI, PREVOD_STATUS.POTVRDJEN);
   pushActivity('Превод потврђен за поље: '+field, ACTOR[S.role]);
   renderObjectives(); renderIndicators(); renderBlokade();
 }
@@ -2725,12 +2859,44 @@ function stepIndex(status){
 /* Main line = six steps every form passes. A requested correction is a conditional detour, not a
    step in the line — rendered as a dashed box after the submission step and only once it has actually happened.
    An un-ticked "Step 4" in the middle of the line reads as a skipped requirement instead. */
+/* Ко радi који корак и шта у њему радi — да ланац не буде само шест речи. */
+var KORAK_ULOGA = ['dp','dp','dp','lead','lead','super'];
+var KORAK_OPIS = [
+  ['уноси податке','enters the data'],
+  ['овлашћено лице валидира унос','the authorised person validates the entry'],
+  ['предаје допринос','submits the contribution'],
+  ['потврђује допринос','confirms the contribution'],
+  ['спаја доприносе у један образац','merges the contributions into one form'],
+  ['финална потврда и извоз','final confirmation and export']
+];
+/* Статус означава ЗАВРШЕН корак (осим нацрта, који је у току). „Сада" је зато корак
+   после последњег завршеног — то је оно што корисник тражи када погледа ланац. */
+function korakUToku(){
+  var st=S.formV.status;
+  /* Корак 1 је унос, корак 2 валидација. Док има блокада — унос је у току (корак 1);
+     кад блокада нема, на реду је валидација (корак 2), па предаја (корак 3). Тако сваки
+     корак има свој тренутак у ком је „сада", и ниједан не изгледа прескочен. */
+  if(st==='draft' || st==='correction_requested') return blokadeUObrascu().length ? 0 : 1;
+  if(st==='validated') return 2;
+  var i=stepIndex(st);
+  return (i>=STEPS.length-1) ? STEPS.length-1 : i+1;
+}
+/* Последњи завршен корак — за приказ „завршено: корак N". */
+function zavrsenKorak(){
+  var st=S.formV.status;
+  if(st==='draft' || st==='correction_requested') return blokadeUObrascu().length ? -1 : 0;
+  if(st==='validated') return 1;
+  return stepIndex(st);
+}
+function sveZavrseno(){ return S.formV.status==='approved'; }
 function chainBoxes(){
-  var st = S.formV.status, cur = stepIndex(st), naIspravci = (st==='correction_requested');
+  var st = S.formV.status, cur = korakUToku(), naIspravci = (st==='correction_requested');
   var out = [];
   STEPS.forEach(function(s,i){
-    var cls = naIspravci ? (i<=cur ? 'done' : '') : (i===cur ? 'on' : (i<cur ? 'done' : ''));
-    out.push({num:'Корак '+(i+1), label:s, cls:cls});
+    var cls = sveZavrseno() ? 'done' : (naIspravci ? (i<cur ? 'done' : '') : (i===cur ? 'on' : (i<cur ? 'done' : '')));
+    out.push({num:'Корак '+(i+1), label:s, cls:cls,
+              uloga:t(ROLE_KEY[KORAK_ULOGA[i]]), opis:L(KORAK_OPIS[i][0], KORAK_OPIS[i][1]),
+              sada:(i===cur && !naIspravci && !sveZavrseno())});
     if(i===2 && (naIspravci || S.formV.hadCorrection)){
       out.push({num:'Условно', cls:(naIspravci ? 'on branch' : 'done branch'),
         label:'Враћено на исправку'+(S.formV.corrCount>1 ? ' ×'+S.formV.corrCount : '')});
@@ -2791,14 +2957,20 @@ function potvrdiObrazlozenje(){
   if(!z) return;
   if(typeof z.primeni==='function') z.primeni();
   auditPolje(z.polje, z.staro, z.novo, tx.value.trim());
-  pushActivity('Административна измена поља: '+z.polje, ACTOR[S.role]);
+  pushActivity(L('Административна измена поља: ','Administrative change of field: ')+z.polje, ACTOR[S.role]);
   renderAll();
 }
 function renderAudit(){
+  /* Ревизиони траг по пољу у обрасцу види само Супервизор — то је надзор, не радни алат
+     достављача. Водећи известилац своје податке добија кроз уносе по достављачу и
+     конфликте, а Супервизор поред овога има и цео Дневник измена. */
+  var sect=document.getElementById('auditSect');
+  if(sect) sect.classList.toggle('hidden', S.role!=='super');
   var el=document.getElementById('auditBody'); if(!el) return;
+  if(S.role!=='super'){ el.innerHTML=''; return; }
   var a=S.formV.audit;
   el.innerHTML = a.length ? a.slice().reverse().map(function(x){
-    return '<tr><td>'+esc(x.polje)+'</td><td class="small">'+esc(x.staro)+' → <strong>'+esc(x.novo)+'</strong></td>'+
+    return '<tr><td><span>'+esc(x.polje)+'</span></td><td class="small"><span>'+esc(x.staro)+'</span> → <strong><span>'+esc(x.novo)+'</span></strong></td>'+
       '<td class="small">'+esc(x.ko)+'<div class="xs muted">'+esc(x.uloga)+'</div></td>'+
       '<td class="small">'+esc(x.kada)+'</td><td class="small">'+(x.obrazlozenje?esc(x.obrazlozenje):'—')+'</td></tr>';
   }).join('') : '<tr><td colspan="5" class="muted small">Још нема измена поља у овом циклусу.</td></tr>';
@@ -2823,14 +2995,32 @@ function renderFormV(){
   document.getElementById('srFormNote').classList.toggle('hidden', S.lang!=='en');
 
   document.getElementById('formvChain').innerHTML = chainBoxes().map(function(b){
-    return '<div class="chain-n '+b.cls+'"><span class="num">'+b.num+'</span>'+b.label+
-      (b.cls.indexOf('done')>=0 ? ' ✓' : '')+'</div>';
+    return '<div class="chain-n '+b.cls+'" title="'+esc((b.uloga||'')+(b.opis?' — '+b.opis:''))+'">'+
+      '<span class="num">'+b.num+(b.sada ? ' · <strong>'+L('сада','now')+'</strong>' : '')+'</span>'+
+      b.label+(b.cls.indexOf('done')>=0 ? ' ✓' : '')+
+      (b.uloga ? '<div class="xs muted" style="margin-top:3px; font-weight:400;"><span>'+esc(b.uloga)+'</span></div>' : '')+
+      (b.opis ? '<div class="xs muted" style="font-weight:400;">'+esc(b.opis)+'</div>' : '')+
+      '</div>';
   }).join('');
 
   var info = stageInfo(S.formV.status);
+  var cur = korakUToku();
+  var naRedu = KORAK_ULOGA[cur] || 'super';
+  var mojKorak = (S.role===naRedu) && !sveZavrseno();
+  var zavrseno = zavrsenKorak();
   document.getElementById('formvStageInfo').innerHTML =
-    '<strong>Тренутна фаза:</strong> '+info.label+' &nbsp;·&nbsp; <strong>Следећа радња:</strong> '+info.nextBy+
-    '<div class="muted small" style="margin-top:4px;">'+info.desc+'</div>';
+    '<div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:baseline;">'+
+      '<div>'+ (sveZavrseno()
+        ? '<strong>'+L('Све завршено','All steps completed')+'</strong> — <span>'+esc(info.label)+'</span>'
+        : '<strong>'+L('Сада: корак ','Now: step ')+(cur+1)+L(' од 6',' of 6')+'</strong> — <span>'+esc(STEPS[cur])+'</span>'+
+          ' &nbsp;·&nbsp; '+L('ради: ','done by: ')+'<span>'+esc(t(ROLE_KEY[naRedu]))+'</span>'+
+          (zavrseno>=0 ? '<div class="xs muted" style="margin-top:3px;">'+L('завршено: корак ','completed: step ')+(zavrseno+1)+' — <span>'+esc(STEPS[zavrseno])+'</span></div>' : '')
+      )+'</div>'+
+      '<div>'+(sveZavrseno() ? '<span class="badge">'+L('нема даље радње','no further action')+'</span>'
+        : (mojKorak ? '<span class="badge solid">'+L('ваш корак','your step')+'</span>'
+                    : '<span class="badge">'+L('чекате — ради ','waiting — being done by ')+'<span>'+esc(t(ROLE_KEY[naRedu]))+'</span></span>'))+'</div>'+
+    '</div>'+
+    '<div class="muted small" style="margin-top:4px;">'+esc(info.desc)+'</div>';
 
   document.getElementById('formvCompletion').textContent = completionPct()+'%';
 
@@ -2856,7 +3046,9 @@ function renderFormvBanner(){
   var el = document.getElementById('formvBanner');
   if(S.formV.submittedInfo && S.formV.status==='submitted'){
     el.innerHTML = '<div class="banner-ok"><div class="bt">Допринос предат на преглед</div>'+
-      'Предао '+S.formV.submittedInfo.by+' · '+S.formV.submittedInfo.inst+' · '+S.formV.submittedInfo.date+' → Статус: '+statusLabel(S.formV.status)+'. Доприноси других институција за Образац V могу и даље бити у изради.</div>';
+      L('Предао ','Submitted by ')+'<span>'+esc(S.formV.submittedInfo.by)+'</span> · <span>'+esc(S.formV.submittedInfo.inst)+'</span> · <span>'+esc(S.formV.submittedInfo.date)+'</span> → '+
+      L('Статус: ','Status: ')+'<span>'+esc(statusLabel(S.formV.status))+'</span>. '+
+      L('Доприноси других институција за Образац V могу и даље бити у изради.','Contributions from other institutions to Form V may still be in progress.')+'</div>';
   } else if(S.formV.status==='approved' && S.formV.approvedInfo){
     /* U trenutku odobrenja izvoz je sledeci korak — dugme ide u baner, gde oko vec gleda. */
     var mozeIzvoz = (S.role==='super');
@@ -2882,7 +3074,7 @@ function renderCorrectionCallout(){
   var c = S.formV.correction;
   if(S.role==='dp'){
     el.innerHTML = '<div class="callout strong">'+
-      '<div class="callout-h">Исправка захтевана од '+c.fromRole+' — '+c.date+'</div>'+
+      '<div class="callout-h">'+L('Исправка захтевана од ','Correction requested by ')+'<span>'+esc(c.fromRole)+'</span> — <span>'+esc(c.date)+'</span></div>'+
       '<div>'+esc(c.comment)+'</div>'+
       ((c.nalazi && c.nalazi.length) ? '<div class="small" style="margin-top:8px;"><strong>Примедбе које треба отклонити:</strong></div>'+
         c.nalazi.map(function(x,i){
@@ -3299,7 +3491,7 @@ function razresiKonflikt(i, f, vrednost, od){
   S.formV.razresenja = S.formV.razresenja || {};
   S.formV.razresenja[i+'|'+f] = {vrednost:String(vrednost), od:od||''};
   var naziv=(S.formV.indicators[i].name||('Показатељ '+(i+1)))+' — '+nazivPolja(f);
-  auditPolje('Разрешен конфликт: '+naziv, '(више вредности)', String(vrednost)+(od?' — узето од: '+od:''), '');
+  auditPolje(L('Разрешен конфликт: ','Conflict resolved: ')+naziv, L('(више вредности)','(multiple values)'), String(vrednost)+(od?L(' — узето од: ',' — taken from: ')+od:''), '');
   spojiUnose(); renderFormV();
 }
 function ocistiRazresenje(i, f){
@@ -3321,12 +3513,12 @@ function updUnosDP(i, f, val){
 /* Враћање на исправку САМО оном достављачу који треба да исправи. */
 function vratiDostavljacu(inst){
   S.formV.unosDP[inst].status='Захтевана исправка';
-  pushActivity('Враћено на исправку: '+inst+' — вратио '+t(ROLE_KEY[S.role])+' (остали достављачи нису дирани)', ACTOR[S.role]);
+  pushActivity(L('Враћено на исправку: ','Returned for correction: ')+inst+L(' — вратио ',' — returned by ')+t(ROLE_KEY[S.role])+L(' (остали достављачи нису дирани)',' (other data providers untouched)'), ACTOR[S.role]);
   renderFormV();
 }
 function ponovoPredajDP(inst){
   S.formV.unosDP[inst].status='Предато';
-  pushActivity('Поново предато: '+inst, ACTOR.dp);
+  pushActivity(L('Поново предато: ','Resubmitted: ')+inst, ACTOR.dp);
   renderFormV();
 }
 function renderIndicators(){
@@ -3358,7 +3550,7 @@ function renderIndicators(){
             L('конфликт: ','conflict: ')+Object.keys(s.razne).length+' '+L('вредности','values')+'</span>'
         : '';
       var poreklo = (!konf && s.od && vise)
-        ? '<div class="xs muted" title="'+esc(s.od)+'">'+String(s.od).split(', ').map(function(x){ return '<span>'+esc(kratkoInst(x))+'</span>'; }).join(' + ')+'</div>' : '';
+        ? '<div class="xs muted" title="'+esc(String(s.od).split(', ').map(function(x){ return (S.lang==='en' && ORG_EN[x]) ? ORG_EN[x] : x; }).join(', '))+'">'+String(s.od).split(', ').map(function(x){ return '<span>'+esc(kratkoInst(x))+'</span>'; }).join(' + ')+'</div>' : '';
       var nazivC=(r.name||(L('Показатељ ','Indicator ')+(i+1)))+' — '+nazivPolja(polje);
       var razlC = (jePrazno(v) && !konf && ed) ? dugmeRazlog('ind', i, polje, nazivC) : '';
       return '<td'+stil+'>'+(ed && !konf
@@ -3522,7 +3714,7 @@ function openAddIndicator(){
   openModal('modal-addind');
 }
 function saveIndicator(){
-  var name = document.getElementById('indName').value.trim() || '(нови показатељ)';
+  var name = document.getElementById('indName').value.trim() || L('(нови показатељ)','(new indicator)');
   S.formV.indicators.push({
     name:name, unit:document.getElementById('indUnit').value.trim(),
     prev:document.getElementById('indPrev').value.trim(),
@@ -3591,7 +3783,19 @@ function renderFormvSidePanel(){
     var blok = blokadeUObrascu().length;
     el.innerHTML = '<div class="side-panel"><h3>'+(st==='draft' ? 'Унос у току' : 'Захтевана измена')+'</h3>'+
       '<p class="small muted">Када завршите унос, овлашћено лице ваше институције електронски валидира податке — то Правилник и пројектни задатак изричито траже — а затим се образац предаје.</p>'+
-      (blok ? '<div class="callout strong" style="margin-top:10px;"><div class="callout-h">'+L('Блокира валидацију: ','Blocks validation: ')+blok+' '+L(blok===1?'поље':'поља', blok===1?'field':'fields')+'</div><div class="small">'+L('Свако поље мора имати вредност или ознаку NA / NAv / C.','Every field must have either a value or the notation key NA / NAv / C.')+'</div></div>' : '')+
+      (blok ? (function(){
+          var bezRazloga = praznaBezRazloga().length;
+          var nedozvoljeni = Math.max(0, blok - bezRazloga);
+          return '<div class="callout strong" style="margin-top:10px;"><div class="callout-h">'+
+            L('Блокира валидацију: ','Blocks validation: ')+blok+' '+L(blok===1?'поље':'поља', blok===1?'field':'fields')+'</div>'+
+            '<div class="small">'+
+              (bezRazloga ? '· '+bezRazloga+' '+L(bezRazloga===1?'празно поље без разлога':'празних поља без разлога', bezRazloga===1?'empty field without a reason':'empty fields without a reason')+'<br>' : '')+
+              (nedozvoljeni ? '· '+nedozvoljeni+' '+L(nedozvoljeni===1?'недозвољен унос':'недозвољених уноса', nedozvoljeni===1?'entry that is not allowed':'entries that are not allowed')+'<br>' : '')+
+            '</div>'+
+            '<div class="xs muted" style="margin-top:4px;">'+L('Празно поље је дозвољено — али мора да има уписан разлог. Недозвољен унос (нпр. текст где се очекује број) мора да се исправи.','An empty field is allowed — but it must have a reason entered. An entry that is not allowed (e.g. text where a number is expected) has to be corrected.')+'</div>'+
+            (bezRazloga ? '<div style="margin-top:9px;"><button class="btn" onclick="pokreniVodicRazloga()">'+L('Унеси разлоге — води ме кроз њих','Enter the reasons — guide me through them')+'</button></div>' : '')+
+            '</div>';
+        })() : '')+
       '<div style="margin-top:14px;">'+
         '<button class="btn pri" id="btnValidate" '+(blok?'disabled title="Прво решите блокирана поља"':'')+' onclick="openValidate()">Валидирај унос</button>'+
       '</div></div>';
@@ -3753,8 +3957,14 @@ function renderFormvBottomActions(){
       el.innerHTML = '<p class="small muted" style="margin:0;">Уређивање је паузирано док не прегледате најновију верзију изнад.</p>';
       return;
     }
+    /* Ток је: унос → валидација (корак 2) → предаја (корак 3). Зато у нацрту и после
+       захтеване исправке нема дугмета за предају — оно се појављује тек кад је унос
+       валидиран, иначе би се прескочио корак који Правилник изричито тражи. */
+    var blokD = blokadeUObrascu().length;
     el.innerHTML = '<button class="btn" onclick="saveDraft()">'+t('btn_save_draft')+'</button> '+
-      '<button class="btn pri" id="btnSubmitContribution" onclick="openModal(\'modal-submit\')">'+(st==='correction_requested' ? t('btn_resubmit') : t('btn_submit_review'))+'</button> '+
+      '<button class="btn pri" id="btnValidateBottom" '+(blokD?'disabled title="'+L('Прво решите блокирана поља','Resolve the blocked fields first')+'"':'')+' onclick="openValidate()">'+
+        L('Валидирај унос','Validate entry')+'</button> '+
+      '<span class="xs muted">'+L('предаја је могућа после валидације','submission is possible after validation')+'</span> '+
       '<span id="saveMsg" class="small muted"></span>';
   } else {
     el.innerHTML='';
@@ -3799,10 +4009,23 @@ function renderPredaja(){
 /* ---- actions: save / submit ---- */
 function saveDraft(){
   var m = document.getElementById('saveMsg');
-  if(m){ m.textContent='Нацрт сачуван.'; setTimeout(function(){ if(m) m.textContent=''; }, 1800); }
+  if(m){ m.textContent=L('Нацрт сачуван.','Draft saved.'); setTimeout(function(){ if(m) m.textContent=''; }, 1800); }
 }
 function toggleSubmitBtn(){
-  document.getElementById('btnConfirmSubmit').disabled = !document.getElementById('submitCheck').checked;
+  /* Предаја захтева три ствари: означен квадратић, извршену валидацију (корак 2) и нула
+     блокада. Пре је зависила само од квадратића, па се могло предати и празно. */
+  var ck=document.getElementById('submitCheck'), b=document.getElementById('btnConfirmSubmit');
+  if(!ck || !b) return;
+  var blok=blokadeUObrascu().length;
+  var validirano = !!S.formV.validacija;
+  b.disabled = !ck.checked || !validirano || blok>0;
+  b.title = blok ? L('Предаја је блокирана: ','Submission is blocked: ')+blok+' '+L('поља','fields')
+                 : (!validirano ? L('Унос још није валидиран (корак 2)','The entry has not been validated yet (step 2)') : '');
+  var inf=document.getElementById('submitBlokade');
+  if(inf) inf.innerHTML = blok
+    ? '<div class="callout strong" style="margin:6px 0;"><div class="callout-h">'+L('Блокира предају: ','Blocks submission: ')+blok+' '+L(blok===1?'поље':'поља', blok===1?'field':'fields')+'</div>'+
+      '<div class="small">'+blokadeUObrascu().slice(0,4).map(function(x){ return '<span>'+esc(x)+'</span>'; }).join('<br>')+'</div></div>'
+    : '';
 }
 function openValidate(){ openModal('modal-validate'); }
 function confirmValidate(){
@@ -3810,7 +4033,7 @@ function confirmValidate(){
   if(!ime){ document.getElementById('valPerson').focus(); return; }
   S.formV.status='validated';
   S.formV.validacija = {by:ime, org:ORG[S.role], date:nextDemoDate()};
-  pushActivity('Унос електронски валидиран ('+ime+')', ACTOR.dp);
+  pushActivity(L('Унос електронски валидиран (','Entry electronically validated (')+ime+')', ACTOR.dp);
   closeModal('modal-validate');
   renderFormV();
 }
@@ -3840,7 +4063,7 @@ function confirmSubmit(){
   document.getElementById('submitCheck').checked=false;
   document.getElementById('btnConfirmSubmit').disabled=true;
   closeModal('modal-submit');
-  predajUlozi('lead', wasCorrection ? 'Допринос поново предат.' : 'Допринос предат на потврду.');
+  predajUlozi('lead', wasCorrection ? L('Допринос поново предат.','Contribution resubmitted.') : L('Допринос предат на потврду.','Contribution submitted for confirmation.'));
 }
 
 /* ---- actions: correction (shared modal, any reviewing role) ---- */
@@ -3891,7 +4114,7 @@ function sendCorrection(){
   document.getElementById('corrField').value='';
   document.getElementById('corrDeadline').value='';
   closeModal('modal-correction');
-  predajUlozi('dp', 'Исправка затражена — образац враћен.');
+  predajUlozi('dp', L('Исправка затражена — образац враћен.','Correction requested — the form has been returned.'));
 }
 
 /* ---- actions: Lead Reporter / Coordinator ---- */
@@ -3946,8 +4169,9 @@ function doExport(){
   var fmt = document.querySelector('input[name=expFmt]:checked').value;
   closeModal('modal-export');
   var el = document.getElementById('formvBanner');
-  el.innerHTML = '<div class="banner-ok"><div class="bt">Извоз успешно генерисан</div>Образац V – Енергетска безбедност — Циклус извештавања 2027 — Формат: '+fmt+
-    ' — за предају у '+(CILJNI_SISTEM['V']||'—')+'</div>';
+  el.innerHTML = '<div class="banner-ok"><div class="bt">'+L('Извоз успешно генерисан','Export generated')+'</div>'+
+    '<span>'+L('Образац V – Енергетска безбедност','Form V – Energy security')+'</span> — '+L('Циклус извештавања','Reporting cycle')+' 2027 — '+
+    L('Формат: ','Format: ')+fmt+L(' — за предају у ',' — for submission to ')+(CILJNI_SISTEM['V']||'—')+'</div>';
 }
 
 /* ===================== Дневник измена (централни ревизиони траг) =====================
@@ -4040,17 +4264,17 @@ function renderAuditLog(){
 
 /* ===================== Institutions / Administration ===================== */
 function statusInstitucije(inst){
-  if(inst.preslaU) return '<span class="badge">Затворена</span> <span class="xs muted">→ '+esc(inst.preslaU)+'</span>';
+  if(inst.preslaU) return '<span class="badge">'+L('Затворена','Closed')+'</span> <span class="xs muted">→ '+String(inst.preslaU).split(L(' и ',' and ')).map(function(x){ return '<span>'+esc(x)+'</span>'; }).join(L(' и ',' and '))+'</span>';
   if(!inst.active)  return '<span class="badge">Неактивна</span>';
   return '<span class="badge solid">Активна</span>';
 }
 function renderInstitutions(){
   document.getElementById('institutionsBody').innerHTML = INSTITUTIONS.map(function(inst,i){
     var nasl = (inst.nastalaIz && inst.nastalaIz.length)
-      ? '<div class="xs muted">настала од: '+inst.nastalaIz.map(esc).join(', ')+'</div>' : '';
+      ? '<div class="xs muted">'+L('настала од: ','created from: ')+inst.nastalaIz.map(function(x){ return '<span>'+esc(x)+'</span>'; }).join(', ')+'</div>' : '';
     var rn = ranijiNazivi(inst);
-    if(rn) nasl += '<div class="xs muted">раније: '+rn+'</div>';
-    var trajanje = '<div class="xs muted">'+esc(inst.od||'—')+' → '+(inst.do ? esc(inst.do) : 'у примени')+'</div>';
+    if(rn) nasl += '<div class="xs muted">'+L('раније: ','formerly: ')+rn+'</div>';
+    var trajanje = '<div class="xs muted"><span>'+esc(inst.od||'—')+'</span> → '+(inst.do ? '<span>'+esc(inst.do)+'</span>' : L('у примени','in force'))+'</div>';
     return '<tr class="clk" onclick="openInstitutionDetail('+i+')"><td>'+esc(inst.name)+nasl+trajanje+'</td><td>'+esc(inst.type)+'</td>'+
       '<td>'+inst.resp.length+'</td><td>'+inst.users.filter(function(u){return u.aktivan!==false;}).length+
         (inst.users.some(function(u){return u.aktivan===false;}) ? ' <span class="xs muted">(+'+inst.users.filter(function(u){return u.aktivan===false;}).length+' затворених)</span>' : '')+'</td>'+
@@ -4090,7 +4314,7 @@ function currentEditingInst(){
 function renderInstResp(inst){
   document.getElementById('instRespBody').innerHTML = inst.resp.map(function(r){
     var tb = (r.tables && r.tables.length)
-      ? '<div class="xs muted">'+L('табеле: ','tables: ')+r.tables.map(function(n){ return 'Табела '+n; }).join(', ')+(r.deo ? ' ('+esc(r.deo)+')' : '')+'</div>'
+      ? '<div class="xs muted">'+L('табеле: ','tables: ')+r.tables.map(function(n){ return '<span>'+L('Табела ','Table ')+n+'</span>'; }).join(', ')+(r.deo ? ' ('+esc(r.deo)+')' : '')+'</div>'
       : '<div class="xs muted">'+L('на нивоу обрасца','at form level')+'</div>';
     return '<tr><td>'+esc(r.form)+tb+'</td><td>'+esc(r.area)+'</td><td><span class="badge">'+esc(r.participation)+'</span></td><td></td></tr>';
   }).join('') || '<tr><td class="muted" colspan="4">Још нема додељених образаца за извештавање.</td></tr>';
@@ -4100,13 +4324,13 @@ function renderInstUsers(inst){
     var part = u.part ? '<div class="muted small">Део табеле: '+esc(u.part)+'</div>' : '';
     var zatv = (u.aktivan===false) ? '<div class="xs muted">приступ затворен '+esc(u.zatvoren||'')+' — уноси и ревизиони траг остају приписани</div>' : '';
     return '<tr'+(u.aktivan===false?' style="opacity:.62;"':'')+'><td>'+esc(u.name)+part+zatv+'</td><td>'+esc(u.role)+'</td><td class="small">'+
-      (u.tables||[]).map(esc).join('<br>')+'</td>'+
-      '<td style="white-space:nowrap;"><button class="btn sm" onclick="openEditUser('+ix+')">Измени</button> '+
-      '<button class="btn sm" onclick="closeUser('+ix+')">'+(u.aktivan===false?'Активирај':'Затвори приступ')+'</button></td></tr>';
+      (u.tables||[]).map(function(x){ return '<span>'+esc(x)+'</span>'; }).join('<br>')+'</td>'+
+      '<td style="white-space:nowrap;"><button class="btn sm" onclick="openEditUser('+ix+')">'+L('Измени','Edit')+'</button> '+
+      '<button class="btn sm" onclick="closeUser('+ix+')">'+(u.aktivan===false?L('Активирај','Activate'):L('Затвори приступ','Close access'))+'</button></td></tr>';
   }).join('');
 }
 function saveInstitution(){
-  var name = document.getElementById('instName').value.trim() || '(институција без назива)';
+  var name = document.getElementById('instName').value.trim() || L('(институција без назива)','(institution without a name)');
   var short = document.getElementById('instShort').value.trim();
   var type = document.getElementById('instType').value;
   var active = window._instActive !== false;
@@ -4136,19 +4360,19 @@ function saveInstitution(){
 function ranijiNazivi(inst){
   if(!inst.nazivi || inst.nazivi.length<2) return '';
   return inst.nazivi.slice(0,-1).map(function(z){
-    return esc(z.naziv)+' ('+esc(z.od)+' – '+esc(z.do||'—')+')';
+    return '<span>'+esc(z.naziv)+'</span> (<span>'+esc(z.od)+'</span> – <span>'+esc(z.do||'—')+'</span>)';
   }).join('; ');
 }
 function openAssignForm(){
   var sel = document.getElementById('assignFormSel');
-  sel.innerHTML = FORMS.map(function(f){ return '<option value="'+f.id+'">'+f.name+'</option>'; }).join('');
+  sel.innerHTML = SVI_OBRASCI.map(function(f){ return '<option value="'+f.id+'">'+f.name+'</option>'; }).join('');
   var dp = document.getElementById('assignFormPart'); if(dp) dp.value='';
   syncAssignArea();
   openModal('modal-assignform');
 }
 function syncAssignArea(){
   var id = document.getElementById('assignFormSel').value;
-  var f = FORMS.filter(function(x){ return x.id===id; })[0];
+  var f = SVI_OBRASCI.filter(function(x){ return x.id===id; })[0];
   document.getElementById('assignAreaAuto').value = f ? f.area : '';
   /* Табеле изабраног обрасца — додела иде по табели, јер Правилник именује
      одговорност испод сваке табеле, не за цео образац. */
@@ -4183,7 +4407,7 @@ function saveAssignForm(){
   if(box){
     box.innerHTML = vec.length ? '<div class="callout"><div class="callout-h">'+
       L('Ове табеле већ уносе и друге институције','Other institutions already enter these tables')+'</div><div class="small">'+
-      vec.map(function(v){ return 'Табела '+v.n+': '+v.druge.map(function(d){ return '<span>'+esc(d)+'</span>'; }).join(', '); }).join('<br>')+
+      vec.map(function(v){ return L('Табела ','Table ')+v.n+': '+v.druge.map(function(d){ return '<span>'+esc(d)+'</span>'; }).join(', '); }).join('<br>')+
       '<div class="xs muted" style="margin-top:5px;">'+L('Свака институција уноси у своју радну копију табеле. Водећи известилац види све копије и спаја их у једну табелу; где су две институције унеле различиту вредност у исто поље, он разрешава конфликт.','Each institution enters into its own working copy of the table. The Lead Reporter sees all copies and merges them into one table; where two institutions entered a different value in the same field, they resolve the conflict.')+'</div></div></div>' : '';
   }
   inst.resp.push({form:formName, area:area, participation:participation, tables:tabele.slice()});
@@ -4212,9 +4436,9 @@ function openAssignUserNovi(){
 function openSplit(){
   var inst=currentEditingInst(); if(!inst) return;
   document.getElementById('splitFrom').value=inst.name;
-  document.getElementById('splitNameA').value=inst.name+' — део 1';
+  document.getElementById('splitNameA').value=inst.name+L(' — део 1',' — part 1');
   document.getElementById('splitShortA').value=(inst.short||'')+'1';
-  document.getElementById('splitNameB').value=inst.name+' — део 2';
+  document.getElementById('splitNameB').value=inst.name+L(' — део 2',' — part 2');
   document.getElementById('splitShortB').value=(inst.short||'')+'2';
   openModal('modal-split');
 }
@@ -4232,7 +4456,7 @@ function doSplit(){
     {name:b, short:document.getElementById('splitShortB').value.trim(), type:inst.type, active:true,
      od:kada, do:null, nastalaIz:[inst.name], preslaU:null,
      resp:(gde==='B'?inst.resp.map(kopija):[]), users:(gde==='A'?[]:inst.users.map(kopija))});
-  inst.active=false; inst.do=kada; inst.preslaU=a+' и '+b;
+  inst.active=false; inst.do=kada; inst.preslaU=a+L(' и ',' and ')+b;
   pushActivity('Институција подељена: '+inst.name+' → '+a+' и '+b+' ('+kada+')', ACTOR.super);
   closeModal('modal-split');
   showScreen('institutions');
@@ -4267,8 +4491,12 @@ function openEditUser(ix){
   document.getElementById('assignUserName').value = u.name;
   var r=document.getElementById('assignUserRole');
   for(var k=0;k<r.options.length;k++) if(r.options[k].value===u.role || r.options[k].textContent===u.role) r.selectedIndex=k;
-  var sel=document.getElementById('assignUserTables');
-  Array.prototype.forEach.call(sel.options, function(o){ o.selected = (u.tables||[]).indexOf(o.textContent)>=0; });
+  var vred=(u.tables||[]).map(function(x){
+    var m=String(x).match(/Образац\s+([IVX]+),\s*табела\s*(\d+)/);
+    return m ? m[1]+'|'+m[2] : null;
+  }).filter(Boolean);
+  Array.prototype.forEach.call(document.querySelectorAll('#assignUserTables .tblCb'), function(cb){ cb.checked = vred.indexOf(cb.value)>=0; });
+  osveziIzborTabela();
   var h=document.querySelector('#modal-assignuser h3'); if(h) h.textContent='Измени корисника';
 }
 /* Корисник се никада не брише — само му се затвара приступ, да сви његови уноси
@@ -4302,19 +4530,25 @@ function syncUlogaDodela(){
 function openAssignUser(){
   document.getElementById('assignUserName').value='';
   var fs=document.getElementById('assignUserForm');
-  if(fs) fs.innerHTML = FORMS.map(function(f){ return '<option value="'+f.id+'">'+esc(f.name)+'</option>'; }).join('');
+  if(fs) fs.innerHTML = SVI_OBRASCI.map(function(f){ return '<option value="'+f.id+'">'+esc(f.name)+'</option>'; }).join('');
   /* tabele grupisane po obrascu — dodela ide po tabeli, ne po obrascu */
+  /* Квадратићи, не мулти-селект: избор се види, не траћи Ctrl/Cmd и претрага га не брише
+     (стари мулти-селект је при претрази скидао претходно изабране табеле). */
   var sel = document.getElementById('assignUserTables');
   var html='';
   Object.keys(TABELE).forEach(function(ob){
-    html += '<optgroup label="Образац '+ob+'">';
+    var naslov = (SVI_OBRASCI.filter(function(f){ return f.id===ob; })[0]||{}).name || ('Образац '+ob);
+    html += '<div class="tbl-grp"><div class="xs" style="font-weight:600; margin:7px 0 3px;"><span>'+esc(naslov)+'</span></div>';
     TABELE[ob].forEach(function(tb){
       var kratko = tb.t.length>58 ? tb.t.slice(0,56)+'…' : tb.t;
-      html += '<option value="'+ob+'|'+tb.n+'" title="'+esc(tb.t)+'">Табела '+tb.n+' – '+esc(kratko)+'</option>';
+      html += '<label class="checkline tbl-row" data-tekst="'+esc((naslov+' Табела '+tb.n+' '+tb.t).toLowerCase())+'" style="align-items:flex-start; margin:0;">'+
+        '<input type="checkbox" class="tblCb" value="'+ob+'|'+tb.n+'" onchange="osveziIzborTabela()" style="width:auto; margin-top:3px;">'+
+        '<span class="small" title="'+esc(tb.t)+'"><span>'+L('Табела ','Table ')+tb.n+'</span> – <span>'+esc(kratko)+'</span></span></label>';
     });
-    html += '</optgroup>';
+    html += '</div>';
   });
   sel.innerHTML = html;
+  Array.prototype.forEach.call(document.querySelectorAll('#assignUserTables .tblCb'), function(cb){ cb.checked=false; });
   var s = document.getElementById('assignTableSearch');
   if(s) s.value='';
   filterAssignTables();
@@ -4324,21 +4558,42 @@ function openAssignUser(){
 /* Pretraga kroz 72 tabele — spisak je predug da se pretrazuje ocima. */
 function filterAssignTables(){
   var q = (document.getElementById('assignTableSearch').value||'').toLowerCase().trim();
-  var sel = document.getElementById('assignUserTables');
-  var cnt = document.getElementById('assignTableCount');
+  var sel = document.getElementById('assignUserTables'); if(!sel) return;
   var vidljivo = 0, ukupno = 0;
-  Array.prototype.forEach.call(sel.querySelectorAll('optgroup'), function(g){
-    var imaVidljivih = false;
-    Array.prototype.forEach.call(g.querySelectorAll('option'), function(o){
+  Array.prototype.forEach.call(sel.querySelectorAll('.tbl-grp'), function(g){
+    var ima=false;
+    Array.prototype.forEach.call(g.querySelectorAll('.tbl-row'), function(r){
       ukupno++;
-      var tekst = (g.label + ' ' + o.text + ' ' + (o.title||'')).toLowerCase();
-      var ok = !q || tekst.indexOf(q) >= 0;
-      o.hidden = !ok;
-      if(ok){ vidljivo++; imaVidljivih = true; } else { o.selected = false; }
+      var ok = !q || (r.getAttribute('data-tekst')||'').indexOf(q) >= 0;
+      r.classList.toggle('hidden', !ok);
+      if(ok){ vidljivo++; ima=true; }   /* претрага НЕ скида изабрано */
     });
-    g.hidden = !imaVidljivih;
+    g.classList.toggle('hidden', !ima);
   });
-  if(cnt) cnt.textContent = q ? ('приказано '+vidljivo+' од '+ukupno+' табела') : (ukupno+' табела, груписано по обрасцу');
+  var cnt = document.getElementById('assignTableCount');
+  if(cnt) cnt.textContent = q ? L('приказано ','showing ')+vidljivo+L(' од ',' of ')+ukupno+L(' табела',' tables')
+                              : ukupno+L(' табела, груписано по обрасцу',' tables, grouped by form');
+  osveziIzborTabela();
+}
+/* Сажетак изабраних табела — да се види шта је изабрано и кад претрага сакрије ред. */
+function izabraneTabele(){
+  var out=[];
+  Array.prototype.forEach.call(document.querySelectorAll('#assignUserTables .tblCb'), function(cb){ if(cb.checked) out.push(cb.value); });
+  return out;
+}
+function osveziIzborTabela(){
+  var el=document.getElementById('assignTableChips'); if(!el) return;
+  var izb=izabraneTabele();
+  el.innerHTML = izb.length
+    ? '<span class="muted">'+L('Изабрано: ','Selected: ')+izb.length+L(' табела',' tables')+'</span> '+
+      izb.map(function(v){ var p=v.split('|');
+        return '<span class="badge" style="cursor:pointer;" onclick="skiniTabelu(\''+v+'\')" title="'+esc(L('кликни да уклониш','click to remove'))+'">'+
+          L('Образац ','Form ')+p[0]+L(', табела ',', table ')+p[1]+' ✕</span>'; }).join(' ')
+    : '<span class="muted">'+L('Још ниједна табела није изабрана','No table selected yet')+'</span>';
+}
+function skiniTabelu(v){
+  Array.prototype.forEach.call(document.querySelectorAll('#assignUserTables .tblCb'), function(cb){ if(cb.value===v) cb.checked=false; });
+  osveziIzborTabela();
 }
 
 /* Ponudi delove tabele samo ako izabrana tabela ima podelu unutar sebe (12 od 72). */
@@ -4347,17 +4602,14 @@ function saveAssignUser(){
   var _ix = _editUserIx; _editUserIx = null;
   var inst = currentEditingInst();
   if(!inst){ closeModal('modal-assignuser'); return; }
-  var name = document.getElementById('assignUserName').value.trim() || '(нови корисник)';
+  var name = document.getElementById('assignUserName').value.trim() || L('(нови корисник)','(new user)');
   var role = document.getElementById('assignUserRole').value;
-  var sel = document.getElementById('assignUserTables');
   var tabs=[];
   if(role==='Водећи известилац'){
     var fid=(document.getElementById('assignUserForm')||{}).value||'';
     if(fid) tabs.push('Образац '+fid+' — цео образац');
   } else {
-    Array.prototype.forEach.call(sel.options, function(o){
-      if(o.selected){ var p=o.value.split('|'); tabs.push('Образац '+p[0]+', табела '+p[1]); }
-    });
+    izabraneTabele().forEach(function(v){ var p=v.split('|'); tabs.push('Образац '+p[0]+', табела '+p[1]); });
   }
   /* Лице се додељује табели. Ако табелу већ води неко из ове институције, преузима је
      нови корисник — упис остаје у дневнику. */
