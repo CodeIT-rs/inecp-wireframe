@@ -207,7 +207,7 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
       </div>
       <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
         <div class="lang-switch">
-          <span id="appLangSr" onclick="setLang('sr')" title="Српски — извор; термини Правилника">SR</span><span id="appLangEn" onclick="setLang('en')" title="English — key terms keep the Serbian original in brackets">EN</span>
+          <span id="appLangSr" onclick="setLang('sr')" title="Српски — изворни језик обрасца">SR</span><span id="appLangEn" onclick="setLang('en')" title="Енглески — цео интерфејс на енглеском">EN</span>
         </div>
         <div class="bell-wrap" id="bellWrapEl">
           <div class="bell-btn" onclick="toggleBell()">
@@ -288,7 +288,7 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
               <p class="note" style="margin-top:0;">Свака институција попуњава <strong>своју верзију обрасца и својих табела</strong> — испод су верзије и њихови статуси. Водећи известилац те верзије потврђује и консолидује у један образац, а Супервизор даје финалну потврду. Ниједна верзија се не брише: остаје у систему са својим ревизионим трагом.</p>
               <p class="note hidden" id="contributionsScopeNote" style="margin-top:0;"></p>
               <div class="scroll"><table class="freeze-1">
-                <thead><tr><th>Табела / институција</th><th>Секције и особе</th><th>Статус</th><th>Попуњеност</th></tr></thead>
+                <thead><tr><th id="thDodela1">Табела / институција</th><th id="thDodela2">Лице</th><th>Статус</th><th>Попуњеност</th></tr></thead>
                 <tbody id="contributionsBody"></tbody>
               </table></div>
             </div>
@@ -304,7 +304,7 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
                 <tr><td class="muted" style="padding-left:0;">Рокови</td><td id="formvDeadlines"></td></tr>
                 <tr><td class="muted" style="padding-left:0;">Попуњеност</td><td id="formvCompletion">—</td></tr>
               </tbody></table>
-              <p class="note" style="margin-top:10px; margin-bottom:0;">Тачан број водећих известилаца по обрасцу и коначни ауторитет потврђивања биће усаглашени са корисником у РП2.</p>
+              <p class="note hidden" id="napAutoritet" style="margin-top:10px; margin-bottom:0;">Тачан број водећих известилаца по обрасцу и коначни ауторитет потврђивања биће усаглашени са корисником у РП2.</p>
             </div>
           </div>
 
@@ -313,7 +313,8 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
           <div id="tabProvera"></div>
 
           <div id="formvCorrectionCallout"></div>
-          <div id="blokadeBox" class="callout strong hidden" style="margin-bottom:14px;"></div>
+          <!-- Стара кутија блокада уклоњена: бочни панел је има разврстану по врсти, са
+               пољима за разлог, а значка на језичку „Унос података" показује број. -->
 
           <div class="two-col">
             <div>
@@ -1541,6 +1542,20 @@ var SR2EN = {
   "ранији називи":"former names",
   "раније: ":"formerly: ",
   "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name",
+  "Демо: означи све доприносе завршеним":"Demo: mark all contributions as complete",
+  "Само за приказ — у стварној платформи ово радe саме институције.":"For the demo only — in the real platform the institutions do this themselves.",
+  "Демо: сви доприноси означени завршеним":"Demo: all contributions marked as complete",
+  "Ове табеле попуњавају друге институције — ви их не уносите. Можете им вратити исправку (дугме уз достављача у језичку „Провера уноса\") или чекати да заврше. Образац се извози као целина, па недовршена табела задржава цео образац.":"These tables are filled in by other institutions — you do not enter them. You can return a correction to them (the button next to the provider on the “Checking the entry” tab) or wait until they finish. The form is exported as a whole, so an unfinished table holds up the entire form.",
+  "Српски — изворни језик обрасца":"Serbian — the source language of the form",
+  "Енглески — цео интерфејс на енглеском":"English — the whole interface in English",
+  "Превод потврђен за поље: ":"Translation confirmed for field: ",
+  "Машински превод предложен за поље: ":"Machine translation proposed for field: ",
+  "ваша табела":"your table",
+  "(ваше табеле)":"(your tables)",
+  "Ко попуњава":"Who fills it in",
+  "Лице":"Person",
+  "Табела":"Table",
+  "Видите и уређујете само табеле додељене вашој институцији — унос других институција вам није доступан.":"You see and edit only the tables assigned to your institution — the entry of other institutions is not available to you.",
   "Образац враћен у фазу потврде — исправка код: ":"The form returned to the confirmation stage — correction at: ",
   "потврђено":"confirmed",
   "Потврди":"Confirm",
@@ -2685,13 +2700,19 @@ function masinskiPrevod(txt){
   if(DEMO_PREVOD[txt]) return DEMO_PREVOD[txt];
   return '[EN] '+txt;   /* у платформи: одговор Text Translation API-ја */
 }
+/* Технички назив поља се не приказује кориснику — свуда иде људска ознака. */
+var OZNAKA_POLJA = {name:['Назив','Name'], desc:['Опис','Description'], relevance:['Релевантност','Relevance'],
+  year:['Циљна година','Target year'], status:['Статус','Status'], responsible:['Одговорни субјект','Responsible entity'],
+  reference:['Референца / извор','Reference / source'], comments:['Опште напомене','General remarks'],
+  prev:['X-3','X-3'], curr:['X-2','X-2'], target:['Циљна вредност','Target value'], unit:['Јединица','Unit']};
+function oznakaPolja(f){ var o=OZNAKA_POLJA[f]; return o ? L(o[0],o[1]) : f; }
 function prevediPolje(kind, i, field){ /* после превода се освежава и панел, да се појави „Потврди превод" */
   var obj = (kind==='obj') ? S.formV.objectives[i] : S.formV.indicators[i];
   if(!obj) return;
   obj._en = obj._en || {}; obj._st = obj._st || {};
   obj._en[field] = masinskiPrevod(obj[field]);
   obj._st[field] = PREVOD_STATUS.MASINSKI;
-  pushActivity('Машински превод предложен за поље: '+field, ACTOR[S.role]);
+  pushActivity(L('Машински превод предложен за поље: ','Machine translation proposed for field: ')+oznakaPolja(field), ACTOR[S.role]);
   renderObjectives(); renderIndicators(); renderBlokade(); renderFormvSidePanel();
 }
 function potvrdiPrevod(kind, i, field){
@@ -2699,8 +2720,8 @@ function potvrdiPrevod(kind, i, field){
   if(!obj || !obj._en || !obj._en[field]) return;
   obj._st = obj._st || {};
   obj._st[field] = PREVOD_STATUS.POTVRDJEN;
-  auditPolje(L('Превод: ','Translation: ')+field+(kind==='obj'?' ('+L('Циљ ','Objective ')+(i+1)+')':''), PREVOD_STATUS.MASINSKI, PREVOD_STATUS.POTVRDJEN);
-  pushActivity('Превод потврђен за поље: '+field, ACTOR[S.role]);
+  auditPolje(L('Превод: ','Translation: ')+oznakaPolja(field)+(kind==='obj'?' ('+L('Циљ ','Objective ')+(i+1)+')':''), PREVOD_STATUS.MASINSKI, PREVOD_STATUS.POTVRDJEN);
+  pushActivity(L('Превод потврђен за поље: ','Translation confirmed for field: ')+oznakaPolja(field), ACTOR[S.role]);
   renderObjectives(); renderIndicators(); renderBlokade(); renderFormvSidePanel();
 }
 function updEn(kind, i, field, val){
@@ -2839,8 +2860,10 @@ function sacuvajRazlogUPanelu(kind, i, field, id){
   if(!v){ el.focus(); return; }
   S.formV.razlozi = S.formV.razlozi || {};
   var k=razlogKljuc(kind,i,field), staro=S.formV.razlozi[k]||'';
+  /* Људски назив поља узимамо из списка блокада, не из технич­ког кључа. */
+  var stavka=praznaBezRazloga().filter(function(x){ return x.kind===kind && x.i===i && x.field===field; })[0];
   S.formV.razlozi[k]=v;
-  auditPolje(L('Разлог за празно поље: ','Reason for an empty field: ')+k, staro, v, '');
+  auditPolje((stavka ? stavka.naziv : k)+L(' — разлог за празно поље',' — reason for an empty field'), staro, v, '');
   renderFormV();
 }
 function sacuvajSveRazlogeUPanelu(){
@@ -2852,7 +2875,7 @@ function sacuvajSveRazlogeUPanelu(){
       S.formV.razlozi = S.formV.razlozi || {};
       var kk=razlogKljuc(x.kind,x.i,x.field), staro=S.formV.razlozi[kk]||'';
       S.formV.razlozi[kk]=v;
-      auditPolje(L('Разлог за празно поље: ','Reason for an empty field: ')+kk, staro, v, '');
+      auditPolje(x.naziv+L(' — разлог за празно поље',' — reason for an empty field'), staro, v, '');
       upisano++;
     }
   });
@@ -3172,7 +3195,23 @@ function renderFormV(){
     '</div>'+
     '<div class="muted small" style="margin-top:4px;">'+esc(info.desc)+'</div>';
 
-  document.getElementById('formvCompletion').textContent = completionPct()+'%';
+  /* Достављачу приказујемо ЊЕГОВУ попуњеност — попуњеност целог обрасца укључује туђ
+     рад који он ни не види. */
+  var elPop=document.getElementById('formvCompletion');
+  if(elPop){
+    if(S.role==='dp'){
+      var moje=dodelaInstitucije(ORG.dp);
+      var pr = moje.length ? Math.round(moje.reduce(function(a,x){ return a+(x.pct||0); },0)/moje.length) : 0;
+      elPop.innerHTML = pr+'% <span class="xs muted">'+L('(ваше табеле)','(your tables)')+'</span>';
+    } else {
+      elPop.textContent = completionPct()+'%';
+    }
+  }
+  var napAut=document.getElementById('napAutoritet');
+  if(napAut) napAut.classList.toggle('hidden', S.role==='dp');
+  var th1=document.getElementById('thDodela1'), th2=document.getElementById('thDodela2');
+  if(th1) th1.innerHTML = (S.role==='dp') ? L('Табела','Table') : L('Табела / институција','Table / institution');
+  if(th2) th2.innerHTML = (S.role==='dp') ? L('Ко попуњава','Who fills it in') : L('Лице','Person');
 
   renderRokovi();
   renderGodine();
@@ -3330,7 +3369,10 @@ var FORMV_TABOVI = [
   {id:'ko',      sr:'Ко шта радi',         en:'Who does what',
    opisSr:'Које табеле су којој институцији и лицу додељене, коме се предаје и до када.',
    opisEn:'Which tables are assigned to which institution and person, whom it is submitted to and by when.',
-   blokovi:['cardDodela','cardOdgovornosti','sectOdgovornostTabele'], uloge:['dp','lead','super']},
+   blokovi:['cardDodela','cardOdgovornosti','sectOdgovornostTabele'], uloge:['dp','lead','super'],
+   /* достављачу не приказујемо „Одговорност по табелама" — то је исти податак као у
+      картици „Моје додељене табеле", само други пут */
+   sakrij:{dp:['sectOdgovornostTabele']}},
   {id:'provera', sr:'Провера уноса',       en:'Checking the entry',
    opisSr:'Уноси свих достављача одвојено, спојена табела и конфликти — оно што потврђујете пре консолидације.',
    opisEn:'The entries of all data providers separately, the merged table and the conflicts — what you confirm before consolidation.',
@@ -3385,6 +3427,7 @@ function renderTabove(){
     var el=document.getElementById(bid); if(!el) return;
     var vidljiv = aktivan.blokovi.indexOf(bid)>=0;
     if(bid==='auditSect' && S.role!=='super') vidljiv=false;
+    if(aktivan.sakrij && aktivan.sakrij[S.role] && aktivan.sakrij[S.role].indexOf(bid)>=0) vidljiv=false;
     el.classList.toggle('hidden', !vidljiv);
   });
 }
@@ -3419,10 +3462,15 @@ function renderContributions(){
       '<td>'+lista.length+' '+L(lista.length===1?'институција':(lista.length<5?'институције':'институција'), lista.length===1?'institution':'institutions')+' · '+prosek+'%</td></tr>';
     return glava + lista.map(function(x){
       var st=x.status;
-      var nap=(lista.length>1)
+      var svoja=(S.role==='dp');
+      var nap=(lista.length>1 && !svoja)
         ? '<div class="xs muted">'+L('своја радна копија табеле','own working copy of the table')+'</div>'
-        : '<div class="xs muted">'+L('цела табела','the whole table')+'</div>';
-      return '<tr><td style="padding-left:22px;" class="small"><span>'+esc(x.inst)+'</span>'+nap+'</td>'+
+        : '';
+      /* Достављачу нема сврхе да у сваком реду понављамо назив његове институције. */
+      var prvaKolona = svoja
+        ? '<span class="xs muted">'+L('ваша табела','your table')+'</span>'
+        : '<span>'+esc(x.inst)+'</span>'+nap;
+      return '<tr><td style="padding-left:22px;" class="small">'+prvaKolona+'</td>'+
         '<td class="small"><span>'+esc(x.osoba||'—')+'</span></td>'+
         '<td><span class="badge">'+esc(st)+'</span></td><td>'+x.pct+'%</td></tr>';
     }).join('');
@@ -3452,7 +3500,7 @@ function renderSectionResponsibility(){
     intro.textContent = admin
       ? 'Као Супервизор можете уређивати све табеле, независно од тога којој су институцији додељене. Свака измена се бележи у историји.'
       : (S.role==='dp'
-          ? 'Можете видети читав образац за извештавање, али можете уређивати само табеле додељене вашој институцији.'
+          ? 'Видите и уређујете само табеле додељене вашој институцији — унос других институција вам није доступан.'
           : (S.role==='lead'
               ? 'Као Водећи известилац контролишете унос и можете га сами исправити у фазама Предато и Потврђено — свака ваша измена захтева образложење и остаје у ревизионом трагу.'
               : 'У вашој улози образац се прегледа, а не уређује — унос је на институцијама којима су табеле додељене.'));
@@ -3959,12 +4007,11 @@ function renderCellState(i, field){
     td.appendChild(d);
   }
 }
-/* Live blocker count above the form — the same gate Reportnet applies before a release. */
+/* Брана пре предаје: списак се приказује у бочном панелу (kutijaBlokada) и као значка на
+   језичку; овде остаје само закључавање дугмића, да брана важи и кад панел није видљив. */
 function renderBlokade(){
-  var el = document.getElementById('blokadeBox'); if(!el) return;
   var lista = blokadeUObrascu();
-  if(!lista.length){ el.innerHTML=''; el.classList.add('hidden'); }
-  else {
+  if(false){
     el.classList.remove('hidden');
     el.innerHTML = '<div class="callout-h">'+L('Блокира предају: ','Blocks submission: ')+lista.length+' '+
         L(lista.length===1?'поље':'поља', lista.length===1?'field':'fields')+'</div>'+
@@ -4204,7 +4251,10 @@ function contributionsReadinessHtml(){
   var lista = nedostaju.length
     ? '<div class="callout" style="margin-top:10px;"><div class="callout-h">'+L('Табеле које нису завршене: ','Tables not completed: ')+nedostaju.length+'</div><div class="small">'+
         nedostaju.slice(0,6).map(function(s){ var nz=nazivTabele(s.tId); return '<span>'+esc(nz.length>52?nz.slice(0,50)+'…':nz)+'</span> — <span>'+esc(s.inst)+'</span> ('+s.pct+'%)'; }).join('<br>')+
-        '<div class="xs muted" style="margin-top:4px;">'+L('Образац се извози као целина, па недовршена табела задржава цео образац. Потврда је могућа само за доприносе који су завршени; консолидација чека да све буду потврђене.','The form is exported as a whole, so an unfinished table holds up the entire form. Confirmation is only possible for contributions that are complete; consolidation waits until all of them are confirmed.')+'</div></div></div>'
+        '<div class="xs muted" style="margin-top:4px;">'+L('Ове табеле попуњавају друге институције — ви их не уносите. Можете им вратити исправку (дугме уз достављача у језичку „Провера уноса") или чекати да заврше. Образац се извози као целина, па недовршена табела задржава цео образац.','These tables are filled in by other institutions — you do not enter them. You can return a correction to them (the button next to the provider on the “Checking the entry” tab) or wait until they finish. The form is exported as a whole, so an unfinished table holds up the entire form.')+'</div>'+
+        ((S.role==='lead'||S.role==='super') ? '<div style="margin-top:8px;"><button class="btn sm" onclick="demoZavrsiDoprinose()">'+L('Демо: означи све доприносе завршеним','Demo: mark all contributions as complete')+'</button>'+
+          '<div class="xs muted" style="margin-top:3px;">'+L('Само за приказ — у стварној платформи ово радe саме институције.','For the demo only — in the real platform the institutions do this themselves.')+'</div></div>' : '')+
+        '</div></div>'
     : '';
   return rows + '<p class="small" style="margin-top:8px; font-weight:600;">'+
     L(gotoveTab.length+' од '+sveTab.length+' табела завршено', gotoveTab.length+' of '+sveTab.length+' tables completed')+
@@ -4438,6 +4488,13 @@ function potvrdjena(inst){ return !!((S.formV.potvrde||{})[inst]); }
 function sveInstitucijePotvrdjene(){
   var sve=institucijeUObrascu();
   return sve.length>0 && sve.every(potvrdjena);
+}
+/* Демо-пречица: да се на презентацији може проћи корак 5 без чекања да „друге институције"
+   заврше унос. У стварној платформи ово радe саме институције. */
+function demoZavrsiDoprinose(){
+  (S.formV.dodela||[]).forEach(function(x){ x.pct=100; if(x.status!=='Потврђено') x.status='Предато'; });
+  pushActivity(L('Демо: сви доприноси означени завршеним','Demo: all contributions marked as complete'), ACTOR[S.role]);
+  renderFormV();
 }
 function potvrdiInstituciju(inst){
   var s=spremnostInstitucije(inst);
