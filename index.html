@@ -440,6 +440,18 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
               <tbody id="institutionsBody"></tbody>
             </table></div>
           </div>
+        
+
+        <div class="card" id="cardIzvestioci">
+            <div class="card-h">Водећи известиоци по обрасцима</div>
+            <div class="card-b">
+              <p class="note" style="margin-top:0;">Водећи известилац се именује <strong>за образац</strong> и није везан за институцију — зато се не води у списку корисника институције. Достављачи података су везани за своју институцију, а Супервизор је из Министарства рударства и енергетике.</p>
+              <div class="scroll"><table>
+                <thead><tr><th>Образац</th><th>Водећи известилац(и)</th></tr></thead>
+                <tbody id="izvestiociBody"></tbody>
+              </table></div>
+            </div>
+          </div>
         </section>
 
         <!-- CENTRAL CHANGE LOG (Supervisor only) -->
@@ -470,18 +482,6 @@ tbody tr.grp td{background:var(--surface-1); font-size:12px;}
             </div>
           </div>
         </section>
-
-        <div class="card" id="cardIzvestioci">
-            <div class="card-h">Водећи известиоци по обрасцима</div>
-            <div class="card-b">
-              <p class="note" style="margin-top:0;">Водећи известилац се именује <strong>за образац</strong> и није везан за институцију — зато се не води у списку корисника институције. Достављачи података су везани за своју институцију, а Супервизор је из Министарства рударства и енергетике.</p>
-              <div class="scroll"><table>
-                <thead><tr><th>Образац</th><th>Водећи известилац(и)</th></tr></thead>
-                <tbody id="izvestiociBody"></tbody>
-              </table></div>
-            </div>
-          </div>
-
         <!-- INSTITUTION DETAIL / ADD-EDIT -->
         <section id="screen-institution-detail" class="screen">
           <h2 id="instDetailTitle">Институција</h2>
@@ -985,7 +985,6 @@ var SR2EN = {
   "Допринос дугорочне стратегије реновирања стамбених и нестамбених зграда циљевима енергетске ефикасности":"Contribution of the long-term renovation strategy for residential and non-residential buildings to the energy efficiency objectives",
   "Достављач података":"Data Provider",
   "Достављач података још уноси и валидира свој допринос.":"The Data Provider is still entering and validating their contribution.",
-  "Достављач података – Секција 1":"Data Provider – Section 1",
   "Доступни пројектовани и остварени трошкови и користи појединачних или група ПиМ за производњу обновљиве енергије":"Available projected and realised costs and benefits of individual or groups of PaMs for renewable energy generation",
   "Доступни резултати ex-ante и ex-post процена ефеката појединачних или група ПиМ на енергетску ефикасност":"Available results of ex-ante and ex-post assessments of the effects of individual or groups of PaMs on energy efficiency",
   "Доступни резултати ex-ante и ex-post процена ефеката појединачних или група ПиМ на производњу обновљиве енергије":"Available results of ex-ante and ex-post assessments of the effects of individual or groups of PaMs on renewable energy generation",
@@ -1242,7 +1241,6 @@ var SR2EN = {
   "Све преузима прва нова институција":"The first new institution takes over everything",
   "Сви обрасци":"All forms",
   "Секторски и укупни удели енергије из обновљивих извора":"Sectoral and overall shares of energy from renewable sources",
-  "Секција 1 – Показатељи снабдевања":"Section 1 – Supply indicators",
   "Симулација преусмеравања на национални систем eID (eid.gov.rs)… Идентитет потврђен.":"Simulated redirect to the national eID system (eid.gov.rs)… Identity confirmed.",
   "Симулирај истовремену измену (демо)":"Simulate a concurrent change (demo)",
   "Систем у који се предаје":"Target system",
@@ -1412,7 +1410,6 @@ var SR2EN = {
   "обавезно":"mandatory",
   "одговорност се додељује по табели":"responsibility is assigned per table",
   "предаја је блокирана док превод није потврђен":"submission is blocked until the translation is confirmed",
-  "своју верзију обрасца и својих табела":"its own version of the form and of its tables",
   "то значи да се пријављују календарске године":"this means that the reported calendar years are",
   "— Јелена Ковачевић":"— Jelena Kovačević",
   "— Јелена Ковачевић, Републички завод за статистику":"— Jelena Kovačević, Statistical Office of the Republic of Serbia",
@@ -1553,6 +1550,7 @@ var SR2EN = {
   "ранији називи":"former names",
   "раније: ":"formerly: ",
   "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name",
+  "Достављач података — Табела 1":"Data Provider — Table 1",
   "Расподела и рокови":"Distribution and deadlines",
   "Моје табеле и рокови":"My tables and deadlines",
   "Провера и спајање":"Checking and merging",
@@ -1578,7 +1576,6 @@ var SR2EN = {
   "Демо: означи све доприносе завршеним":"Demo: mark all contributions as complete",
   "Само за приказ — у стварној платформи ово радe саме институције.":"For the demo only — in the real platform the institutions do this themselves.",
   "Демо: сви доприноси означени завршеним":"Demo: all contributions marked as complete",
-  "Ове табеле попуњавају друге институције — ви их не уносите. Можете им вратити исправку (дугме уз достављача у језичку „Провера уноса\") или чекати да заврше. Образац се извози као целина, па недовршена табела задржава цео образац.":"These tables are filled in by other institutions — you do not enter them. You can return a correction to them (the button next to the provider on the “Checking the entry” tab) or wait until they finish. The form is exported as a whole, so an unfinished table holds up the entire form.",
   "Српски — изворни језик обрасца":"Serbian — the source language of the form",
   "Енглески — цео интерфејс на енглеском":"English — the whole interface in English",
   "Превод потврђен за поље: ":"Translation confirmed for field: ",
@@ -1790,7 +1787,6 @@ var SR2EN = {
   "одговорност се додељује по секцији":"responsibility is assigned per section",
   "Додељује се секција, не цела табела.":"A section is assigned, not the whole table.",
   "Табела постоји једном у обрасцу и може бити подељена између више институција — свака добија своје секције. Лице које попуњава секцију додељује се у секцији Корисници (једна секција — једно лице). Извоз је по обрасцу: цео образац се на крају извози као једна целина.":"A table exists once in the form and can be divided between several institutions — each gets its own sections. The person who fills in a section is assigned in the Users section (one section — one person). The export is per form: the whole form is exported as a single unit at the end.",
-  "Секција у табели":"Section in the table",
   "нпр. C1 – Показатељи снабдевања":"e.g. C1 – Supply indicators",
   "C1 – Показатељи снабдевања":"C1 – Supply indicators",
   "C2 – Резерве нафте":"C2 – Oil stocks",
@@ -1829,8 +1825,6 @@ var SR2EN = {
   "за табелу, а остале своје податке достављају кроз њене секције или изван платформе. Биће усаглашено са корисником у РП2.":"for the table, while the others deliver their data through its sections or outside the platform. To be agreed with the client in WP2.",
   "Табела / секција":"Table / section",
   "Институција / особа":"Institution / person",
-  "Секција у табели":"Section in the table",
-  "једна секција — једна особа":"one section — one person",
   "Показатељи снабдевања":"Supply indicators",
   "Резерве нафте":"Oil stocks",
   "Квантитативни циљеви — електрична енергија":"Quantitative objectives — electricity",
@@ -2590,7 +2584,7 @@ function dashFormVRow(){
    a whole (item 5). A user may hold different responsibilities on different forms — this list is
    illustrative for the concept demo, not a fully modelled per-user task engine. ---- */
 var MY_TASKS = {
-  dp:    [{id:'V',  resp:'Достављач података – Секција 1'}],
+  dp:    [{id:'V',  resp:'Достављач података — Табела 1'}],
 
   lead:  [{id:'V',  resp:'Водећи известилац'}],
   coord: [{id:'V',  resp:'Супервизор — финална потврда'}],
@@ -3618,7 +3612,8 @@ function renderMyContribution(){
     '<div class="callout-h">Мој допринос Обрасцу V</div>'+
     '<table style="width:auto;"><tbody>'+
     '<tr><td class="muted" style="padding-left:0;">Институција</td><td>Републички завод за статистику</td></tr>'+
-    '<tr><td class="muted" style="padding-left:0;">Додељени обим</td><td>Секција 1 – Показатељи снабдевања</td></tr>'+
+    '<tr><td class="muted" style="padding-left:0;">Додељени обим</td><td>'+
+      dodelaInstitucije(ORG.dp).map(function(x){ var nz=nazivTabele(x.tId); return '<span>'+esc(nz.length>54?nz.slice(0,52)+'…':nz)+'</span>'; }).join('<br>')+'</td></tr>'+
     '<tr><td class="muted" style="padding-left:0;">Статус доприноса</td><td><span class="badge">'+statusLabel(S.formV.status)+'</span></td></tr>'+
     '</tbody></table></div>';
 }
@@ -3991,7 +3986,7 @@ function renderKopijeDP(){
         }).join('')+'</tbody></table></div></div>';
     }).join('');
 }
-/* Секција „Конфликти" — само оно што је двоструко уписано, и то различито. */
+/* Део „Конфликти" — само оно што је двоструко уписано, и то различито. */
 function renderKonflikti(){
   var el=document.getElementById('konfliktiBox'); if(!el) return;
   if(!viseDostavljaca() || S.role==='dp'){ el.innerHTML=''; el.classList.add('hidden'); return; }
@@ -4333,7 +4328,7 @@ function contributionsReadinessHtml(){
   var lista = nedostaju.length
     ? '<div class="callout" style="margin-top:10px;"><div class="callout-h">'+L('Табеле које нису завршене: ','Tables not completed: ')+nedostaju.length+'</div><div class="small">'+
         nedostaju.slice(0,6).map(function(s){ var nz=nazivTabele(s.tId); return '<span>'+esc(nz.length>52?nz.slice(0,50)+'…':nz)+'</span> — <span>'+esc(s.inst)+'</span> ('+s.pct+'%)'; }).join('<br>')+
-        '<div class="xs muted" style="margin-top:4px;">'+L('Ове табеле попуњавају друге институције — ви их не уносите. Можете им вратити исправку (дугме уз достављача у језичку „Провера уноса") или чекати да заврше. Образац се извози као целина, па недовршена табела задржава цео образац.','These tables are filled in by other institutions — you do not enter them. You can return a correction to them (the button next to the provider on the “Checking the entry” tab) or wait until they finish. The form is exported as a whole, so an unfinished table holds up the entire form.')+'</div>'+
+        '<div class="xs muted" style="margin-top:4px;">'+L('Ове табеле попуњавају друге институције. Имате три могућности: чекати да заврше, вратити им исправку (дугме уз достављача у језичку „Провера и спајање"), или сами унети односно исправити вредности — свака ваша измена захтева образложење и остаје у ревизионом трагу. Образац се извози као целина, па недовршена табела задржава цео образац.','These tables are filled in by other institutions. You have three options: wait for them to finish, return a correction to them (the button next to the provider on the “Checking and merging” tab), or enter or correct the values yourself — every change of yours requires a justification and stays in the audit trail. The form is exported as a whole, so an unfinished table holds up the entire form.')+'</div>'+
         ((S.role==='lead'||S.role==='super') ? '<div style="margin-top:8px;"><button class="btn sm" onclick="demoZavrsiDoprinose()">'+L('Демо: означи све доприносе завршеним','Demo: mark all contributions as complete')+'</button>'+
           '<div class="xs muted" style="margin-top:3px;">'+L('Само за приказ — у стварној платформи ово радe саме институције.','For the demo only — in the real platform the institutions do this themselves.')+'</div></div>' : '')+
         '</div></div>'
@@ -5177,7 +5172,7 @@ function renderAll(){
   if(S.screen==='reporting') renderReporting();
   if(S.screen==='formv') renderFormV();
   if(S.screen==='notifications') renderNotifFull();
-  if(S.screen==='institutions') renderInstitutions();
+  if(S.screen==='institutions'){ renderInstitutions(); renderIzvestioci(); }
   if(S.screen==='audit-log') renderAuditLog();
   prevediUI();
 }
