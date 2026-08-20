@@ -1538,6 +1538,8 @@ var SR2EN = {
   "ранији називи":"former names",
   "раније: ":"formerly: ",
   "— предаје и ревизиони траг из тих периода остају приписани том називу":"— submissions and the audit trail from those periods stay attributed to that name",
+  "Ову табелу уноси једна институција":"This table is entered by one institution",
+  "нема радних копија, нема спајања и нема конфликата. Табела коју видите је баш оно што је достављач предао.":"there are no working copies, no merging and no conflicts. The table you see is exactly what the data provider submitted.",
   "Последњи корак: извоз целог обрасца — једна датотека састављена из свих његових табела. Унос у Reportnet Супервизор ради ручно.":"The last step: export of the whole form — one file assembled from all of its tables. The Supervisor enters it into Reportnet manually.",
   "Додела табела у обрасцу":"Assignment of tables within the form",
   "Јединица доделе је табела.":"The unit of assignment is a table.",
@@ -1892,8 +1894,10 @@ var S = {
     /* Више достављача може уносити у ИСТУ табелу, а не знамо унапред који део ко уноси.
        Зато свакi достављач има своју радну копију табеле и уноси независно; Водећи
        известилац затим види све копије одвојено и једну спојену. */
-    tabelaVise: true,
-    dodeljeniDP: ['Републички завод за статистику','Србијагас'],
+    /* Табела показатеља у демонстрацији је Табела 2 обрасца — ко на њој радi изводи се
+       из доделе (S.formV.dodela), не из ручне заставице. Ако је додељен само један
+       достављач, нема радних копија, нема спајања и нема конфликата. */
+    tabelaPokazatelja: 'V/1',
     unosDP: {
       'Републички завод за статистику': {
         status:'Предато',
@@ -2578,7 +2582,7 @@ function praznaBezRazloga(){
   });
   S.formV.indicators.forEach(function(r,i){
     POLJA_POK.forEach(function(f){
-      var v = (S.role==='dp' && S.formV.tabelaVise)
+      var v = (S.role==='dp' && viseDostavljaca())
         ? (((S.formV.unosDP||{})[ORG.dp]||{}).redovi||[])[i] && (((S.formV.unosDP||{})[ORG.dp]||{}).redovi||[])[i][f]
         : r[f];
       if(jePrazno(v) && !razlogZa('ind',i,f))
@@ -2908,6 +2912,11 @@ function dodelaTabele(tId){
 function institucijeTabele(tId){
   return dodelaTabele(tId).map(function(x){ return x.inst; });
 }
+/* Достављачи на табели показатеља — из доделе. Један достављач → нема шта да се спаја. */
+function dostavljaciTabele(){
+  return institucijeTabele(S.formV.tabelaPokazatelja || 'V/1');
+}
+function viseDostavljaca(){ return dostavljaciTabele().length > 1; }
 function dodelaInstitucije(inst){
   return (S.formV.dodela||[]).filter(function(x){ return x.inst===inst; });
 }
@@ -3245,7 +3254,7 @@ function kratkoInst(naziv){
 function nazivPolja(f){ return ({prev:'X-3', curr:'X-2', target:L('Циљна вредност','Target value')})[f] || f; }
 function unosiZaCeliju(i, f){
   var out=[];
-  (S.formV.dodeljeniDP||[]).forEach(function(inst){
+  dostavljaciTabele().forEach(function(inst){
     var u=(S.formV.unosDP||{})[inst];
     var v=u && u.redovi && u.redovi[i] ? u.redovi[i][f] : '';
     if(!jePrazno(v)) out.push({inst:inst, v:String(v).trim()});
@@ -3266,7 +3275,7 @@ function stanjeCelije(i, f){
 }
 /* Спајање се не чува као стање него се рачуна — да се не разиђе са уносима достављача. */
 function spojiUnose(){
-  if(!S.formV.tabelaVise) return;
+  if(!viseDostavljaca()) return;
   S.formV.indicators.forEach(function(r,i){
     POLJA_POK.forEach(function(f){
       var s=stanjeCelije(i,f);
@@ -3276,7 +3285,7 @@ function spojiUnose(){
 }
 function konflikti(){
   var out=[];
-  if(!S.formV.tabelaVise) return out;
+  if(!viseDostavljaca()) return out;
   S.formV.indicators.forEach(function(r,i){
     POLJA_POK.forEach(function(f){
       var s=stanjeCelije(i,f);
@@ -3322,7 +3331,7 @@ function ponovoPredajDP(inst){
 }
 function renderIndicators(){
   var ed = canEdit();
-  var vise = !!S.formV.tabelaVise;
+  var vise = viseDostavljaca();
   var mojUnos = (S.role==='dp' && vise);
   if(vise) spojiUnose();
   document.getElementById('indicatorsBody').innerHTML = S.formV.indicators.map(function(r,i){
@@ -3369,12 +3378,23 @@ function renderIndicators(){
 /* Копије табеле по достављачу — Водећи известилац и Супервизор виде ко је шта уписао. */
 function renderKopijeDP(){
   var el=document.getElementById('kopijeDP'); if(!el) return;
-  if(!S.formV.tabelaVise || S.role==='dp'){ el.innerHTML=''; el.classList.add('hidden'); return; }
+  if(S.role==='dp'){ el.innerHTML=''; el.classList.add('hidden'); return; }
+  if(!viseDostavljaca()){
+    /* Један достављач: нема радних копија ни спајања — то се и каже, да се не претпоставља. */
+    var jedan=dostavljaciTabele()[0];
+    el.classList.remove('hidden');
+    el.innerHTML = '<p class="note" style="margin:0;">'+
+      L('Ову табелу уноси једна институција','This table is entered by one institution')+
+      (jedan ? ' (<span>'+esc(jedan)+'</span>)' : '')+' — '+
+      L('нема радних копија, нема спајања и нема конфликата. Табела коју видите је баш оно што је достављач предао.',
+        'there are no working copies, no merging and no conflicts. The table you see is exactly what the data provider submitted.')+'</p>';
+    return;
+  }
   el.classList.remove('hidden');
   el.innerHTML = '<div class="sect-h"><span>'+L('Уноси по достављачу','Entries per data provider')+'</span><span class="badge">'+
-      (S.formV.dodeljeniDP||[]).length+' '+L('достављача','data providers')+'</span></div>'+
+      dostavljaciTabele().length+' '+L('достављача','data providers')+'</span></div>'+
     '<p class="note" style="margin-top:0;">'+L('Иста табела је додељена већим бројем достављача, а није унапред познато који део ко уноси. Свакi уноси у своју радну копију; испод су копије онако како су предате, да се види ко је шта попунио. Спојена табела горе настаје из ових уноса.','The same table is assigned to several data providers, and it is not known in advance which part each of them fills in. Each enters into their own working copy; below are the copies as submitted, so it is visible who filled in what. The merged table above is produced from these entries.')+'</p>'+
-    (S.formV.dodeljeniDP||[]).map(function(inst){
+    dostavljaciTabele().map(function(inst){
       var u=(S.formV.unosDP||{})[inst]||{status:'Нацрт', redovi:[]};
       var vrati = (S.role==='lead' || S.role==='super')
         ? '<span class="btn sm" onclick="vratiDostavljacu(\''+esc(inst)+'\')">'+L('Врати овом достављачу','Return to this provider')+'</span>' : '';
@@ -3395,7 +3415,7 @@ function renderKopijeDP(){
 /* Секција „Конфликти" — само оно што је двоструко уписано, и то различито. */
 function renderKonflikti(){
   var el=document.getElementById('konfliktiBox'); if(!el) return;
-  if(!S.formV.tabelaVise || S.role==='dp'){ el.innerHTML=''; el.classList.add('hidden'); return; }
+  if(!viseDostavljaca() || S.role==='dp'){ el.innerHTML=''; el.classList.add('hidden'); return; }
   var k=konflikti();
   var razr=Object.keys(S.formV.razresenja||{});
   if(!k.length && !razr.length){ el.innerHTML=''; el.classList.add('hidden'); return; }
@@ -3427,7 +3447,7 @@ function updInd(i, field, val){
   /* Спојена табела се рачуна из уноса достављача. Ручна измена Водећег известиоца или
      Супервизора зато мора да се сачува као одлука (уз име онога који је донео), иначе би
      је следеће спајање прегазило. */
-  if(S.formV.tabelaVise && (S.role==='lead' || S.role==='super')){
+  if(viseDostavljaca() && (S.role==='lead' || S.role==='super')){
     var st0 = S.formV.indicators[i][field];
     var naziv0 = (S.formV.indicators[i].name||('Показатељ '+(i+1)))+' — '+nazivPolja(field);
     var upisi = function(beleziTrag){
@@ -3630,7 +3650,7 @@ function renderFormvSidePanel(){
   } else if(S.role==='super'){
     /* Супервизор ради последњи корак: финална потврда и извоз целог обрасца. Може и да
        врати исправку — и Водећем известиоцу и појединачном достављачу, без дирања осталих. */
-    var dpVrati = (S.formV.dodeljeniDP||[]).map(function(inst){
+    var dpVrati = dostavljaciTabele().map(function(inst){
       var u=(S.formV.unosDP||{})[inst]||{status:'—'};
       return '<div class="xs" style="margin-top:4px;"><span>'+esc(inst)+'</span> <span class="badge">'+esc(u.status)+'</span> '+
         '<span class="btn sm" onclick="vratiDostavljacu(\''+esc(inst)+'\')">'+L('Врати овом достављачу','Return to this provider')+'</span></div>';
